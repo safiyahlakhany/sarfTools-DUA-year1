@@ -2,6 +2,8 @@
 
 This Worker authenticates admin uploads and creates one atomic Git commit containing both the uploaded HTML resource and `data/resources.json`.
 
+Local Wrangler commands require Node.js 22 or newer.
+
 ## Configuration
 
 Edit the non-secret values in `wrangler.jsonc`:
@@ -9,7 +11,7 @@ Edit the non-secret values in `wrangler.jsonc`:
 - `GITHUB_OWNER`: GitHub account or organization
 - `GITHUB_REPO`: repository name
 - `GITHUB_BRANCH`: publishing branch, normally `main`
-- `SITE_BASE_URL`: final GitHub Pages base URL, including any repository path
+- `SITE_BASE_URL`: final public site base URL
 - `ALLOWED_ORIGINS`: comma-separated exact origins allowed to call the Worker
 
 Production secrets must be added through Wrangler and must never be placed in `wrangler.jsonc`:

@@ -8,7 +8,7 @@
     "GITHUB_OWNER": "safiyahlakhany",
     "GITHUB_REPO": "sarfTools-DUA-year1",
     "GITHUB_BRANCH": "main",
-    "SITE_BASE_URL": "https://safiyahlakhany.github.io/sarfTools-DUA-year1/",
-    "ALLOWED_ORIGINS": "http://localhost:8000,https://safiyahlakhany.github.io"
+    "SITE_BASE_URL": "https://dua-ilm-us-sarf.pages.dev/",
+    "ALLOWED_ORIGINS": "http://localhost:8000,https://dua-ilm-us-sarf.pages.dev"
   }
 }
