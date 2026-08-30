@@ -37,12 +37,6 @@ function renderSchedule(quizzes) {
     const heading = document.createElement("h3");
     heading.textContent = `${quiz.label}: ${quiz.topic}`;
     copy.append(heading);
-    if (quiz.weight) {
-      const weight = document.createElement("p");
-      weight.className = "quiz-card-weight";
-      weight.textContent = `Course weight: ${quiz.weight}`;
-      copy.append(weight);
-    }
     article.append(date, copy);
     if (index === nextIndex) {
       const status = document.createElement("p");

@@ -17,7 +17,6 @@ const RESOURCE_TYPES = [
 
 const statusElement = document.querySelector("#resource-status");
 const listElement = document.querySelector("#week-list");
-const countElement = document.querySelector("#week-count");
 const WEEK_ONE_DATE_UTC = Date.UTC(2026, 7, 26);
 
 function formatWeekDate(weekNumber) {
@@ -77,11 +76,6 @@ function makeResourceGroup(week, type) {
   const group = document.createElement("section");
   group.className = "resource-group";
 
-  const heading = document.createElement("h4");
-  heading.className = "resource-group-title";
-  heading.textContent = type.fullLabel;
-  group.append(heading);
-
   const resources = Array.isArray(week[type.collectionKey]) ? week[type.collectionKey] : [];
   if (resources.length) {
     for (const resource of resources) group.append(makeResourceItem(resource, type));
@@ -127,7 +121,6 @@ function renderWeeks(weeks) {
 
   statusElement.hidden = true;
   listElement.replaceChildren(fragment);
-  countElement.textContent = `${sortedWeeks.length} ${sortedWeeks.length === 1 ? "week" : "weeks"}`;
 }
 
 async function loadResources() {
