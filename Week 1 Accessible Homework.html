@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ṣarf Practice — No Writing</title>
+<style>
+  :root{
+    --ink:#1c2a2f;--paper:#f6f3ec;--card:#fffdf8;--line:#d8cfbe;
+    --accent:#3a6b5f;--accent-soft:#e2ede9;--gold:#b08842;
+    --right:#2e7d5b;--wrong:#b23a2e;
+    --shadow:0 1px 0 rgba(0,0,0,.04),0 6px 20px rgba(30,50,45,.06);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:"Segoe UI",-apple-system,system-ui,sans-serif;line-height:1.5;
+    -webkit-text-size-adjust:100%}
+  .arabic{font-family:"Traditional Arabic","Amiri","Scheherazade New",serif;direction:rtl}
+  header{background:var(--accent);color:#f6f3ec;padding:24px 18px 18px}
+  header .wrap{max-width:980px;margin:0 auto}
+  header h1{margin:0;font-size:1.4rem;font-weight:600}
+  header p{margin:6px 0 0;opacity:.9;font-size:.92rem;max-width:60ch}
+
+  nav{position:sticky;top:0;z-index:20;background:var(--card);
+    border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
+  nav .wrap{max-width:980px;margin:0 auto;display:flex;gap:8px;padding:10px 18px;flex-wrap:wrap;align-items:center}
+  nav button.tab{border:1px solid var(--line);background:transparent;color:var(--ink);
+    padding:8px 14px;border-radius:999px;cursor:pointer;font-size:.9rem;font-weight:500}
+  nav button.tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .score{margin-left:auto;font-size:.85rem;color:var(--accent);font-weight:600}
+
+  main{max-width:980px;margin:0 auto;padding:22px 18px 90px}
+  section{display:none}
+  section.active{display:block}
+  .lead{background:var(--accent-soft);border-left:4px solid var(--accent);
+    padding:12px 16px;border-radius:8px;margin-bottom:22px;font-size:.93rem}
+
+  /* ---- Exercise 1 ---- */
+  .grid{display:grid;gap:16px}
+  @media(min-width:640px){.grid{grid-template-columns:1fr 1fr}}
+  @media(min-width:920px){.grid{grid-template-columns:1fr 1fr 1fr}}
+  .vcard{background:var(--card);border:1px solid var(--line);border-radius:12px;
+    padding:16px;box-shadow:var(--shadow)}
+  .vword{font-size:2.6rem;text-align:center;margin:2px 0 14px}
+  .rows{display:flex;flex-direction:column;gap:9px}
+  .prow{display:flex;align-items:center;gap:10px;justify-content:space-between}
+  .plabel{font-size:.82rem;font-weight:600;color:var(--gold)}
+  .slot{min-width:56px;height:44px;border:2px dashed var(--line);border-radius:9px;
+    display:flex;align-items:center;justify-content:center;font-size:1.6rem;
+    background:#fbf8f1;transition:.15s;padding:0 4px}
+  .slot.filled{border-style:solid;border-color:var(--accent)}
+  .slot.right{border-color:var(--right);background:#e8f5ee}
+  .slot.wrong{border-color:var(--wrong);background:#fbeae7}
+  .bank{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;
+    margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)}
+  .tile{font-size:1.7rem;min-width:48px;height:48px;padding:0 6px;border:1px solid var(--accent);
+    background:#fff;color:var(--accent);border-radius:9px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;font-weight:500;transition:.12s}
+  .tile:hover{background:var(--accent);color:#fff}
+  .tile.used{opacity:.25;pointer-events:none}
+  .cardbtns{display:flex;gap:8px;margin-top:14px}
+  .mini{flex:1;border:1px solid var(--line);background:transparent;color:var(--ink);
+    padding:7px;border-radius:8px;cursor:pointer;font-size:.82rem}
+  .mini.check{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+  /* ---- Exercise 2 ---- */
+  .progress{position:sticky;top:52px;z-index:9;background:var(--card);
+    border-bottom:1px solid var(--line);box-shadow:var(--shadow);margin:-22px -18px 22px}
+  .progress .pwrap{max-width:980px;margin:0 auto;padding:12px 18px;
+    display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .round-dots{display:flex;gap:6px}
+  .dot{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);
+    display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:var(--line)}
+  .dot.active{border-color:var(--accent);color:var(--accent)}
+  .dot.done{background:var(--right);border-color:var(--right);color:#fff}
+  .count{margin-left:auto;font-size:.85rem;font-weight:600;color:var(--accent)}
+  .drill-wrap{max-width:640px;margin:0 auto}
+  .card2{background:var(--card);border:1px solid var(--line);border-radius:14px;
+    box-shadow:var(--shadow);padding:22px 18px;text-align:center}
+  .qnum{font-size:.8rem;color:var(--gold);font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+  .meaning{font-size:1.35rem;font-weight:600;margin:10px 0 4px}
+  .sub{font-size:.85rem;color:#6a6155;margin-bottom:22px}
+  .feedback{margin-top:16px;min-height:24px;font-size:.9rem;font-weight:600}
+  .feedback.good{color:var(--right)}
+  .feedback.bad{color:var(--wrong)}
+  .build{direction:rtl;display:flex;justify-content:center;align-items:center;gap:4px;
+    margin:6px 0 20px;font-size:2.4rem;min-height:70px}
+  .frame{color:var(--ink);opacity:.85}
+  .slot2{min-width:60px;min-height:56px;border:2px dashed var(--line);border-radius:10px;
+    display:inline-flex;align-items:center;justify-content:center;background:#fbf8f1;
+    font-family:"Traditional Arabic","Amiri",serif;padding:0 6px;transition:.15s}
+  .slot2.filled{border-style:solid;border-color:var(--accent)}
+  .slot2.right{border-color:var(--right);background:#e8f5ee}
+  .slot2.wrong{border-color:var(--wrong);background:#fbeae7}
+  .banklabel{font-size:.75rem;font-weight:600;color:var(--gold);text-transform:uppercase;
+    letter-spacing:.5px;margin:8px 0 6px}
+  .partbank{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+  .part{font-size:1.9rem;min-width:62px;min-height:56px;padding:4px 10px;border:1px solid var(--accent);
+    background:#fff;color:var(--accent);border-radius:10px;cursor:pointer;transition:.12s;
+    display:inline-flex;align-items:center;justify-content:center;
+    font-family:"Traditional Arabic","Amiri",serif}
+  .part:active{transform:scale(.96)}
+  .part.used{opacity:.25;pointer-events:none}
+  .checkbtn{margin-top:18px;width:100%;background:var(--accent);color:#fff;border:none;
+    padding:14px;border-radius:12px;font-size:1rem;font-weight:600;cursor:pointer}
+  .checkbtn.hide{display:none}
+  .nextbtn{margin-top:16px;width:100%;background:var(--accent);color:#fff;border:none;
+    padding:14px;border-radius:12px;font-size:1rem;font-weight:600;cursor:pointer;display:none}
+  .nextbtn.show{display:block}
+  .drill-done{display:none;text-align:center;padding:30px 10px}
+  .drill-done h3{color:var(--accent);margin:0 0 6px}
+
+  /* ---- Report tab ---- */
+  .stat-row{display:flex;gap:12px;margin:16px 0;flex-wrap:wrap}
+  .stat{flex:1;min-width:110px;background:var(--accent-soft);border-radius:10px;padding:12px;text-align:center}
+  .stat .big{font-size:1.5rem;font-weight:700;color:var(--accent)}
+  .stat .lbl{font-size:.76rem;color:#6a6155}
+  .report{width:100%;min-height:230px;border:1px solid var(--line);border-radius:10px;
+    padding:12px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.8rem;
+    background:#fbf8f1;color:var(--ink);resize:vertical;margin-top:8px;line-height:1.6}
+  .copybtn{margin-top:12px;width:100%;background:var(--gold);color:#fff;border:none;
+    padding:14px;border-radius:12px;font-size:1rem;font-weight:600;cursor:pointer}
+  .copybtn.copied{background:var(--right)}
+  .instr{font-size:.85rem;color:#6a6155;margin-top:14px}
+  .pending{background:#fbf3e6;border:1px solid var(--gold);border-radius:10px;
+    padding:14px 16px;font-size:.9rem;color:#7a5c1f}
+  .resetall{margin-top:24px;border:1px solid var(--line);background:transparent;
+    padding:9px 16px;border-radius:8px;cursor:pointer;color:var(--ink)}
+  footer{max-width:980px;margin:0 auto;padding:0 18px 60px;color:#8a8172;font-size:.82rem}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Ṣarf Practice — Tap, Don't Write</h1>
+    <p>Two exercises rebuilt so answers are tapped, not written. Finish both, then open the Report tab to copy a summary for your teacher.</p>
+  </div>
+</header>
+
+<nav>
+  <div class="wrap">
+    <button class="tab active" data-tab="ex1">1 · Root-Letter Positions</button>
+    <button class="tab" data-tab="ex2">2 · Conjugation (5 rounds)</button>
+    <button class="tab" data-tab="report">Report</button>
+    <span class="score" id="score">0 correct</span>
+  </div>
+</nav>
+
+<main>
+  <!-- EXERCISE 1 -->
+  <section id="ex1" class="active">
+    <div class="lead">
+      For each verb, tap a root letter from the bank below the card and place it in the correct position:
+      <strong>Fāʾ al-Kalimah</strong> (1st root), <strong>ʿAyn al-Kalimah</strong> (2nd root),
+      <strong>Lām al-Kalimah</strong> (3rd root). The labels are shuffled on purpose — read the label, not the position. Tap a filled slot to clear it, then press Check.
+    </div>
+    <div class="grid" id="ex1grid"></div>
+  </section>
+
+  <!-- EXERCISE 2 -->
+  <section id="ex2">
+    <div class="progress">
+      <div class="pwrap">
+        <div class="round-dots" id="dots"></div>
+        <span class="count" id="count"></span>
+      </div>
+    </div>
+    <div class="drill-wrap">
+      <div class="card2" id="drillcard">
+        <div class="qnum" id="qnum"></div>
+        <div class="meaning" id="meaning"></div>
+        <div class="sub" id="dsub"></div>
+        <div class="build" id="build">
+          <span class="slot2 pre" id="slot-pre" data-part="pre"></span>
+          <span class="frame arabic" id="frame">فْعَ</span>
+          <span class="slot2 end" id="slot-end" data-part="end"></span>
+        </div>
+        <div class="banklabel">Prefix</div>
+        <div class="partbank" id="bank-pre"></div>
+        <div class="banklabel">Ending</div>
+        <div class="partbank" id="bank-end"></div>
+        <div class="feedback" id="feedback"></div>
+        <button class="checkbtn" id="checkbtn">Check</button>
+        <button class="nextbtn" id="nextbtn">Next</button>
+      </div>
+      <div class="drill-done" id="drilldone">
+        <h3>All five rounds complete ✓</h3>
+        <p class="sub">Now open the <strong>Report</strong> tab to copy your summary.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- REPORT -->
+  <section id="report">
+    <div class="lead">One report covers both exercises. Finish them, then copy this and send it to your teacher.</div>
+    <div id="report-pending" class="pending"></div>
+    <div id="report-ready" style="display:none">
+      <div class="stat-row">
+        <div class="stat"><div class="big" id="s-roots">–</div><div class="lbl">Root-letter verbs correct</div></div>
+        <div class="stat"><div class="big" id="s-first">–</div><div class="lbl">Conjugation first-try</div></div>
+        <div class="stat"><div class="big" id="s-acc">–</div><div class="lbl">Conjugation accuracy</div></div>
+      </div>
+      <textarea class="report" id="reporttext" readonly></textarea>
+      <button class="copybtn" id="copybtn">Copy report</button>
+      <p class="instr">On a phone: tap “Copy report,” open Messages or Mail, then hold to paste.</p>
+    </div>
+  </section>
+
+  <button class="resetall" id="resetall">Reset everything</button>
+</main>
+
+<footer>Built for practice without handwriting. Works on a phone, tablet, or computer.</footer>
+
+<script>
+/* ================= DATA ================= */
+const verbs = [
+  {w:"قَتَلَ",f:"ق",a:"ت",l:"ل"},{w:"سَمِعَ",f:"س",a:"م",l:"ع"},{w:"جَمَعَ",f:"ج",a:"م",l:"ع"},
+  {w:"قَطَعَ",f:"ق",a:"ط",l:"ع"},{w:"فَتَحَ",f:"ف",a:"ت",l:"ح"},{w:"كَسَرَ",f:"ك",a:"س",l:"ر"},
+  {w:"سَأَلَ",f:"س",a:"أ",l:"ل"},{w:"سَكَتَ",f:"س",a:"ك",l:"ت"},{w:"جَلَسَ",f:"ج",a:"ل",l:"س"},
+  {w:"رَحِمَ",f:"ر",a:"ح",l:"م"},{w:"فَهِمَ",f:"ف",a:"ه",l:"م"},{w:"أَجَرَ",f:"أ",a:"ج",l:"ر"},
+  {w:"خَرَقَ",f:"خ",a:"ر",l:"ق"},{w:"وَجَدَ",f:"و",a:"ج",l:"د"},{w:"نَصَرَ",f:"ن",a:"ص",l:"ر"},
+  {w:"مَضَغَ",f:"م",a:"ض",l:"غ"},{w:"كَتَبَ",f:"ك",a:"ت",l:"ب"},{w:"قَرَأَ",f:"ق",a:"ر",l:"أ"},
+  {w:"ثَبَتَ",f:"ث",a:"ب",l:"ت"},{w:"تَبِعَ",f:"ت",a:"ب",l:"ع"},{w:"بُؤُسَ",f:"ب",a:"ؤ",l:"س"},
+  {w:"خَبَأَ",f:"خ",a:"ب",l:"أ"},{w:"حَمِدَ",f:"ح",a:"م",l:"د"},{w:"جَأَسَ",f:"ج",a:"أ",l:"س"},
+  {w:"ذَكَرَ",f:"ذ",a:"ك",l:"ر"},{w:"رَجَمَ",f:"ر",a:"ج",l:"م"},{w:"نَبَأَ",f:"ن",a:"ب",l:"أ"}
+];
+const POS=[{key:"f",label:"Fāʾ al-Kalimah"},{key:"a",label:"ʿAyn al-Kalimah"},{key:"l",label:"Lām al-Kalimah"}];
+// Every مضارع form = prefix + fixed frame فْعَ + ending.
+const FRAME="فْعَ";
+const forms=[
+  {pre:"يَ",end:"لُ",   en:"He / it (m) is doing"},
+  {pre:"يَ",end:"لَانِ",en:"They (dual)(m) are doing"},
+  {pre:"يَ",end:"لُونَ",en:"They (plural)(m) are doing"},
+  {pre:"تَ",end:"لُ",   en:"She (s)(f) is doing"},
+  {pre:"تَ",end:"لَانِ",en:"They (dual)(f) are doing"},
+  {pre:"يَ",end:"لْنَ", en:"They (plural)(f) are doing"},
+  {pre:"تَ",end:"لُ",   en:"You (s)(m) are doing"},
+  {pre:"تَ",end:"لَانِ",en:"You (dual)(m) are doing"},
+  {pre:"تَ",end:"لُونَ",en:"You (plural)(m) are doing"},
+  {pre:"تَ",end:"لِينَ",en:"You (s)(f) are doing"},
+  {pre:"تَ",end:"لَانِ",en:"You (dual)(f) are doing"},
+  {pre:"تَ",end:"لْنَ", en:"You (plural)(f) are doing"},
+  {pre:"أَ",end:"لُ",   en:"I (s)(m/f) am doing"},
+  {pre:"نَ",end:"لُ",   en:"We are doing"}
+];
+forms.forEach(f=>f.ar=f.pre+FRAME+f.end);
+const ALL_PRE=[...new Set(forms.map(f=>f.pre))]; // يَ تَ أَ نَ
+const ALL_END=[...new Set(forms.map(f=>f.end))]; // لُ لَانِ لُونَ لِينَ لْنَ
+const ROUNDS=5;
+function shuffle(a){return [...a].sort(()=>Math.random()-0.5);}
+
+/* ================= STATE ================= */
+let rootsCorrect=0;
+let ex1Done=false, ex2Done=false;
+let firstTryCorrect=0, missTally={}, startTime=Date.now();
+const totalRootVerbs=verbs.length, totalConjQ=ROUNDS*forms.length;
+
+function updateScore(){
+  document.getElementById('score').textContent=`${rootsCorrect+firstTryCorrect} correct`;
+}
+
+/* ================= EXERCISE 1 ================= */
+const g1=document.getElementById('ex1grid');
+verbs.forEach(v=>{
+  const order=shuffle(POS), letters=shuffle([v.f,v.a,v.l]);
+  const card=document.createElement('div');card.className='vcard';
+  card.innerHTML=`<div class="vword arabic">${v.w}</div><div class="rows"></div>
+    <div class="bank"></div>
+    <div class="cardbtns"><button class="mini check">Check</button><button class="mini clear">Clear</button></div>`;
+  const rows=card.querySelector('.rows');
+  order.forEach(p=>{const r=document.createElement('div');r.className='prow';
+    r.innerHTML=`<span class="plabel">${p.label}</span><span class="slot arabic" data-key="${p.key}"></span>`;
+    rows.appendChild(r);});
+  const bank=card.querySelector('.bank');
+  letters.forEach(ch=>{const t=document.createElement('button');
+    t.className='tile arabic';t.textContent=ch;t.dataset.letter=ch;bank.appendChild(t);});
+  g1.appendChild(card);
+
+  let selected=null, scored=false;
+  const slots=[...card.querySelectorAll('.slot')];
+  const tiles=[...card.querySelectorAll('.tile')];
+  tiles.forEach(t=>t.addEventListener('click',()=>{
+    if(t.classList.contains('used'))return;
+    tiles.forEach(x=>x.style.outline='');
+    if(selected===t){selected=null;return;}
+    selected=t;t.style.outline='3px solid var(--gold)';
+  }));
+  slots.forEach(s=>s.addEventListener('click',()=>{
+    if(s.dataset.letter){
+      const back=tiles.find(t=>t.dataset.letter===s.dataset.letter&&t.classList.contains('used'));
+      if(back)back.classList.remove('used');
+      s.textContent='';delete s.dataset.letter;
+      s.className='slot arabic';return;
+    }
+    if(!selected)return;
+    s.textContent=selected.textContent;s.dataset.letter=selected.dataset.letter;
+    s.classList.add('filled');selected.classList.add('used');selected.style.outline='';selected=null;
+  }));
+  card.querySelector('.check').addEventListener('click',()=>{
+    let allRight=true;
+    slots.forEach(s=>{s.classList.remove('right','wrong');
+      const key=s.getAttribute('data-key');
+      if(s.dataset.letter===v[key]){s.classList.add('right');}
+      else{s.classList.add('wrong');allRight=false;}});
+    if(allRight&&!scored){scored=true;rootsCorrect++;updateScore();checkAllDone();
+      slots.forEach(s=>s.style.pointerEvents='none');tiles.forEach(t=>t.style.pointerEvents='none');}
+  });
+  card.querySelector('.clear').addEventListener('click',()=>{
+    slots.forEach(s=>{s.textContent='';delete s.dataset.letter;
+      s.className='slot arabic';s.setAttribute('data-key',s.getAttribute('data-key'));s.style.pointerEvents='';});
+    tiles.forEach(t=>{t.classList.remove('used');t.style.outline='';t.style.pointerEvents='';});
+    if(scored){scored=false;rootsCorrect--;updateScore();}
+    selected=null;
+  });
+});
+// restore data-key attribute lost above (guard)
+document.querySelectorAll('#ex1grid .slot').forEach(s=>{if(!s.getAttribute('data-key'))s.setAttribute('data-key',s.dataset.key||'');});
+
+function markEx1Done(){
+  if(rootsCorrect===totalRootVerbs && !ex1Done){ex1Done=true;}
+}
+/* ================= EXERCISE 2 ================= */
+let round=0,qIndex=0,order2=[],currentHadError=false;
+function buildDots(){const d=document.getElementById('dots');d.innerHTML='';
+  for(let i=0;i<ROUNDS;i++){const el=document.createElement('div');
+    el.className='dot'+(i<round?' done':i===round?' active':'');el.textContent=i+1;d.appendChild(el);}}
+function startRound(){order2=shuffle(forms.map((_,i)=>i));qIndex=0;buildDots();showQ();}
+let curItem=null, curSolved=false;
+function showQ(){
+  curItem=forms[order2[qIndex]];currentHadError=false;curSolved=false;
+  document.getElementById('qnum').textContent=`Round ${round+1} · ${qIndex+1} of ${forms.length}`;
+  document.getElementById('meaning').textContent=curItem.en;
+  document.getElementById('dsub').textContent='Build the form: tap a prefix, then an ending';
+  const fb=document.getElementById('feedback');fb.textContent='';fb.className='feedback';
+  document.getElementById('nextbtn').classList.remove('show');
+  document.getElementById('checkbtn').classList.remove('hide');
+  document.getElementById('count').textContent=`${round*forms.length+qIndex+1} / ${totalConjQ}`;
+
+  // reset slots
+  ['pre','end'].forEach(p=>{const s=document.getElementById('slot-'+p);
+    s.textContent='';s.className='slot2 '+p;delete s.dataset.val;});
+
+  // prefix bank: all 4, shuffled
+  const bp=document.getElementById('bank-pre');bp.innerHTML='';
+  shuffle(ALL_PRE).forEach(v=>bp.appendChild(makePart(v,'pre')));
+  // ending bank: all 5, shuffled
+  const be=document.getElementById('bank-end');be.innerHTML='';
+  shuffle(ALL_END).forEach(v=>be.appendChild(makePart(v,'end')));
+}
+function makePart(val,type){
+  const b=document.createElement('button');
+  b.className='part';b.textContent=val;b.dataset.val=val;b.dataset.type=type;
+  b.onclick=()=>placePart(b,val,type);
+  return b;
+}
+function placePart(btn,val,type){
+  if(curSolved)return;
+  const slot=document.getElementById('slot-'+type);
+  // return whatever was in the slot to its bank
+  if(slot.dataset.val){
+    const bank=document.getElementById('bank-'+type);
+    [...bank.children].forEach(c=>{if(c.dataset.val===slot.dataset.val)c.classList.remove('used');});
+  }
+  slot.textContent=val;slot.dataset.val=val;slot.classList.add('filled');
+  slot.classList.remove('right','wrong');
+  // mark this tile used, free any other same-type tile that isn't in slot
+  const bank=document.getElementById('bank-'+type);
+  [...bank.children].forEach(c=>c.classList.remove('used'));
+  btn.classList.add('used');
+  document.getElementById('feedback').textContent='';
+}
+// tap a filled slot to clear it
+['pre','end'].forEach(p=>{
+  document.getElementById('slot-'+p).addEventListener('click',()=>{
+    if(curSolved)return;
+    const slot=document.getElementById('slot-'+p);
+    if(!slot.dataset.val)return;
+    const bank=document.getElementById('bank-'+p);
+    [...bank.children].forEach(c=>{if(c.dataset.val===slot.dataset.val)c.classList.remove('used');});
+    slot.textContent='';slot.className='slot2 '+p;delete slot.dataset.val;
+  });
+});
+document.getElementById('checkbtn').onclick=()=>{
+  const sp=document.getElementById('slot-pre'), se=document.getElementById('slot-end');
+  if(!sp.dataset.val||!se.dataset.val){
+    const fb=document.getElementById('feedback');
+    fb.textContent='Fill both the prefix and the ending first';fb.className='feedback bad';return;
+  }
+  const preOK=sp.dataset.val===curItem.pre, endOK=se.dataset.val===curItem.end;
+  sp.classList.toggle('right',preOK);sp.classList.toggle('wrong',!preOK);
+  se.classList.toggle('right',endOK);se.classList.toggle('wrong',!endOK);
+  const fb=document.getElementById('feedback');
+  if(preOK&&endOK){
+    curSolved=true;
+    if(!currentHadError)firstTryCorrect++;else missTally[curItem.ar]=(missTally[curItem.ar]||0)+1;
+    updateScore();
+    fb.textContent=currentHadError?'Correct now — keep going':'Correct';fb.className='feedback good';
+    document.getElementById('checkbtn').classList.add('hide');
+    document.getElementById('nextbtn').classList.add('show');
+  }else{
+    currentHadError=true;
+    const wrongPart=!preOK&&!endOK?'prefix and ending':!preOK?'prefix':'ending';
+    fb.textContent=`Not quite — check the ${wrongPart}, then Check again`;fb.className='feedback bad';
+  }
+};
+document.getElementById('nextbtn').onclick=()=>{
+  qIndex++;
+  if(qIndex<forms.length){showQ();}
+  else{round++;if(round<ROUNDS){startRound();}else{finishDrill();}}
+};
+function finishDrill(){
+  document.getElementById('drillcard').style.display='none';
+  document.getElementById('drilldone').style.display='block';
+  ex2Done=true;checkAllDone();
+}
+startRound();
+
+/* ================= REPORT ================= */
+function checkAllDone(){
+  markEx1Done();
+  buildReport();
+}
+function buildReport(){
+  const pend=document.getElementById('report-pending');
+  const ready=document.getElementById('report-ready');
+  const needs=[];
+  if(!ex1Done)needs.push(`Root-letter positions (${rootsCorrect}/${totalRootVerbs} verbs correct so far)`);
+  if(!ex2Done)needs.push('Conjugation drill (5 rounds not yet finished)');
+  if(needs.length){
+    ready.style.display='none';pend.style.display='block';
+    pend.innerHTML='Not finished yet. Still to complete:<br>• '+needs.join('<br>• ');
+    return;
+  }
+  pend.style.display='none';ready.style.display='block';
+  const acc=Math.round((firstTryCorrect/totalConjQ)*100);
+  const secs=Math.round((Date.now()-startTime)/1000);
+  const timeStr=`${Math.floor(secs/60)}m ${secs%60}s`;
+  document.getElementById('s-roots').textContent=`${rootsCorrect}/${totalRootVerbs}`;
+  document.getElementById('s-first').textContent=`${firstTryCorrect}/${totalConjQ}`;
+  document.getElementById('s-acc').textContent=acc+'%';
+  const missed=Object.entries(missTally).sort((a,b)=>b[1]-a[1]);
+  const missLines=missed.length?missed.map(([ar,n])=>`   ${ar}  (missed ${n}x)`).join("\n"):"   none — all correct on first try";
+  const code=((rootsCorrect*13)+(firstTryCorrect*7)+secs).toString(36).toUpperCase().slice(-5);
+  document.getElementById('reporttext').value=
+`==== SARF WORKBOOK — COMPLETION REPORT ====
+Completed: ${new Date().toLocaleString()}
+
+EXERCISE 1 — Root-letter positions
+  Verbs correct: ${rootsCorrect} / ${totalRootVerbs}
+
+EXERCISE 2 — Present-tense conjugation
+  Rounds finished: ${ROUNDS} / ${ROUNDS} (all 14 forms each)
+  Correct on first try: ${firstTryCorrect} / ${totalConjQ} (${acc}%)
+  Time on conjugation: ${timeStr}
+  Forms that needed a retry:
+${missLines}
+
+Verification code: ${code}
+===========================================`;
+}
+
+document.getElementById('copybtn').onclick=async()=>{
+  const ta=document.getElementById('reporttext');const btn=document.getElementById('copybtn');
+  try{await navigator.clipboard.writeText(ta.value);}
+  catch(e){ta.removeAttribute('readonly');ta.select();document.execCommand('copy');ta.setAttribute('readonly','');}
+  btn.textContent='Copied ✓';btn.classList.add('copied');
+  setTimeout(()=>{btn.textContent='Copy report';btn.classList.remove('copied');},2200);
+};
+
+/* ================= TABS ================= */
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+  t.classList.add('active');document.getElementById(t.dataset.tab).classList.add('active');
+  if(t.dataset.tab==='report')buildReport();
+  window.scrollTo({top:0,behavior:'smooth'});
+}));
+document.getElementById('resetall').addEventListener('click',()=>location.reload());
+buildReport();updateScore();
+</script>
+</body>
+</html>

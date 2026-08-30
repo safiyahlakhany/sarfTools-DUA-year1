@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ṣarf Study — al-Muḍāriʿ</title>
+<style>
+  :root{--ink:#26221c;--bg:#f7f3ea;--panel:#fffdf8;--panel2:#f0ebde;--line:#d9d2c2;
+    --accent:#8a6d3b;--accent2:#4f6d5a;--green:#3f7d54;--red:#b0483d;--muted:#7a7365;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Iowan Old Style","Palatino Linotype",Georgia,serif;line-height:1.55;}
+  .ar{font-family:"Amiri","Scheherazade New","Traditional Arabic","Arabic Typesetting",serif;
+    direction:rtl;unicode-bidi:isolate;}
+  .wrap{max-width:840px;margin:0 auto;padding:22px 16px 90px;}
+  header{border-bottom:2px solid var(--line);padding-bottom:16px;margin-bottom:6px;}
+  h1{margin:0 0 4px;font-size:1.5rem;} h1 .ar{font-size:1.9rem;color:var(--accent);}
+  .sub{color:var(--muted);font-size:.92rem;}
+  nav.tabs{position:sticky;top:0;z-index:20;background:var(--bg);display:flex;flex-wrap:wrap;gap:6px;
+    padding:12px 0;border-bottom:1px solid var(--line);}
+  nav.tabs button{background:var(--panel);color:var(--muted);border:1px solid var(--line);
+    border-radius:7px;padding:7px 13px;cursor:pointer;font:inherit;font-size:.86rem;}
+  nav.tabs button.on{background:var(--accent);color:#fff;border-color:var(--accent);}
+  section.view{display:none;} section.view.on{display:block;}
+  h2{font-size:1.22rem;margin:26px 0 10px;color:var(--accent);border-bottom:1px solid var(--line);padding-bottom:6px;}
+  h3{font-size:1.02rem;margin:18px 0 6px;color:var(--accent2);}
+  .lead{color:var(--muted);font-size:.95rem;margin-bottom:14px;}
+  .box{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin:14px 0;}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0;}
+  .chip{background:var(--panel);border:1px solid var(--line);border-radius:99px;padding:6px 14px;font-size:.95rem;}
+  .chip b.ar{color:var(--accent);font-size:1.5em;margin-left:8px;vertical-align:-2px;}
+  ul{margin:8px 0;padding-left:20px;} li{margin:6px 0;}
+  code.k{background:var(--panel2);border:1px solid var(--line);border-radius:5px;padding:2px 10px;
+    font-family:"Amiri",serif;font-size:1.5em;vertical-align:-3px;}
+  table{width:100%;border-collapse:collapse;margin:12px 0;}
+  th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;}
+  th{background:var(--panel2);color:var(--accent);font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;}
+  tr.grp td{background:#efe7d6;color:var(--accent2);font-weight:600;text-align:center;
+    font-family:"Amiri",serif;font-size:1.3rem;direction:rtl;}
+  td.idx{color:var(--muted);width:34px;text-align:center;}
+  td.form{font-size:2.1rem;line-height:1.9;color:var(--ink);width:190px;text-align:right;padding:6px 16px;}
+  td.pro{font-size:1.7rem;color:var(--accent);width:110px;text-align:right;}
+  td.eng{color:var(--muted);}
+  .qbar{display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:.9rem;margin:10px 0 16px;color:var(--muted);}
+  .track{flex:1;min-width:140px;height:8px;background:var(--panel2);border-radius:99px;overflow:hidden;}
+  .fill{height:100%;width:0;background:var(--accent);transition:width .25s;}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin:16px 0;}
+  .qnum{color:var(--accent);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;}
+  .prompt{font-size:1.15rem;margin:8px 0 16px;} .prompt .ar{font-size:2rem;line-height:1.8;color:var(--ink);}
+  .opts{display:flex;flex-direction:column;gap:10px;}
+  .opt{text-align:left;background:var(--panel2);color:var(--ink);border:1px solid var(--line);
+    border-radius:8px;padding:12px 16px;cursor:pointer;font:inherit;font-size:1.05rem;
+    transition:border-color .15s,background .15s;}
+  .opt .ar{font-size:1.9rem;line-height:1.6;vertical-align:-4px;}
+  .opt:hover:not(:disabled){border-color:var(--accent);} .opt:disabled{cursor:default;}
+  .opt.correct{border-color:var(--green);background:#e4f0e6;}
+  .opt.wrong{border-color:var(--red);background:#f4e2e0;}
+  .opt .mk{float:right;font-weight:bold;font-size:1.2em;}
+  .opt.correct .mk{color:var(--green);} .opt.wrong .mk{color:var(--red);}
+  .fb{margin-top:13px;padding:12px 16px;border-left:4px solid var(--red);background:#f7e7e4;
+    border-radius:0 6px 6px 0;font-size:1rem;color:var(--ink);display:none;}
+  .fb.show{display:block;} .fb .ar{font-size:1.5em;vertical-align:-3px;color:var(--accent);}
+  .fb .lbl{color:var(--red);font-weight:600;text-transform:uppercase;font-size:.72rem;letter-spacing:.08em;display:block;margin-bottom:4px;}
+  .nav2{display:flex;justify-content:space-between;gap:10px;margin-top:16px;}
+  .nav2 button{background:var(--panel);color:var(--ink);border:1px solid var(--line);padding:10px 20px;border-radius:8px;cursor:pointer;font:inherit;}
+  .nav2 button:disabled{opacity:.4;cursor:default;}
+  .nav2 .primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+  .result{text-align:center;padding:32px 18px;}
+  .result .score{font-size:2.8rem;color:var(--accent);margin:6px 0;}
+  .result button{margin-top:16px;background:var(--accent);color:#fff;border:none;padding:11px 24px;border-radius:8px;cursor:pointer;font:inherit;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>ṣarf Study — <span class="ar">المُضارِع المَعْرُوف المُثْبَت</span></h1>
+    <div class="sub">Present/future · active · affirmative — full صرف كبير of <span class="ar">فَعَلَ&nbsp;(يَفْعَلُ)</span></div>
+  </header>
+  <nav class="tabs" id="tabs"></nav>
+
+  <section class="view on" id="v-learn">
+    <h2>Key terminology</h2>
+    <h3>Tense</h3>
+    <div class="chips"><span class="chip">past<b class="ar">ماضِي</b></span>
+      <span class="chip">present / future<b class="ar">مُضارِع</b></span>
+      <span class="chip">command<b class="ar">أَمْر</b></span></div>
+    <h3>Voice</h3>
+    <div class="chips"><span class="chip">active — doer known<b class="ar">مَعْرُوف</b></span>
+      <span class="chip">passive — doer unknown<b class="ar">مَجْهُول</b></span></div>
+    <h3>Polarity</h3>
+    <div class="chips"><span class="chip">affirmative<b class="ar">مُثْبَت</b></span>
+      <span class="chip">negative<b class="ar">مَنْفِي</b></span></div>
+    <h3>Person</h3>
+    <div class="chips"><span class="chip">3rd — absent<b class="ar">غائِب</b></span>
+      <span class="chip">2nd — addressed<b class="ar">حاضِر</b></span>
+      <span class="chip">1st — speaker<b class="ar">مُتَكَلِّم</b></span></div>
+    <h3>Number</h3>
+    <div class="chips"><span class="chip">singular<b class="ar">واحِد</b></span>
+      <span class="chip">dual<b class="ar">تَثْنِية</b></span>
+      <span class="chip">plural<b class="ar">جَمْع</b></span></div>
+    <h3>Gender</h3>
+    <div class="chips"><span class="chip">masculine<b class="ar">مُذَكَّر</b></span>
+      <span class="chip">feminine<b class="ar">مُؤَنَّث</b></span></div>
+
+    <h2>Prefixes and their meanings</h2>
+    <div class="chips">
+      <span class="chip">Third person male or third person plural female<b class="ar">يَ</b></span>
+      <span class="chip">Second person (M/F) or third person female<b class="ar">تَ</b></span>
+      <span class="chip">First person, singular, M/F<b class="ar">أَ</b></span>
+      <span class="chip">First person, dual/plural, M/F<b class="ar">نَ</b></span>
+    </div>
+    <h2>Suffixes</h2>
+    <div class="chips">
+      <span class="chip">Dual<b class="ar">ان</b></span>
+      <span class="chip">Plural male<b class="ar">ون</b></span>
+      <span class="chip">Singular female<b class="ar">ين</b></span>
+      <span class="chip">Plural Feminine<b class="ar">نَ</b></span>
+    </div>
+    <div class="box"><ul>
+      <li>The <b>prefix</b> tells you the person and gender.</li>
+      <li>The <b>suffix</b> tells you the number.</li>
+    </ul></div>
+  </section>
+
+  <section class="view" id="v-table">
+    <h2>Complete صرف كبير</h2>
+    <p class="lead">All 14 forms of <span class="ar" style="font-size:1.4em">فَعَلَ (يَفْعَلُ)</span>, ordered غائب → حاضر → متكلم.</p>
+    <table><thead><tr><th>#</th><th>Form</th><th>Pronoun</th><th>Number · Gender</th><th>Meaning</th></tr></thead>
+      <tbody><tr class="grp"><td colspan="5">غائب — 3rd person (Absent)</td></tr><tr><td class="idx">1</td><td class="form ar">يَفْعَلُ</td><td class="pro ar">هو</td><td>Singular · Masc.</td><td class="eng">he does / will do</td></tr><tr><td class="idx">2</td><td class="form ar">يَفْعَلَانِ</td><td class="pro ar">هما</td><td>Dual · Masc.</td><td class="eng">they two (m) do</td></tr><tr><td class="idx">3</td><td class="form ar">يَفْعَلُونَ</td><td class="pro ar">هم</td><td>Plural · Masc.</td><td class="eng">they (m) do</td></tr><tr><td class="idx">4</td><td class="form ar">تَفْعَلُ</td><td class="pro ar">هي</td><td>Singular · Fem.</td><td class="eng">she does</td></tr><tr><td class="idx">5</td><td class="form ar">تَفْعَلَانِ</td><td class="pro ar">هما</td><td>Dual · Fem.</td><td class="eng">they two (f) do</td></tr><tr><td class="idx">6</td><td class="form ar">يَفْعَلْنَ</td><td class="pro ar">هنّ</td><td>Plural · Fem.</td><td class="eng">they (f) do</td></tr><tr class="grp"><td colspan="5">حاضر — 2nd person (Addressed)</td></tr><tr><td class="idx">7</td><td class="form ar">تَفْعَلُ</td><td class="pro ar">أنتَ</td><td>Singular · Masc.</td><td class="eng">you (m) do</td></tr><tr><td class="idx">8</td><td class="form ar">تَفْعَلَانِ</td><td class="pro ar">أنتما</td><td>Dual · Masc.</td><td class="eng">you two (m) do</td></tr><tr><td class="idx">9</td><td class="form ar">تَفْعَلُونَ</td><td class="pro ar">أنتم</td><td>Plural · Masc.</td><td class="eng">you all (m) do</td></tr><tr><td class="idx">10</td><td class="form ar">تَفْعَلِينَ</td><td class="pro ar">أنتِ</td><td>Singular · Fem.</td><td class="eng">you (f) do</td></tr><tr><td class="idx">11</td><td class="form ar">تَفْعَلَانِ</td><td class="pro ar">أنتما</td><td>Dual · Fem.</td><td class="eng">you two (f) do</td></tr><tr><td class="idx">12</td><td class="form ar">تَفْعَلْنَ</td><td class="pro ar">أنتنّ</td><td>Plural · Fem.</td><td class="eng">you all (f) do</td></tr><tr class="grp"><td colspan="5">متكلم — 1st person (Speaker)</td></tr><tr><td class="idx">13</td><td class="form ar">أَفْعَلُ</td><td class="pro ar">أنا</td><td>Singular · M / F</td><td class="eng">I do</td></tr><tr><td class="idx">14</td><td class="form ar">نَفْعَلُ</td><td class="pro ar">نحن</td><td>Dual / Plural · M / F</td><td class="eng">we do</td></tr></tbody></table>
+  </section>
+
+  <section class="view" id="v-quiz">
+    <h2 id="quiz-title"></h2>
+    <p class="lead" id="quiz-desc"></p>
+    <div class="qbar"><div class="track"><div class="fill" id="fill"></div></div>
+      <div><b id="pos">1</b>/<span id="tot">10</span></div><div>✓ <b id="right">0</b></div></div>
+    <div id="stage"></div>
+  </section>
+</div>
+
+<script>
+const SECTIONS = [{"name": "Parse the form", "desc": "Identify the person, number, and gender of each verb.", "questions": [{"prompt": "<span class='ar'>تَفْعَلُ</span> — identify person, number & gender:", "options": ["1st person m/f singular", "3rd person feminine singular", "1st person m/f dual/plural", "3rd person feminine plural"], "answer": "3rd person feminine singular", "expl": "2nd person masculine singular, 3rd person feminine singular.", "answers": ["2nd person masculine singular", "3rd person feminine singular"], "wrong_fb": "The prefix <span class='ar'>ت</span> is for the Second person (M/F) or third person female. It has no dual or plural suffix, so it is singular."}, {"prompt": "<span class='ar'>تَفْعَلَانِ</span> — identify person, number & gender:", "options": ["3rd person feminine dual", "2nd person masculine dual", "2nd person feminine dual", "2nd person feminine plural"], "answer": "3rd person feminine dual", "expl": "2nd person feminine dual, 2nd person masculine dual, 3rd person feminine dual.", "answers": ["2nd person feminine dual", "2nd person masculine dual", "3rd person feminine dual"], "wrong_fb": "The prefix <span class='ar'>ت</span> is for the Second person (M/F) or third person female. The suffix <span class='ar'>ان</span> is for the Dual."}, {"prompt": "<span class='ar'>يَفْعَلُ</span> — identify person, number & gender:", "options": ["1st person m/f dual/plural", "2nd person masculine singular", "3rd person masculine singular", "3rd person feminine plural"], "answer": "3rd person masculine singular", "expl": "3rd person masculine singular.", "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female. It has no dual or plural suffix, so it is singular."}, {"prompt": "<span class='ar'>يَفْعَلُونَ</span> — identify person, number & gender:", "options": ["3rd person feminine singular", "1st person m/f dual/plural", "3rd person feminine dual", "3rd person masculine plural"], "answer": "3rd person masculine plural", "expl": "3rd person masculine plural.", "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female. The suffix <span class='ar'>ون</span> is for the Plural male."}, {"prompt": "<span class='ar'>يَفْعَلْنَ</span> — identify person, number & gender:", "options": ["1st person m/f dual/plural", "3rd person masculine singular", "3rd person feminine plural", "3rd person feminine singular"], "answer": "3rd person feminine plural", "expl": "3rd person feminine plural.", "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female. The suffix <span class='ar'>نَ</span> is for the Plural Feminine."}, {"prompt": "<span class='ar'>تَفْعَلُونَ</span> — identify person, number & gender:", "options": ["3rd person masculine plural", "2nd person masculine dual", "2nd person masculine plural", "3rd person feminine singular"], "answer": "2nd person masculine plural", "expl": "2nd person masculine plural.", "wrong_fb": "The prefix <span class='ar'>ت</span> is for the Second person (M/F) or third person female. The suffix <span class='ar'>ون</span> is for the Plural male."}, {"prompt": "<span class='ar'>تَفْعَلِينَ</span> — identify person, number & gender:", "options": ["3rd person feminine singular", "2nd person feminine singular", "3rd person feminine dual", "1st person m/f singular"], "answer": "2nd person feminine singular", "expl": "2nd person feminine singular.", "wrong_fb": "The prefix <span class='ar'>ت</span> is for the Second person (M/F) or third person female. The suffix <span class='ar'>ين</span> is for the Singular female."}, {"prompt": "<span class='ar'>تَفْعَلْنَ</span> — identify person, number & gender:", "options": ["2nd person feminine dual", "2nd person feminine plural", "3rd person masculine dual", "3rd person masculine singular"], "answer": "2nd person feminine plural", "expl": "2nd person feminine plural.", "wrong_fb": "The prefix <span class='ar'>ت</span> is for the Second person (M/F) or third person female. The suffix <span class='ar'>نَ</span> is for the Plural Feminine."}, {"prompt": "<span class='ar'>أَفْعَلُ</span> — identify person, number & gender:", "options": ["3rd person masculine plural", "1st person m/f singular", "2nd person feminine dual", "3rd person feminine singular"], "answer": "1st person m/f singular", "expl": "1st person m/f singular.", "wrong_fb": "The prefix <span class='ar'>أ</span> is for the First person, singular, M/F. It has no dual or plural suffix, so it is singular."}, {"prompt": "<span class='ar'>نَفْعَلُ</span> — identify person, number & gender:", "options": ["1st person m/f dual/plural", "2nd person masculine dual", "3rd person feminine singular", "3rd person masculine singular"], "answer": "1st person m/f dual/plural", "expl": "1st person m/f dual/plural.", "wrong_fb": "The prefix <span class='ar'>ن</span> is for the First person, dual/plural, M/F. It has no dual or plural suffix, so it is singular."}]}, {"name": "Produce the form", "desc": "Choose the correct صرف for the pronoun or description given.", "questions": [{"prompt": "Which form corresponds to <span class='ar'>هو</span> (3rd person masculine singular)?", "options": ["أَفْعَلُ", "يَفْعَلْنَ", "نَفْعَلُ", "يَفْعَلُ"], "answer": "يَفْعَلُ", "expl": "<span class='ar'>هو</span> = <span class='ar'>يَفْعَلُ</span>.", "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female. It has no dual or plural suffix, so it is singular."}, {"prompt": "Which form corresponds to <span class='ar'>هما</span> (3rd person masculine dual)?", "options": ["يَفْعَلَانِ", "تَفْعَلُ", "يَفْعَلُونَ", "يَفْعَلْنَ"], "answer": "يَفْعَلَانِ", "expl": "<span class='ar'>هما</span> = <span class='ar'>يَفْعَلَانِ</span>.", "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female. The suffix <span class='ar'>ان</span> is for the Dual."}, {"prompt": "Which form corresponds to <span class='ar'>هم</span> (3rd person masculine plural)?", "options": ["تَفْعَلُ", "يَفْعَلُونَ", "تَفْعَلُونَ", "تَفْعَلَانِ"], "answer": "يَفْعَلُونَ", "expl": "<span class='ar'>هم</span> = <span class='ar'>يَفْعَلُونَ</span>.", "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female. The suffix <span class='ar'>ون</span> is for the Plural male."}, {"prompt": "Which form corresponds to <span class='ar'>هنّ</span> (3rd person feminine plural)?", "options": ["أَفْعَلُ", "تَفْعَلْنَ", "يَفْعَلُ", "يَفْعَلْنَ"], "answer": "يَفْعَلْنَ", "expl": "<span class='ar'>هنّ</span> = <span class='ar'>يَفْعَلْنَ</span>.", "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female. The suffix <span class='ar'>نَ</span> is for the Plural Feminine."}, {"prompt": "Which form corresponds to <span class='ar'>أنتم</span> (2nd person masculine plural)?", "options": ["تَفْعَلُونَ", "يَفْعَلُونَ", "يَفْعَلُ", "تَفْعَلُ"], "answer": "تَفْعَلُونَ", "expl": "<span class='ar'>أنتم</span> = <span class='ar'>تَفْعَلُونَ</span>.", "wrong_fb": "The prefix <span class='ar'>ت</span> is for the Second person (M/F) or third person female. The suffix <span class='ar'>ون</span> is for the Plural male."}, {"prompt": "Which form corresponds to <span class='ar'>أنتِ</span> (2nd person feminine singular)?", "options": ["تَفْعَلِينَ", "تَفْعَلْنَ", "أَفْعَلُ", "يَفْعَلَانِ"], "answer": "تَفْعَلِينَ", "expl": "<span class='ar'>أنتِ</span> = <span class='ar'>تَفْعَلِينَ</span>.", "wrong_fb": "The prefix <span class='ar'>ت</span> is for the Second person (M/F) or third person female. The suffix <span class='ar'>ين</span> is for the Singular female."}, {"prompt": "Which form corresponds to <span class='ar'>أنتنّ</span> (2nd person feminine plural)?", "options": ["تَفْعَلْنَ", "يَفْعَلُ", "تَفْعَلُ", "تَفْعَلِينَ"], "answer": "تَفْعَلْنَ", "expl": "<span class='ar'>أنتنّ</span> = <span class='ar'>تَفْعَلْنَ</span>.", "wrong_fb": "The prefix <span class='ar'>ت</span> is for the Second person (M/F) or third person female. The suffix <span class='ar'>نَ</span> is for the Plural Feminine."}, {"prompt": "Which form corresponds to <span class='ar'>أنا</span> (1st person m/f singular)?", "options": ["تَفْعَلُ", "أَفْعَلُ", "تَفْعَلْنَ", "تَفْعَلِينَ"], "answer": "أَفْعَلُ", "expl": "<span class='ar'>أنا</span> = <span class='ar'>أَفْعَلُ</span>.", "wrong_fb": "The prefix <span class='ar'>أ</span> is for the First person, singular, M/F. It has no dual or plural suffix, so it is singular."}, {"prompt": "Which is the <b>1st person m/f singular</b> form?", "options": ["يَفْعَلُونَ", "يَفْعَلَانِ", "أَفْعَلُ", "تَفْعَلْنَ"], "answer": "أَفْعَلُ", "expl": "1st person m/f singular = <span class='ar'>أَفْعَلُ</span>.", "wrong_fb": "The prefix <span class='ar'>أ</span> is for the First person, singular, M/F. It has no dual or plural suffix, so it is singular."}, {"prompt": "Which is the <b>1st person m/f dual/plural</b> form?", "options": ["تَفْعَلُونَ", "يَفْعَلُ", "يَفْعَلُونَ", "نَفْعَلُ"], "answer": "نَفْعَلُ", "expl": "1st person m/f dual/plural = <span class='ar'>نَفْعَلُ</span>.", "wrong_fb": "The prefix <span class='ar'>ن</span> is for the First person, dual/plural, M/F. It has no dual or plural suffix, so it is singular."}]}, {"name": "Matching", "desc": "Pair each verb with its pronoun or grammatical category.", "questions": [{"prompt": "Match <span class='ar'>يَفْعَلُ</span> to its pronoun:", "options": ["أنا", "هو", "أنتم", "هي"], "answer": "هو", "expl": "<span class='ar'>يَفْعَلُ</span> ↔ <span class='ar'>هو</span>.", "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female. It has no dual or plural suffix, so it is singular."}, {"prompt": "Match <span class='ar'>يَفْعَلَانِ</span> to its pronoun:", "options": ["أنتم", "أنتنّ", "أنتَ", "هما"], "answer": "هما", "expl": "<span class='ar'>يَفْعَلَانِ</span> ↔ <span class='ar'>هما</span>.", "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female. The suffix <span class='ar'>ان</span> is for the Dual."}, {"prompt": "Match <span class='ar'>يَفْعَلُونَ</span> to its pronoun:", "options": ["أنتَ", "هو", "هم", "هما"], "answer": "هم", "expl": "<span class='ar'>يَفْعَلُونَ</span> ↔ <span class='ar'>هم</span>.", "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female. The suffix <span class='ar'>ون</span> is for the Plural male."}, {"prompt": "Match <span class='ar'>يَفْعَلْنَ</span> to its pronoun:", "options": ["هم", "هي", "هنّ", "هما"], "answer": "هنّ", "expl": "<span class='ar'>يَفْعَلْنَ</span> ↔ <span class='ar'>هنّ</span>.", "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female. The suffix <span class='ar'>نَ</span> is for the Plural Feminine."}, {"prompt": "Match <span class='ar'>تَفْعَلُونَ</span> to its pronoun:", "options": ["هي", "أنتنّ", "أنتِ", "أنتم"], "answer": "أنتم", "expl": "<span class='ar'>تَفْعَلُونَ</span> ↔ <span class='ar'>أنتم</span>.", "wrong_fb": "The prefix <span class='ar'>ت</span> is for the Second person (M/F) or third person female. The suffix <span class='ar'>ون</span> is for the Plural male."}, {"prompt": "Match <span class='ar'>تَفْعَلِينَ</span> to its pronoun:", "options": ["أنتما", "أنتَ", "أنتِ", "هو"], "answer": "أنتِ", "expl": "<span class='ar'>تَفْعَلِينَ</span> ↔ <span class='ar'>أنتِ</span>.", "wrong_fb": "The prefix <span class='ar'>ت</span> is for the Second person (M/F) or third person female. The suffix <span class='ar'>ين</span> is for the Singular female."}, {"prompt": "Match <span class='ar'>تَفْعَلْنَ</span> to its pronoun:", "options": ["هي", "هو", "هم", "أنتنّ"], "answer": "أنتنّ", "expl": "<span class='ar'>تَفْعَلْنَ</span> ↔ <span class='ar'>أنتنّ</span>.", "wrong_fb": "The prefix <span class='ar'>ت</span> is for the Second person (M/F) or third person female. The suffix <span class='ar'>نَ</span> is for the Plural Feminine."}, {"prompt": "Match <span class='ar'>أَفْعَلُ</span> to its pronoun:", "options": ["أنتما", "هما", "هنّ", "أنا"], "answer": "أنا", "expl": "<span class='ar'>أَفْعَلُ</span> ↔ <span class='ar'>أنا</span>.", "wrong_fb": "The prefix <span class='ar'>أ</span> is for the First person, singular, M/F. It has no dual or plural suffix, so it is singular."}, {"prompt": "Match <span class='ar'>أَفْعَلُ</span> to its category:", "options": ["3rd person masculine singular", "1st person m/f singular", "3rd person feminine plural", "2nd person masculine dual"], "answer": "1st person m/f singular", "expl": "<span class='ar'>أَفْعَلُ</span> = 1st person m/f singular.", "wrong_fb": "The prefix <span class='ar'>أ</span> is for the First person, singular, M/F. It has no dual or plural suffix, so it is singular."}, {"prompt": "Match <span class='ar'>نَفْعَلُ</span> to its category:", "options": ["1st person m/f dual/plural", "3rd person feminine dual", "2nd person masculine singular", "1st person m/f singular"], "answer": "1st person m/f dual/plural", "expl": "<span class='ar'>نَفْعَلُ</span> = 1st person m/f dual/plural.", "wrong_fb": "The prefix <span class='ar'>ن</span> is for the First person, dual/plural, M/F. It has no dual or plural suffix, so it is singular."}]}, {"name": "Fill in the blank", "desc": "Supply the missing prefix, suffix, or form.", "questions": [{"prompt": "The prefix that marks the 1st person singular (أنا) is ___.", "options": ["أَ", "تَ", "نَ", "يَ"], "answer": "أَ", "expl": "أنا → أَفْعَلُ.", "wrong_fb": "The prefix <span class='ar'>أ</span> is for the First person, singular, M/F."}, {"prompt": "The prefix that marks the 1st person plural (نحن) is ___.", "options": ["نَ", "يَ", "أَ", "تَ"], "answer": "نَ", "expl": "نحن → نَفْعَلُ.", "wrong_fb": "The prefix <span class='ar'>ن</span> is for the First person, dual/plural, M/F."}, {"prompt": "The prefix for the 3rd person masculine (هو) is ___.", "options": ["نَ", "يَ", "تَ", "أَ"], "answer": "يَ", "expl": "هو → يَفْعَلُ.", "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female."}, {"prompt": "The prefix shared by the 2nd person and the 3rd person feminine singular is ___.", "options": ["نَ", "يَ", "تَ", "أَ"], "answer": "تَ", "expl": "أنتَ/أنتِ and هي take تَ.", "wrong_fb": "The prefix <span class='ar'>ت</span> is for the Second person (M/F) or third person female."}, {"prompt": "The dual suffix is ___.", "options": ["ـانِ", "ـونَ", "ـنَ", "ـينَ"], "answer": "ـانِ", "expl": "ـانِ marks the dual.", "wrong_fb": "The suffix <span class='ar'>ان</span> is for the Dual."}, {"prompt": "The masculine plural suffix is ___.", "options": ["ـانِ", "ـونَ", "ـينَ", "ـنَ"], "answer": "ـونَ", "expl": "ـونَ marks جمع مذكر.", "wrong_fb": "The suffix <span class='ar'>ون</span> is for the Plural male."}, {"prompt": "The feminine plural suffix is ___.", "options": ["ـانِ", "ـونَ", "ـنَ", "ـينَ"], "answer": "ـنَ", "expl": "ـنَ (نون النسوة) marks جمع مؤنث.", "wrong_fb": "The suffix <span class='ar'>نَ</span> is for the Plural Feminine."}, {"prompt": "The 2nd person feminine singular suffix (أنتِ) is ___.", "options": ["ـينَ", "ـانِ", "ـونَ", "ـنَ"], "answer": "ـينَ", "expl": "أنتِ takes ـينَ.", "wrong_fb": "The suffix <span class='ar'>ين</span> is for the Singular female."}, {"prompt": "The pronoun هم (3rd masc. plural) uses the form ___.", "options": ["يَفْعَلَانِ", "يَفْعَلْنَ", "تَفْعَلُونَ", "يَفْعَلُونَ"], "answer": "يَفْعَلُونَ", "expl": "هم → يَفْعَلُونَ.", "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female. The suffix <span class='ar'>ون</span> is for the Plural male."}, {"prompt": "The pronoun أنتنّ (2nd fem. plural) uses the form ___.", "options": ["تَفْعَلُونَ", "تَفْعَلِينَ", "يَفْعَلْنَ", "تَفْعَلْنَ"], "answer": "تَفْعَلْنَ", "expl": "أنتنّ → تَفْعَلْنَ.", "wrong_fb": "The prefix <span class='ar'>ت</span> is for the Second person (M/F) or third person female. The suffix <span class='ar'>نَ</span> is for the Plural Feminine."}]}, {"name": "True / False", "desc": "Decide whether each statement is true or false.", "questions": [{"prompt": "<span class='ar'>يَفْعَلُونَ</span> is the pronoun هم (3rd masc. plural).", "options": ["True", "False"], "answer": "True", "expl": "Correct.", "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female. The suffix <span class='ar'>ون</span> is for the Plural male."}, {"prompt": "<span class='ar'>تَفْعَلِينَ</span> refers to a single female addressee (أنتِ).", "options": ["True", "False"], "answer": "True", "expl": "Correct — 2nd fem. singular.", "wrong_fb": "The prefix <span class='ar'>ت</span> is for the Second person (M/F) or third person female. The suffix <span class='ar'>ين</span> is for the Singular female."}, {"prompt": "<span class='ar'>نَفْعَلُ</span> can be either 'we two' or 'we (many)'.", "options": ["True", "False"], "answer": "True", "expl": "Correct — ن covers 1st dual and plural.", "wrong_fb": "The prefix <span class='ar'>ن</span> is for the First person, dual/plural, M/F. It has no dual or plural suffix, so it is singular."}, {"prompt": "The prefix carries number, and the suffix carries person.", "options": ["True", "False"], "answer": "False", "expl": "Reversed — prefix carries person/gender, suffix carries number.", "wrong_fb": "The prefix is for the person and gender; the suffix (ان, ون, ين, نَ) is for the number."}, {"prompt": "The suffix ـانِ indicates the plural.", "options": ["True", "False"], "answer": "False", "expl": "It indicates the dual.", "wrong_fb": "The suffix <span class='ar'>ان</span> is for the Dual, not the plural."}, {"prompt": "<span class='ar'>أَفْعَلُ</span> is used by a female speaker as well as a male speaker.", "options": ["True", "False"], "answer": "True", "expl": "Correct — أنا is m/f.", "wrong_fb": "The prefix <span class='ar'>أ</span> is for the First person, singular, M/F. It has no dual or plural suffix, so it is singular."}, {"prompt": "<span class='ar'>يَفْعَلْنَ</span> refers to a group of males.", "options": ["True", "False"], "answer": "False", "expl": "It refers to a group of females (هنّ).", "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female. The suffix <span class='ar'>نَ</span> is for the Plural Feminine."}, {"prompt": "A verb beginning with أ is 1st person singular.", "options": ["True", "False"], "answer": "True", "expl": "Correct — أنا.", "wrong_fb": "The prefix <span class='ar'>أ</span> is for the First person, singular, M/F."}, {"prompt": "<span class='ar'>يَفْعَلَانِ</span> is the pronoun هما for two males.", "options": ["True", "False"], "answer": "True", "expl": "Correct — 3rd masc. dual.", "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female. The suffix <span class='ar'>ان</span> is for the Dual."}, {"prompt": "The four علامات المضارع are أ, ت, ي, ن.", "options": ["True", "False"], "answer": "True", "expl": "Correct.", "wrong_fb": "The prefixes are <span class='ar'>أ – ت – ي – ن</span>: أ First person singular, ت Second person or third person female, ي Third person male, ن First person dual/plural."}]}, {"name": "Odd one out", "desc": "Each set shares a feature except one. Find the exception.", "questions": [{"prompt": "Which is NOT 3rd person (غائب)?", "options": ["يَفْعَلْنَ", "يَفْعَلُونَ", "تَفْعَلِينَ", "يَفْعَلُ"], "answer": "تَفْعَلِينَ", "expl": "تَفْعَلِينَ is 2nd person (أنتِ); the others are غائب.", "wrong_fb": "The prefix <span class='ar'>ت</span> is for the Second person (M/F) or third person female. The suffix <span class='ar'>ين</span> is for the Singular female."}, {"prompt": "Which is NOT plural?", "options": ["تَفْعَلُونَ", "يَفْعَلْنَ", "تَفْعَلِينَ", "يَفْعَلُونَ"], "answer": "تَفْعَلِينَ", "expl": "تَفْعَلِينَ is singular; the others are plural.", "wrong_fb": "The prefix <span class='ar'>ت</span> is for the Second person (M/F) or third person female. The suffix <span class='ar'>ين</span> is for the Singular female."}, {"prompt": "Which is NOT feminine?", "options": ["تَفْعَلْنَ", "تَفْعَلُونَ", "تَفْعَلِينَ", "يَفْعَلْنَ"], "answer": "تَفْعَلُونَ", "expl": "تَفْعَلُونَ is masculine (أنتم).", "wrong_fb": "The prefix <span class='ar'>ت</span> is for the Second person (M/F) or third person female. The suffix <span class='ar'>ون</span> is for the Plural male."}, {"prompt": "Which is NOT singular?", "options": ["يَفْعَلُونَ", "تَفْعَلِينَ", "يَفْعَلُ", "أَفْعَلُ"], "answer": "يَفْعَلُونَ", "expl": "يَفْعَلُونَ is plural; the others are singular.", "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female. The suffix <span class='ar'>ون</span> is for the Plural male."}, {"prompt": "Which IS 1st person (متكلم)?", "options": ["نَفْعَلُ", "يَفْعَلُ", "يَفْعَلُونَ", "تَفْعَلِينَ"], "answer": "نَفْعَلُ", "expl": "نَفْعَلُ is 1st person (نحن); the others are not.", "wrong_fb": "The prefix <span class='ar'>ن</span> is for the First person, dual/plural, M/F. It has no dual or plural suffix, so it is singular."}, {"prompt": "Which is NOT masculine?", "options": ["يَفْعَلُ", "يَفْعَلْنَ", "يَفْعَلُونَ", "يَفْعَلَانِ"], "answer": "يَفْعَلْنَ", "expl": "يَفْعَلْنَ is feminine (هنّ).", "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female. The suffix <span class='ar'>نَ</span> is for the Plural Feminine."}, {"prompt": "Which is NOT 2nd person (حاضر)?", "options": ["يَفْعَلْنَ", "تَفْعَلُونَ", "تَفْعَلِينَ", "تَفْعَلْنَ"], "answer": "يَفْعَلْنَ", "expl": "يَفْعَلْنَ is 3rd person (هنّ).", "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female. The suffix <span class='ar'>نَ</span> is for the Plural Feminine."}, {"prompt": "Which does NOT begin with the prefix ت?", "options": ["يَفْعَلُونَ", "تَفْعَلْنَ", "تَفْعَلُونَ", "تَفْعَلِينَ"], "answer": "يَفْعَلُونَ", "expl": "يَفْعَلُونَ begins with ي.", "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female. The suffix <span class='ar'>ون</span> is for the Plural male."}, {"prompt": "Which IS dual?", "options": ["يَفْعَلَانِ", "يَفْعَلْنَ", "يَفْعَلُ", "يَفْعَلُونَ"], "answer": "يَفْعَلَانِ", "expl": "يَفْعَلَانِ is dual; the others are not.", "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female. The suffix <span class='ar'>ان</span> is for the Dual."}, {"prompt": "Which IS the 3rd person feminine plural (هنّ)?", "options": ["يَفْعَلُونَ", "يَفْعَلْنَ", "يَفْعَلَانِ", "تَفْعَلْنَ"], "answer": "يَفْعَلْنَ", "expl": "يَفْعَلْنَ = هنّ.", "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female. The suffix <span class='ar'>نَ</span> is for the Plural Feminine."}]}];
+const tabs=document.getElementById('tabs');
+const tabDefs=[{id:'learn',label:'Learn'},{id:'table',label:'صرف كبير'}]
+  .concat(SECTIONS.map((s,i)=>({id:'q'+i,label:s.name})));
+tabDefs.forEach(t=>{const b=document.createElement('button');b.textContent=t.label;b.dataset.id=t.id;
+  if(t.id==='learn')b.classList.add('on');b.onclick=()=>go(t.id);tabs.appendChild(b);});
+function go(id){[...tabs.children].forEach(b=>b.classList.toggle('on',b.dataset.id===id));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
+  if(id==='learn')document.getElementById('v-learn').classList.add('on');
+  else if(id==='table')document.getElementById('v-table').classList.add('on');
+  else{document.getElementById('v-quiz').classList.add('on');loadQuiz(+id.slice(1));}
+  window.scrollTo(0,0);}
+let Q=[],pos=0,ans={};
+function loadQuiz(i){const s=SECTIONS[i];Q=s.questions;pos=0;ans={};
+  document.getElementById('quiz-title').textContent=s.name;
+  document.getElementById('quiz-desc').textContent=s.desc;
+  document.getElementById('tot').textContent=Q.length;render();}
+function render(){
+  const q=Q[pos];const right=Object.values(ans).filter(a=>a.correct).length;
+  document.getElementById('pos').textContent=pos+1;
+  document.getElementById('right').textContent=right;
+  document.getElementById('fill').style.width=(100*(pos+1)/Q.length)+'%';
+  const a=ans[pos];
+  const opts=q.options.map(o=>{let cls='opt',mk='';
+    if(a){const ok=q.answers?q.answers.includes(o):(o===q.answer);
+      if(ok){cls+=' correct';mk='<span class="mk">✓</span>';}
+      else if(o===a.picked){cls+=' wrong';mk='<span class="mk">✕</span>';}}
+    return `<button class="${cls}" ${a?'disabled':''} onclick='pick(${pos},${JSON.stringify(o)})'>${o}${mk}</button>`;
+  }).join('');
+  // feedback shows ONLY when the student answered incorrectly
+  const showFb = a && !a.correct;
+  document.getElementById('stage').innerHTML=`
+    <div class="card">
+      <div class="qnum">Question ${pos+1}</div>
+      <div class="prompt">${q.prompt}</div>
+      <div class="opts">${opts}</div>
+      <div class="fb ${showFb?'show':''}"><span class="lbl">Review</span>${q.wrong_fb||q.expl}</div>
+      <div class="nav2">
+        <button onclick="pv()" ${pos===0?'disabled':''}>← Prev</button>
+        <button class="primary" onclick="nx()">${pos===Q.length-1?'Finish':'Next →'}</button>
+      </div>
+    </div>`;
+}
+function pick(i,o){if(ans[i])return;const q=Q[i];
+  const ok=q.answers?q.answers.includes(o):(o===q.answer);
+  ans[i]={picked:o,correct:ok};render();}
+function nx(){if(pos<Q.length-1){pos++;render();}else summary();}
+function pv(){if(pos>0){pos--;render();}}
+function summary(){const right=Object.values(ans).filter(a=>a.correct).length;
+  const done=Object.keys(ans).length;const pct=Math.round(100*right/Q.length);
+  document.getElementById('stage').innerHTML=`
+    <div class="card result"><div class="qnum">Section results</div>
+      <div class="score">${right} / ${Q.length}</div>
+      <div style="color:var(--muted)">${pct}% · ${done} attempted</div>
+      <button onclick="restart()">Retry section</button></div>`;
+  document.getElementById('fill').style.width='100%';}
+function restart(){pos=0;ans={};render();}
+</script>
+</body>
+</html>
