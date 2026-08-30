@@ -313,7 +313,6 @@ h1 .arabic {
   .resource-guide { grid-template-columns: 1fr 1fr; }
   .resource-links { grid-template-columns: 1fr 1fr; }
   .week-header { padding-inline: 20px; }
-  .class-details { flex-direction: row; }
 }
 
 @media (prefers-reduced-motion: reduce) {
