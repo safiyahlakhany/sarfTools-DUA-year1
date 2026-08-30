@@ -27,6 +27,41 @@ const weekTitleForm = document.querySelector("#week-title-form");
 const quizManageList = document.querySelector("#quiz-manage-list");
 const quizManageMessage = document.querySelector("#quiz-manage-message");
 
+populateWeekChoices();
+
+function populateWeekChoices() {
+  const options = [];
+  for (let week = 1; week <= 52; week += 1) {
+    options.push({ week, label: `Week ${week} - ${formatWeekDate(week)}` });
+  }
+  for (const select of [weekInput, document.querySelector("#edit-week")]) {
+    select.replaceChildren();
+    const placeholder = document.createElement("option");
+    placeholder.value = "";
+    placeholder.textContent = "Choose a week…";
+    placeholder.disabled = true;
+    placeholder.selected = true;
+    select.append(placeholder);
+    for (const option of options) {
+      const element = document.createElement("option");
+      element.value = String(option.week);
+      element.textContent = option.label;
+      select.append(element);
+    }
+  }
+}
+
+function formatWeekDate(weekNumber) {
+  const date = new Date(Date.UTC(2026, 7, 26) + (weekNumber - 1) * 7 * 24 * 60 * 60 * 1000);
+  const includeYear = date.getUTCFullYear() !== 2026;
+  return new Intl.DateTimeFormat("en-US", {
+    month: "long",
+    day: "numeric",
+    ...(includeYear ? { year: "numeric" } : {}),
+    timeZone: "UTC"
+  }).format(date);
+}
+
 if (!config.workerUrl) connectionNotice.hidden = false;
 
 document.querySelector("#reveal-password").addEventListener("click", (event) => {
@@ -370,6 +405,7 @@ function makeManagedResource(resource, typeLabel, week, resourceType) {
 }
 
 function openEditForm(resource, week, resourceType) {
+  ensureWeekOption(week);
   document.querySelector("#edit-resource-id").value = resource.id;
   document.querySelector("#edit-title").value = resource.title;
   document.querySelector("#edit-week").value = String(week);
@@ -379,6 +415,14 @@ function openEditForm(resource, week, resourceType) {
   editForm.hidden = false;
   editForm.scrollIntoView({ behavior: "smooth", block: "center" });
   document.querySelector("#edit-title").focus();
+}
+
+function ensureWeekOption(week) {
+  if (document.querySelector(`#edit-week option[value="${week}"]`)) return;
+  const option = document.createElement("option");
+  option.value = String(week);
+  option.textContent = `Week ${week} - ${formatWeekDate(week)}`;
+  document.querySelector("#edit-week").append(option);
 }
 
 function closeEditForm() {

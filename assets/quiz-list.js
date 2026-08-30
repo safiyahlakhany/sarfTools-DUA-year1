@@ -4,7 +4,7 @@ loadQuizSchedule();
 
 async function loadQuizSchedule() {
   try {
-    const response = await fetch("data/quizzes.json", { cache: "no-cache" });
+    const response = await fetch(`data/quizzes.json?v=${Date.now()}`, { cache: "no-store" });
     if (!response.ok) throw new Error("Quiz schedule could not be loaded");
     const quizzes = await response.json();
     renderSchedule(quizzes);

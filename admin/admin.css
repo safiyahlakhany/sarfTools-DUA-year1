@@ -1,4 +1,5 @@
 .admin-header .header-inner { padding-top: 22px; }
+.admin-title { margin: 0; font-size: 1.2rem; letter-spacing: .09em; }
 
 .back-link {
   display: inline-block;
@@ -41,6 +42,37 @@
 .lock-mark { font-size: .72rem; }
 .login-button { margin-top: 16px; }
 
+.admin-section-heading {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 4px;
+  padding: 4px 2px 10px;
+  border-bottom: 2px solid var(--line);
+}
+
+.admin-section-heading h2 {
+  margin: 0;
+  color: var(--accent);
+  font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  font-size: 1.35rem;
+}
+
+.admin-section-heading .eyebrow { margin-bottom: 1px; }
+
+.admin-section-mark {
+  display: grid;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 9px;
+  background: var(--accent);
+  color: white;
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
 .admin-session {
   display: flex;
   gap: 12px;
@@ -72,6 +104,11 @@
   background: var(--card);
   box-shadow: var(--shadow);
 }
+
+.publish-card { border-top: 3px solid var(--accent); }
+.manage-card { border-top: 3px solid var(--gold); }
+.quiz-manage-card { border-top: 3px solid #7d6a91; }
+.section-kicker { margin-bottom: 2px; }
 
 .step-heading {
   display: flex;
