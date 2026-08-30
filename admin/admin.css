@@ -339,6 +339,19 @@ input.invalid { border-color: #b23a2e; background: #fff7f5; }
 .edit-help { margin: 10px 0; color: var(--muted); font-size: .76rem; }
 .edit-panel .publish-button { min-height: 46px; margin-top: 10px; }
 
+.manage-week-title-row { display: flex; gap: 10px; align-items: center; justify-content: space-between; }
+.manage-week-title-row .manage-week-title { flex: 1; }
+.week-edit-button { border: 0; background: transparent; color: var(--accent); cursor: pointer; font: inherit; font-size: .74rem; font-weight: 700; text-decoration: underline; }
+.quiz-manage-card { margin-top: 22px; }
+.quiz-manage-list { display: grid; gap: 12px; }
+.quiz-edit-row { padding: 13px; border: 1px solid var(--line); border-radius: 10px; background: #fbf8f1; }
+.quiz-edit-row.next { border-color: var(--gold); background: #fbf3e6; }
+.quiz-edit-grid { display: grid; gap: 10px; }
+.quiz-edit-row .publish-button { min-height: 44px; margin-top: 11px; font-size: .9rem; }
+.quiz-edit-row label { margin-bottom: 4px; }
+.quiz-edit-row input { min-height: 42px; font-size: .9rem; }
+.quiz-next-label { margin: 0 0 8px; color: var(--gold); font-size: .72rem; font-weight: 700; text-transform: uppercase; }
+
 .manage-week {
   overflow: hidden;
   border: 1px solid var(--line);
@@ -395,5 +408,6 @@ input.invalid { border-color: #b23a2e; background: #fff7f5; }
   .admin-shell { padding-top: 30px; }
   .form-card { padding: 21px; }
   .type-options,
-  .field-grid { grid-template-columns: 1fr 1fr; }
+  .field-grid,
+  .quiz-edit-grid { grid-template-columns: 1fr 1fr; }
 }

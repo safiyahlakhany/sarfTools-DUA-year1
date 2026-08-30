@@ -1,6 +1,7 @@
 const MAX_FILE_SIZE = 2 * 1024 * 1024;
 const MAX_REQUEST_SIZE = MAX_FILE_SIZE + 128 * 1024;
 const MANIFEST_PATH = "data/resources.json";
+const QUIZ_PATH = "data/quizzes.json";
 const API_VERSION = "2022-11-28";
 const MAX_GITHUB_ATTEMPTS = 3;
 const SESSION_LIFETIME_SECONDS = 30 * 60;
@@ -78,7 +79,7 @@ export default {
         }, 200, corsHeaders);
       }
 
-      if (!["publish", "list", "delete", "edit"].includes(action)) {
+      if (!["publish", "list", "delete", "edit", "edit-week", "list-quizzes", "edit-quiz"].includes(action)) {
         throw new HttpError(400, "Unknown admin action.", "INVALID_ACTION");
       }
 
@@ -91,6 +92,25 @@ export default {
 
       if (action === "list") {
         return jsonResponse({ ok: true, manifest: await readCurrentManifest(env) }, 200, corsHeaders);
+      }
+
+      if (action === "list-quizzes") {
+        return jsonResponse({ ok: true, quizzes: await readCurrentQuizzes(env) }, 200, corsHeaders);
+      }
+
+      if (action === "edit-week") {
+        const week = Number(getString(form, "week"));
+        const title = getString(form, "title").trim();
+        if (!Number.isInteger(week) || week < 1 || week > 999) throw new HttpError(400, "Enter a valid week number.", "INVALID_WEEK");
+        if (!title || title.length > 120 || /[\u0000-\u001f\u007f]/u.test(title)) throw new HttpError(400, "Week title must contain between 1 and 120 printable characters.", "INVALID_TITLE");
+        const result = await editWeekWithRetry({ week, title }, env);
+        return jsonResponse({ ok: true, commitSha: result.commitSha, title }, 200, corsHeaders);
+      }
+
+      if (action === "edit-quiz") {
+        const input = validateQuizEdit(form);
+        const result = await editQuizWithRetry(input, env);
+        return jsonResponse({ ok: true, commitSha: result.commitSha, quiz: result.quiz }, 200, corsHeaders);
       }
 
       if (action === "delete") {
@@ -371,6 +391,27 @@ export function editResourceInManifest(manifest, input, editedAt = new Date().to
   };
 }
 
+export function editWeekTitle(manifest, weekNumber, title, editedAt = new Date().toISOString()) {
+  const next = migrateManifest(manifest);
+  const week = next.weeks.find((entry) => entry.week === weekNumber);
+  if (!week) throw new HttpError(404, "That week does not exist.", "WEEK_NOT_FOUND");
+  week.title = title;
+  next.updatedAt = editedAt;
+  return next;
+}
+
+export function editQuizSchedule(quizzes, input) {
+  if (!Array.isArray(quizzes)) throw new HttpError(500, "The quiz schedule has an unsupported format.", "INVALID_QUIZZES");
+  const next = structuredClone(quizzes);
+  const quiz = next.find((entry) => entry.id === input.id);
+  if (!quiz) throw new HttpError(404, "That quiz does not exist.", "QUIZ_NOT_FOUND");
+  quiz.date = input.date;
+  quiz.label = input.label;
+  quiz.topic = input.topic;
+  next.sort((a, b) => a.date.localeCompare(b.date));
+  return { quizzes: next, quiz };
+}
+
 async function publishWithRetry(input, env) {
   let lastError;
   for (let attempt = 1; attempt <= MAX_GITHUB_ATTEMPTS; attempt += 1) {
@@ -589,6 +630,80 @@ async function editOnce(input, env) {
     body: { sha: commit.sha, force: false }
   });
   return { ...updated, commitSha: commit.sha };
+}
+
+async function editWeekWithRetry(input, env) {
+  let lastError;
+  for (let attempt = 1; attempt <= MAX_GITHUB_ATTEMPTS; attempt += 1) {
+    try { return await editWeekOnce(input, env); }
+    catch (error) { lastError = error; if (!(error instanceof GitHubError) || error.endpoint !== "update-ref" || error.status !== 422) throw error; }
+  }
+  throw new HttpError(409, "The repository changed while editing the week. Please try again.", "EDIT_CONFLICT");
+}
+
+async function editWeekOnce(input, env) {
+  const github = createGitHubClient(env);
+  const branchRef = `heads/${env.GITHUB_BRANCH}`;
+  const ref = await github(`/git/ref/${encodeRef(branchRef)}`);
+  const baseCommitSha = ref.object.sha;
+  const baseCommit = await github(`/git/commits/${baseCommitSha}`);
+  const manifestFile = await github(`/contents/${MANIFEST_PATH}?ref=${encodeURIComponent(baseCommitSha)}`);
+  let manifest;
+  try { manifest = JSON.parse(decodeBase64Utf8(manifestFile.content)); }
+  catch { throw new HttpError(500, "The current resource manifest could not be read.", "INVALID_MANIFEST"); }
+  const updated = editWeekTitle(manifest, input.week, input.title);
+  const blob = await github("/git/blobs", { method: "POST", body: { content: `${JSON.stringify(updated, null, 2)}\n`, encoding: "utf-8" } });
+  const tree = await github("/git/trees", { method: "POST", body: { base_tree: baseCommit.tree.sha, tree: [{ path: MANIFEST_PATH, mode: "100644", type: "blob", sha: blob.sha }] } });
+  const commit = await github("/git/commits", { method: "POST", body: { message: `Edit Week ${input.week} title`, tree: tree.sha, parents: [baseCommitSha] } });
+  await github(`/git/refs/${encodeRef(branchRef)}`, { method: "PATCH", endpointName: "update-ref", body: { sha: commit.sha, force: false } });
+  return { commitSha: commit.sha };
+}
+
+function validateQuizEdit(form) {
+  const id = getString(form, "id");
+  const date = getString(form, "date");
+  const label = getString(form, "label").trim();
+  const topic = getString(form, "topic").trim();
+  if (!/^quiz-[a-zA-Z0-9-]{1,80}$/.test(id)) throw new HttpError(400, "Choose a valid quiz.", "INVALID_QUIZ_ID");
+  if (!/^202\d-\d{2}-\d{2}$/.test(date)) throw new HttpError(400, "Enter a valid quiz date.", "INVALID_DATE");
+  const parsed = new Date(`${date}T00:00:00Z`);
+  if (Number.isNaN(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== date) throw new HttpError(400, "Enter a valid quiz date.", "INVALID_DATE");
+  if (!label || label.length > 80 || !topic || topic.length > 160) throw new HttpError(400, "Quiz label and topic are required.", "INVALID_QUIZ");
+  return { id, date, label, topic };
+}
+
+async function readCurrentQuizzes(env) {
+  const github = createGitHubClient(env);
+  const file = await github(`/contents/${QUIZ_PATH}?ref=${encodeURIComponent(env.GITHUB_BRANCH)}`);
+  try { return JSON.parse(decodeBase64Utf8(file.content)); }
+  catch { throw new HttpError(500, "The quiz schedule could not be read.", "INVALID_QUIZZES"); }
+}
+
+async function editQuizWithRetry(input, env) {
+  let lastError;
+  for (let attempt = 1; attempt <= MAX_GITHUB_ATTEMPTS; attempt += 1) {
+    try { return await editQuizOnce(input, env); }
+    catch (error) { lastError = error; if (!(error instanceof GitHubError) || error.endpoint !== "update-ref" || error.status !== 422) throw error; }
+  }
+  throw new HttpError(409, "The repository changed while editing the quiz. Please try again.", "EDIT_CONFLICT");
+}
+
+async function editQuizOnce(input, env) {
+  const github = createGitHubClient(env);
+  const branchRef = `heads/${env.GITHUB_BRANCH}`;
+  const ref = await github(`/git/ref/${encodeRef(branchRef)}`);
+  const baseCommitSha = ref.object.sha;
+  const baseCommit = await github(`/git/commits/${baseCommitSha}`);
+  const quizFile = await github(`/contents/${QUIZ_PATH}?ref=${encodeURIComponent(baseCommitSha)}`);
+  let quizzes;
+  try { quizzes = JSON.parse(decodeBase64Utf8(quizFile.content)); }
+  catch { throw new HttpError(500, "The quiz schedule could not be read.", "INVALID_QUIZZES"); }
+  const updated = editQuizSchedule(quizzes, input);
+  const blob = await github("/git/blobs", { method: "POST", body: { content: `${JSON.stringify(updated.quizzes, null, 2)}\n`, encoding: "utf-8" } });
+  const tree = await github("/git/trees", { method: "POST", body: { base_tree: baseCommit.tree.sha, tree: [{ path: QUIZ_PATH, mode: "100644", type: "blob", sha: blob.sha }] } });
+  const commit = await github("/git/commits", { method: "POST", body: { message: `Edit ${input.label}`, tree: tree.sha, parents: [baseCommitSha] } });
+  await github(`/git/refs/${encodeRef(branchRef)}`, { method: "PATCH", endpointName: "update-ref", body: { sha: commit.sha, force: false } });
+  return { commitSha: commit.sha, quiz: updated.quiz };
 }
 
 function createGitHubClient(env) {

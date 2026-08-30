@@ -140,7 +140,8 @@ h1 .arabic {
 
 .upcoming-copy { min-width: 0; }
 .upcoming-copy h2 { margin: 0; color: var(--ink); font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif; font-size: 1.08rem; line-height: 1.3; }
-.quiz-countdown { margin: 3px 0 0; color: var(--muted); font-size: .82rem; font-weight: 600; }
+.quiz-kicker { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.quiz-kicker span + span::before { content: "·"; margin-right: 6px; }
 
 .quiz-schedule-link {
   grid-column: 1 / -1;
@@ -298,17 +299,32 @@ h1 .arabic {
 
 .footer-links { display: flex; gap: 9px 18px; align-items: center; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
 
-.admin-entry,
-.feedback-entry {
-  display: inline-block;
-  color: var(--accent);
+.footer-action {
+  display: inline-flex;
+  gap: 7px;
+  min-height: 38px;
+  align-items: center;
+  padding: 8px 12px;
+  border: 1px solid;
+  border-radius: 9px;
   font-size: .78rem;
-  font-weight: 600;
+  font-weight: 700;
   text-decoration: none;
+  transition: background-color .15s, color .15s;
 }
 
-.admin-entry:hover,
-.feedback-entry:hover { text-decoration: underline; }
+.footer-action svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.feedback-entry { border-color: var(--gold); color: var(--gold); }
+.feedback-entry:hover { background: var(--gold); color: white; }
+.admin-entry { border-color: var(--accent); background: var(--accent); color: white; }
+.admin-entry:hover { background: var(--accent-dark); border-color: var(--accent-dark); }
+.footer-action:focus-visible { outline: 3px solid color-mix(in srgb, var(--gold) 65%, transparent); outline-offset: 2px; }
+
+.admin-entry,
+.feedback-entry {
+  font-size: .78rem;
+  font-weight: 600;
+}
 
 .visually-hidden {
   position: absolute;

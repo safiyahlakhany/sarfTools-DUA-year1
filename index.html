@@ -24,9 +24,8 @@
     <section class="upcoming-quiz" aria-labelledby="upcoming-quiz-heading">
       <div class="quiz-date-badge" id="quiz-date-badge" aria-hidden="true">—</div>
       <div class="upcoming-copy">
-        <p class="eyebrow dark">Upcoming quiz</p>
+        <p class="eyebrow dark quiz-kicker"><span>Next Quiz</span><span id="quiz-countdown"></span></p>
         <h2 id="upcoming-quiz-heading">Loading quiz schedule…</h2>
-        <p id="quiz-countdown" class="quiz-countdown"></p>
       </div>
       <a class="quiz-schedule-link" href="quizzes.html">All quiz dates →</a>
     </section>
@@ -49,8 +48,14 @@
   <footer class="site-footer">
     <p>Choose a resource above to open it as its own page.</p>
     <div class="footer-links">
-      <a class="feedback-entry" href="https://github.com/safiyahlakhany/sarfTools-DUA-year1/issues/new/choose">Report a bug or request a feature</a>
-      <a class="admin-entry" href="admin/">Teacher admin →</a>
+      <a class="footer-action feedback-entry" href="https://github.com/safiyahlakhany/sarfTools-DUA-year1/issues/new/choose">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="6" width="8" height="14" rx="4"/><path d="M12 2v4M4 10h4M16 10h4M4 16h4M16 16h4M5 6l3 3M19 6l-3 3M5 20l3-3M19 20l-3-3"/></svg>
+        <span>Report a bug or request a feature</span>
+      </a>
+      <a class="footer-action admin-entry" href="admin/">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/></svg>
+        <span>Admin</span>
+      </a>
     </div>
   </footer>
 </body>

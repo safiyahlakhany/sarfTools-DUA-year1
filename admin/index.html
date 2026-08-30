@@ -183,6 +183,23 @@
         <div id="manage-list" class="manage-list" aria-live="polite">
           <p class="manage-loading">Loading published resources…</p>
         </div>
+        <form id="week-title-form" class="edit-panel" hidden>
+          <input id="edit-week-number" type="hidden">
+          <div class="edit-panel-heading"><strong>Edit week title</strong><button id="cancel-week-edit" type="button">Cancel</button></div>
+          <label class="field-label" for="edit-week-title">Week title</label>
+          <input id="edit-week-title" type="text" maxlength="120" required>
+          <button id="save-week-title" class="publish-button" type="submit"><span class="button-label">Save week title</span><span class="button-progress" hidden>Saving…</span></button>
+        </form>
+      </section>
+
+      <section class="form-card quiz-manage-card" aria-labelledby="quiz-manage-heading">
+        <div class="manage-heading-row">
+          <div><p class="eyebrow dark">Assessment dates</p><h2 id="quiz-manage-heading">Edit quiz schedule</h2></div>
+          <button id="refresh-quizzes" class="secondary-button compact-button" type="button">Refresh</button>
+        </div>
+        <p class="manage-intro">Update a quiz date, label, or topic. Dates determine which quiz appears as next on the homepage.</p>
+        <div id="quiz-manage-message" class="form-message" role="status" aria-live="polite" hidden></div>
+        <div id="quiz-manage-list" class="quiz-manage-list"><p class="manage-loading">Loading quiz schedule…</p></div>
       </section>
     </div>
   </main>

@@ -23,6 +23,9 @@ const manageMessage = document.querySelector("#manage-message");
 const editForm = document.querySelector("#edit-form");
 const editMessage = document.querySelector("#edit-message");
 const editSaveButton = document.querySelector("#save-edit");
+const weekTitleForm = document.querySelector("#week-title-form");
+const quizManageList = document.querySelector("#quiz-manage-list");
+const quizManageMessage = document.querySelector("#quiz-manage-message");
 
 if (!config.workerUrl) connectionNotice.hidden = false;
 
@@ -67,6 +70,7 @@ loginForm.addEventListener("submit", async (event) => {
     workspace.hidden = false;
     weekInput.focus();
     void loadResources();
+    void loadQuizzes();
   } catch (error) {
     passwordInput.value = "";
     passwordInput.focus();
@@ -88,6 +92,9 @@ function signOut(sessionExpired) {
   manageList.innerHTML = '<p class="manage-loading">Loading published resources…</p>';
   manageMessage.hidden = true;
   closeEditForm();
+  closeWeekTitleForm();
+  quizManageList.innerHTML = '<p class="manage-loading">Loading quiz schedule…</p>';
+  quizManageMessage.hidden = true;
   loginForm.hidden = false;
   if (sessionExpired) showLoginMessage("Your admin session expired. Enter the password again.");
   else loginMessage.hidden = true;
@@ -251,6 +258,45 @@ async function loadResources() {
   }
 }
 
+function openWeekTitleForm(week) {
+  document.querySelector("#edit-week-number").value = String(week.week);
+  document.querySelector("#edit-week-title").value = week.title || `Week ${week.week} resources`;
+  weekTitleForm.hidden = false;
+  weekTitleForm.scrollIntoView({ behavior: "smooth", block: "center" });
+  document.querySelector("#edit-week-title").focus();
+}
+
+function closeWeekTitleForm() {
+  weekTitleForm.reset();
+  weekTitleForm.hidden = true;
+}
+
+document.querySelector("#cancel-week-edit").addEventListener("click", closeWeekTitleForm);
+
+weekTitleForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const week = document.querySelector("#edit-week-number").value;
+  const title = document.querySelector("#edit-week-title").value.trim();
+  if (!title) return showManageMessage("Enter a week title.", "error");
+  const body = new FormData();
+  body.set("action", "edit-week");
+  body.set("week", week);
+  body.set("title", title);
+  const save = document.querySelector("#save-week-title");
+  setButtonBusy(save, true);
+  try {
+    const response = await adminRequest(body);
+    if (!response.ok) throw new Error(response.result.error || "The week title could not be updated.");
+    closeWeekTitleForm();
+    await loadResources();
+    showManageMessage("The week title was updated.", "notice");
+  } catch (error) {
+    showManageMessage(error.message, "error");
+  } finally {
+    setButtonBusy(save, false);
+  }
+});
+
 function renderManagedResources(weeks) {
   const sortedWeeks = [...weeks].sort((a, b) => b.week - a.week);
   if (sortedWeeks.length === 0) {
@@ -262,10 +308,18 @@ function renderManagedResources(weeks) {
   for (const week of sortedWeeks) {
     const section = document.createElement("section");
     section.className = "manage-week";
+    const headingRow = document.createElement("div");
+    headingRow.className = "manage-week-title-row";
     const heading = document.createElement("h3");
     heading.className = "manage-week-title";
-    heading.textContent = `Week ${week.week}`;
-    section.append(heading);
+    heading.textContent = `Week ${week.week}: ${week.title || `Week ${week.week} resources`}`;
+    const editWeek = document.createElement("button");
+    editWeek.className = "week-edit-button";
+    editWeek.type = "button";
+    editWeek.textContent = "Edit title";
+    editWeek.addEventListener("click", () => openWeekTitleForm(week));
+    headingRow.append(heading, editWeek);
+    section.append(headingRow);
 
     const groups = [
       ["studyTools", "Study Tool"],
@@ -411,6 +465,112 @@ async function deleteResource(resource, button) {
     button.textContent = "Delete";
     showManageMessage(error.message || "The resource could not be deleted.", "error");
   }
+}
+
+async function loadQuizzes() {
+  quizManageMessage.hidden = true;
+  quizManageList.innerHTML = '<p class="manage-loading">Loading quiz schedule…</p>';
+  const body = new FormData();
+  body.set("action", "list-quizzes");
+  try {
+    const response = await adminRequest(body);
+    if (!response.ok) throw new Error(response.result.error || "The quiz schedule could not be loaded.");
+    renderQuizEditor(response.result.quizzes || []);
+  } catch (error) {
+    quizManageList.replaceChildren();
+    showQuizManageMessage(error.message, "error");
+  }
+}
+
+function renderQuizEditor(quizzes) {
+  const fragment = document.createDocumentFragment();
+  for (const quiz of [...quizzes].sort((a, b) => a.date.localeCompare(b.date))) {
+    const row = document.createElement("form");
+    row.className = "quiz-edit-row";
+    row.dataset.quizId = quiz.id;
+    const nextLabel = document.createElement("p");
+    nextLabel.className = "quiz-next-label";
+    nextLabel.textContent = quiz.id === findNextQuizId(quizzes) ? "Next scheduled quiz" : "";
+    row.append(nextLabel);
+    const grid = document.createElement("div");
+    grid.className = "quiz-edit-grid";
+    grid.append(inputField("Date", "date", quiz.date, "date"), inputField("Label", "label", quiz.label, "text"), inputField("Topic", "topic", quiz.topic, "text"));
+    row.append(grid);
+    const button = document.createElement("button");
+    button.className = "publish-button";
+    button.type = "submit";
+    button.innerHTML = '<span class="button-label">Save quiz</span><span class="button-progress" hidden>Saving…</span>';
+    row.append(button);
+    row.addEventListener("submit", (event) => saveQuiz(event, row, button));
+    fragment.append(row);
+  }
+  quizManageList.replaceChildren(fragment);
+}
+
+function inputField(labelText, name, value, type) {
+  const wrapper = document.createElement("div");
+  const label = document.createElement("label");
+  label.className = "field-label";
+  label.textContent = labelText;
+  const input = document.createElement("input");
+  input.name = name;
+  input.type = type;
+  input.value = value;
+  input.required = true;
+  input.maxLength = name === "topic" ? 160 : 80;
+  label.append(input);
+  wrapper.append(label);
+  return wrapper;
+}
+
+function findNextQuizId(quizzes) {
+  const today = new Date();
+  const todayUtc = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
+  return [...quizzes].sort((a, b) => a.date.localeCompare(b.date)).find((quiz) => dateValue(quiz.date) >= todayUtc)?.id;
+}
+
+function dateValue(dateText) {
+  const [year, month, day] = dateText.split("-").map(Number);
+  return Date.UTC(year, month - 1, day);
+}
+
+async function saveQuiz(event, row, button) {
+  event.preventDefault();
+  const body = new FormData();
+  body.set("action", "edit-quiz");
+  body.set("id", row.dataset.quizId);
+  for (const field of ["date", "label", "topic"]) body.set(field, row.elements[field].value.trim());
+  setButtonBusy(button, true);
+  try {
+    const response = await adminRequest(body);
+    if (!response.ok) throw new Error(response.result.error || "The quiz could not be updated.");
+    await loadQuizzes();
+    showQuizManageMessage("The quiz schedule was updated.", "notice");
+  } catch (error) {
+    showQuizManageMessage(error.message, "error");
+  } finally {
+    setButtonBusy(button, false);
+  }
+}
+
+async function adminRequest(body) {
+  const response = await fetch(config.workerUrl, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${authToken}` },
+    body
+  });
+  const result = await response.json().catch(() => ({}));
+  if (response.status === 401 && result.code === "SESSION_INVALID") {
+    signOut(true);
+    return { ok: false, result: { error: "Your admin session expired." } };
+  }
+  return { ok: response.ok, result };
+}
+
+function showQuizManageMessage(text, kind) {
+  quizManageMessage.textContent = text;
+  quizManageMessage.className = `form-message ${kind}`;
+  quizManageMessage.hidden = false;
 }
 
 function showManageMessage(text, kind) {

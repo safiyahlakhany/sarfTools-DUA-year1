@@ -3,6 +3,8 @@ import assert from "node:assert/strict";
 import {
   createSessionToken,
   editResourceInManifest,
+  editQuizSchedule,
+  editWeekTitle,
   migrateManifest,
   removeResourceFromManifest,
   secureEqual,
@@ -183,4 +185,20 @@ test("editResourceInManifest moves a resource to a new week and type", () => {
   assert.equal(result.manifest.weeks[0].week, 3);
   assert.equal(result.resource.path, "resources/week-003/accessible-homework-move.html");
   assert.equal(result.manifest.weeks[0].accessibleHomeworks[0].title, "Moved");
+});
+
+test("editWeekTitle updates only the requested week", () => {
+  const manifest = { schemaVersion: 2, weeks: [{ week: 1, title: "Old", studyTools: [], accessibleHomeworks: [] }, { week: 2, title: "Keep", studyTools: [], accessibleHomeworks: [] }] };
+  const result = editWeekTitle(manifest, 1, "Present Tense");
+  assert.equal(result.weeks[0].title, "Present Tense");
+  assert.equal(result.weeks[1].title, "Keep");
+});
+
+test("editQuizSchedule updates and date-sorts quizzes", () => {
+  const result = editQuizSchedule([
+    { id: "quiz-1", date: "2026-09-16", label: "Quiz 1", topic: "Old" },
+    { id: "quiz-2", date: "2026-10-07", label: "Quiz 2", topic: "Later" }
+  ], { id: "quiz-2", date: "2026-09-10", label: "Quiz 2", topic: "Past tense" });
+  assert.deepEqual(result.quizzes.map((quiz) => quiz.id), ["quiz-2", "quiz-1"]);
+  assert.equal(result.quiz.topic, "Past tense");
 });
