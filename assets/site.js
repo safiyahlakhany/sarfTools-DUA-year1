@@ -3,15 +3,15 @@ const RESOURCE_TYPES = [
     key: "studyTool",
     collectionKey: "studyTools",
     label: "Study Tool",
-    fullLabel: "Weekly Study Tool",
-    icon: "S"
+    fullLabel: "Study Tool",
+    icon: "book"
   },
   {
     key: "accessibleHomework",
     collectionKey: "accessibleHomeworks",
     label: "Accessible Homework",
     fullLabel: "Weekly Accessible Homework",
-    icon: "H"
+    icon: "pencil"
   }
 ];
 
@@ -28,7 +28,7 @@ function makeResourceItem(resource, type) {
   const icon = document.createElement("span");
   icon.className = "resource-icon";
   icon.setAttribute("aria-hidden", "true");
-  icon.textContent = type.icon;
+  icon.append(makeIcon(type.icon));
 
   const copy = document.createElement("span");
   copy.className = "resource-copy";
@@ -51,6 +51,14 @@ function makeResourceItem(resource, type) {
   item.append(arrow);
 
   return item;
+}
+
+function makeIcon(name) {
+  const wrapper = document.createElement("span");
+  wrapper.innerHTML = name === "book"
+    ? '<svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>'
+    : '<svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>';
+  return wrapper.firstElementChild;
 }
 
 function makeResourceGroup(week, type) {

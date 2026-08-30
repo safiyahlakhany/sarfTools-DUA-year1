@@ -86,6 +86,16 @@ h1 .arabic {
   font-size: .96rem;
 }
 
+.class-details {
+  display: flex;
+  gap: 4px 18px;
+  flex-direction: column;
+  margin-top: 12px;
+  color: #f2dfb7;
+  font-size: .84rem;
+  font-weight: 600;
+}
+
 .page-shell { padding: 24px 0 80px; }
 
 .resource-guide {
@@ -115,6 +125,18 @@ h1 .arabic {
   color: white;
   font-family: Georgia, serif;
   font-weight: 700;
+}
+
+.guide-number svg,
+.resource-icon svg,
+.type-mark svg {
+  width: 21px;
+  height: 21px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .guide-item h3 { margin: 1px 0 2px; font-size: .98rem; }
@@ -259,16 +281,19 @@ h1 .arabic {
 
 .site-footer p { margin: 0; }
 
-.admin-entry {
+.footer-links { display: flex; gap: 9px 18px; align-items: center; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
+
+.admin-entry,
+.feedback-entry {
   display: inline-block;
-  margin-top: 10px;
   color: var(--accent);
   font-size: .78rem;
   font-weight: 600;
   text-decoration: none;
 }
 
-.admin-entry:hover { text-decoration: underline; }
+.admin-entry:hover,
+.feedback-entry:hover { text-decoration: underline; }
 
 .visually-hidden {
   position: absolute;
@@ -288,6 +313,7 @@ h1 .arabic {
   .resource-guide { grid-template-columns: 1fr 1fr; }
   .resource-links { grid-template-columns: 1fr 1fr; }
   .week-header { padding-inline: 20px; }
+  .class-details { flex-direction: row; }
 }
 
 @media (prefers-reduced-motion: reduce) {
