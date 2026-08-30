@@ -26,13 +26,13 @@
       The publishing backend is not connected yet. You can test the form, but publishing will be enabled after the Cloudflare Worker is configured.
     </div>
 
-    <form id="publish-form" class="publish-form" novalidate>
-      <section class="form-card" aria-labelledby="access-heading">
+    <form id="login-form" class="login-form" novalidate>
+      <section class="form-card login-card" aria-labelledby="access-heading">
         <div class="step-heading">
-          <span class="step-number" aria-hidden="true">1</span>
+          <span class="step-number lock-mark" aria-hidden="true">◆</span>
           <div>
             <h2 id="access-heading">Admin access</h2>
-            <p>Enter the password provided for publishing class resources.</p>
+            <p>Sign in to view the publishing tools.</p>
           </div>
         </div>
 
@@ -41,11 +41,25 @@
           <input id="password" name="password" type="password" autocomplete="current-password" required>
           <button class="reveal-button" id="reveal-password" type="button" aria-pressed="false">Show</button>
         </div>
+        <div id="login-message" class="form-message" role="alert" aria-live="assertive" hidden></div>
+        <button id="login-button" class="publish-button login-button" type="submit">
+          <span class="button-label">Continue</span>
+          <span class="button-progress" hidden>Checking…</span>
+        </button>
       </section>
+    </form>
+
+    <div id="admin-workspace" hidden>
+      <div class="admin-session">
+        <span>Signed in as administrator</span>
+        <button id="logout-button" type="button">Sign out</button>
+      </div>
+
+      <form id="publish-form" class="publish-form" novalidate>
 
       <section class="form-card" aria-labelledby="details-heading">
         <div class="step-heading">
-          <span class="step-number" aria-hidden="true">2</span>
+          <span class="step-number" aria-hidden="true">1</span>
           <div>
             <h2 id="details-heading">Resource details</h2>
             <p>Choose where the file should appear on the class website.</p>
@@ -86,7 +100,7 @@
 
       <section class="form-card" aria-labelledby="file-heading">
         <div class="step-heading">
-          <span class="step-number" aria-hidden="true">3</span>
+          <span class="step-number" aria-hidden="true">2</span>
           <div>
             <h2 id="file-heading">Choose the HTML file</h2>
             <p>The original file will be published without changing its contents.</p>
@@ -110,17 +124,18 @@
         <span class="button-label">Publish resource</span>
         <span class="button-progress" hidden>Publishing…</span>
       </button>
-      <p class="publish-note">Publishing a file for an existing week and resource type will replace that resource after confirmation.</p>
-    </form>
+      <p class="publish-note">Each upload is added as a separate resource, even when its week already contains other materials.</p>
+      </form>
 
-    <section id="publish-success" class="success-card" aria-labelledby="success-heading" hidden>
-      <div class="success-mark" aria-hidden="true">✓</div>
-      <p class="eyebrow dark">Published</p>
-      <h2 id="success-heading">Your resource is on its way</h2>
-      <p id="success-message">GitHub Pages may take a short time to make the new file available.</p>
-      <a id="published-link" class="published-link" href="#">Open published resource →</a>
-      <button id="publish-another" class="secondary-button" type="button">Publish another resource</button>
-    </section>
+      <section id="publish-success" class="success-card" aria-labelledby="success-heading" hidden>
+        <div class="success-mark" aria-hidden="true">✓</div>
+        <p class="eyebrow dark">Published</p>
+        <h2 id="success-heading">Your resource is on its way</h2>
+        <p id="success-message">The site may take a short time to make the new file available.</p>
+        <a id="published-link" class="published-link" href="#">Open published resource →</a>
+        <button id="publish-another" class="secondary-button" type="button">Publish another resource</button>
+      </section>
+    </div>
   </main>
 
   <footer class="site-footer">
@@ -128,4 +143,3 @@
   </footer>
 </body>
 </html>
-

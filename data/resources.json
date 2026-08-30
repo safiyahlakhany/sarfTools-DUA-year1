@@ -1,18 +1,24 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "weeks": [
     {
       "week": 1,
       "title": "Present/Future Active Conjugation",
-      "studyTool": {
-        "title": "ṣarf Study — al-Muḍāriʿ",
-        "path": "resources/week-001/study-tool.html",
-        "publishedAt": "2026-08-30T06:51:44.311Z"
-      },
-      "accessibleHomework": {
-        "title": "Ṣarf Practice — Tap, Don't Write",
-        "path": "resources/week-001/accessible-homework.html"
-      }
+      "studyTools": [
+        {
+          "id": "week-001-study-tool",
+          "title": "ṣarf Study — al-Muḍāriʿ",
+          "path": "resources/week-001/study-tool.html",
+          "publishedAt": "2026-08-30T06:51:44.311Z"
+        }
+      ],
+      "accessibleHomeworks": [
+        {
+          "id": "week-001-accessible-homework",
+          "title": "Ṣarf Practice — Tap, Don't Write",
+          "path": "resources/week-001/accessible-homework.html"
+        }
+      ]
     }
   ],
   "updatedAt": "2026-08-30T06:51:44.311Z"

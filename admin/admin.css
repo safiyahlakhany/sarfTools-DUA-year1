@@ -36,6 +36,34 @@
 }
 
 .publish-form { display: grid; gap: 16px; }
+.login-form { max-width: 540px; margin: 0 auto; }
+.login-card .step-heading { margin-bottom: 18px; }
+.lock-mark { font-size: .72rem; }
+.login-button { margin-top: 16px; }
+
+.admin-session {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  padding: 10px 13px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+  font-size: .82rem;
+  font-weight: 600;
+}
+
+.admin-session button {
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+  font: inherit;
+  text-decoration: underline;
+}
 
 .form-card {
   padding: 18px;
@@ -265,4 +293,3 @@ input.invalid { border-color: #b23a2e; background: #fff7f5; }
   .type-options,
   .field-grid { grid-template-columns: 1fr 1fr; }
 }
-

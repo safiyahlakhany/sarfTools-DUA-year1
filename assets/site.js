@@ -1,12 +1,14 @@
 const RESOURCE_TYPES = [
   {
     key: "studyTool",
+    collectionKey: "studyTools",
     label: "Study Tool",
     fullLabel: "Weekly Study Tool",
     icon: "S"
   },
   {
     key: "accessibleHomework",
+    collectionKey: "accessibleHomeworks",
     label: "Accessible Homework",
     fullLabel: "Weekly Accessible Homework",
     icon: "H"
@@ -18,13 +20,10 @@ const listElement = document.querySelector("#week-list");
 const countElement = document.querySelector("#week-count");
 
 function makeResourceItem(resource, type) {
-  const item = document.createElement(resource ? "a" : "div");
-  item.className = resource ? "resource-link" : "resource-missing";
-
-  if (resource) {
-    item.href = resource.path;
-    item.setAttribute("aria-label", `Open ${type.fullLabel}: ${resource.title}`);
-  }
+  const item = document.createElement("a");
+  item.className = "resource-link";
+  item.href = resource.path;
+  item.setAttribute("aria-label", `Open ${type.fullLabel}: ${resource.title}`);
 
   const icon = document.createElement("span");
   icon.className = "resource-icon";
@@ -40,20 +39,39 @@ function makeResourceItem(resource, type) {
 
   const title = document.createElement("span");
   title.className = "resource-title";
-  title.textContent = resource?.title || "Not published yet";
+  title.textContent = resource.title;
 
   copy.append(typeLabel, title);
   item.append(icon, copy);
 
-  if (resource) {
-    const arrow = document.createElement("span");
-    arrow.className = "resource-arrow";
-    arrow.setAttribute("aria-hidden", "true");
-    arrow.textContent = "→";
-    item.append(arrow);
-  }
+  const arrow = document.createElement("span");
+  arrow.className = "resource-arrow";
+  arrow.setAttribute("aria-hidden", "true");
+  arrow.textContent = "→";
+  item.append(arrow);
 
   return item;
+}
+
+function makeResourceGroup(week, type) {
+  const group = document.createElement("section");
+  group.className = "resource-group";
+
+  const heading = document.createElement("h4");
+  heading.className = "resource-group-title";
+  heading.textContent = type.fullLabel;
+  group.append(heading);
+
+  const resources = Array.isArray(week[type.collectionKey]) ? week[type.collectionKey] : [];
+  if (resources.length) {
+    for (const resource of resources) group.append(makeResourceItem(resource, type));
+  } else {
+    const missing = document.createElement("div");
+    missing.className = "resource-missing";
+    missing.textContent = "Not published yet";
+    group.append(missing);
+  }
+  return group;
 }
 
 function renderWeeks(weeks) {
@@ -79,7 +97,7 @@ function renderWeeks(weeks) {
     links.className = "resource-links";
 
     for (const type of RESOURCE_TYPES) {
-      links.append(makeResourceItem(week[type.key], type));
+      links.append(makeResourceGroup(week, type));
     }
 
     header.append(label, heading);
@@ -98,7 +116,7 @@ async function loadResources() {
     if (!response.ok) throw new Error(`Resource list returned ${response.status}`);
 
     const data = await response.json();
-    if (data.schemaVersion !== 1 || !Array.isArray(data.weeks)) {
+    if (data.schemaVersion !== 2 || !Array.isArray(data.weeks)) {
       throw new Error("Resource list has an unsupported format");
     }
 
@@ -116,4 +134,3 @@ async function loadResources() {
 }
 
 loadResources();
-

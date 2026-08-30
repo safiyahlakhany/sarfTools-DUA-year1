@@ -3,16 +3,17 @@ const MAX_REQUEST_SIZE = MAX_FILE_SIZE + 128 * 1024;
 const MANIFEST_PATH = "data/resources.json";
 const API_VERSION = "2022-11-28";
 const MAX_GITHUB_ATTEMPTS = 3;
+const SESSION_LIFETIME_SECONDS = 30 * 60;
 
 const RESOURCE_TYPES = {
   "study-tool": {
-    manifestKey: "studyTool",
-    filename: "study-tool.html",
+    collectionKey: "studyTools",
+    filenamePrefix: "study-tool",
     label: "Study Tool"
   },
   "accessible-homework": {
-    manifestKey: "accessibleHomework",
-    filename: "accessible-homework.html",
+    collectionKey: "accessibleHomeworks",
+    filenamePrefix: "accessible-homework",
     label: "Accessible Homework"
   }
 };
@@ -64,10 +65,27 @@ export default {
         throw new HttpError(400, "The upload form could not be read.", "INVALID_FORM");
       }
 
-      const password = getString(form, "password");
-      if (!password || !(await secureEqual(password, env.ADMIN_PASSWORD))) {
-        throw new HttpError(401, "The admin password is incorrect.", "AUTH_FAILED");
+      const action = getString(form, "action") || "publish";
+      if (action === "authenticate") {
+        const password = getString(form, "password");
+        if (!password || !(await secureEqual(password, env.ADMIN_PASSWORD))) {
+          throw new HttpError(401, "The admin password is incorrect.", "AUTH_FAILED");
+        }
+        return jsonResponse({
+          ok: true,
+          token: await createSessionToken(env.ADMIN_PASSWORD),
+          expiresIn: SESSION_LIFETIME_SECONDS
+        }, 200, corsHeaders);
       }
+
+      if (action !== "publish") throw new HttpError(400, "Unknown admin action.", "INVALID_ACTION");
+
+      const bearerToken = getBearerToken(request.headers.get("Authorization"));
+      const legacyPassword = getString(form, "password");
+      const authenticated = bearerToken
+        ? await verifySessionToken(bearerToken, env.ADMIN_PASSWORD)
+        : Boolean(legacyPassword) && await secureEqual(legacyPassword, env.ADMIN_PASSWORD);
+      if (!authenticated) throw new HttpError(401, "Your admin session is invalid or expired.", "SESSION_INVALID");
 
       const input = await validateUpload(form);
       const result = await publishWithRetry(input, env);
@@ -77,10 +95,8 @@ export default {
         url: buildPublicUrl(env.SITE_BASE_URL, result.resourcePath),
         path: result.resourcePath,
         commitSha: result.commitSha,
-        replaced: result.replaced,
-        message: result.replaced
-          ? "The existing resource was replaced successfully. GitHub Pages may take a short time to update."
-          : "The resource was published successfully. GitHub Pages may take a short time to make it available."
+        resourceId: result.resourceId,
+        message: "The resource was published successfully. The site may take a short time to make it available."
       }, 201, corsHeaders);
     } catch (error) {
       if (error instanceof HttpError) {
@@ -139,7 +155,7 @@ export async function validateUpload(form) {
     week,
     title,
     html,
-    overwrite: getString(form, "overwrite") === "true"
+    resourceId: crypto.randomUUID()
   };
 }
 
@@ -157,36 +173,48 @@ export function validateHtml(html) {
 }
 
 export function updateManifest(manifest, input, publishedAt = new Date().toISOString()) {
-  if (!manifest || manifest.schemaVersion !== 1 || !Array.isArray(manifest.weeks)) {
+  if (!manifest || ![1, 2].includes(manifest.schemaVersion) || !Array.isArray(manifest.weeks)) {
     throw new HttpError(500, "The resource manifest has an unsupported format.", "INVALID_MANIFEST");
   }
 
-  const next = structuredClone(manifest);
+  const next = migrateManifest(manifest);
   let weekRecord = next.weeks.find((entry) => entry.week === input.week);
   if (!weekRecord) {
     weekRecord = { week: input.week, title: `Week ${input.week} resources` };
     next.weeks.push(weekRecord);
   }
 
-  const replaced = Boolean(weekRecord[input.typeDefinition.manifestKey]);
-  if (replaced && !input.overwrite) {
-    throw new HttpError(
-      409,
-      `Week ${input.week} already has a ${input.typeDefinition.label}. Publish again to replace it.`,
-      "RESOURCE_EXISTS"
-    );
-  }
-
-  const resourcePath = `resources/week-${String(input.week).padStart(3, "0")}/${input.typeDefinition.filename}`;
-  weekRecord[input.typeDefinition.manifestKey] = {
+  const resourceId = input.resourceId || crypto.randomUUID();
+  const resourcePath = `resources/week-${String(input.week).padStart(3, "0")}/${input.typeDefinition.filenamePrefix}-${resourceId}.html`;
+  if (!Array.isArray(weekRecord[input.typeDefinition.collectionKey])) weekRecord[input.typeDefinition.collectionKey] = [];
+  weekRecord[input.typeDefinition.collectionKey].push({
+    id: resourceId,
     title: input.title,
     path: resourcePath,
     publishedAt
-  };
+  });
   next.weeks.sort((a, b) => a.week - b.week);
   next.updatedAt = publishedAt;
 
-  return { manifest: next, resourcePath, replaced };
+  return { manifest: next, resourcePath, resourceId };
+}
+
+export function migrateManifest(manifest) {
+  const next = structuredClone(manifest);
+  if (next.schemaVersion === 2) return next;
+
+  next.schemaVersion = 2;
+  for (const week of next.weeks) {
+    week.studyTools = week.studyTool
+      ? [{ id: `week-${String(week.week).padStart(3, "0")}-study-tool`, ...week.studyTool }]
+      : [];
+    week.accessibleHomeworks = week.accessibleHomework
+      ? [{ id: `week-${String(week.week).padStart(3, "0")}-accessible-homework`, ...week.accessibleHomework }]
+      : [];
+    delete week.studyTool;
+    delete week.accessibleHomework;
+  }
+  return next;
 }
 
 async function publishWithRetry(input, env) {
@@ -246,7 +274,7 @@ async function publishOnce(input, env) {
   const commit = await github("/git/commits", {
     method: "POST",
     body: {
-      message: `${updated.replaced ? "Replace" : "Publish"} Week ${input.week} ${input.typeDefinition.label}`,
+      message: `Publish Week ${input.week} ${input.typeDefinition.label}`,
       tree: tree.sha,
       parents: [baseCommitSha]
     }
@@ -301,6 +329,40 @@ export async function secureEqual(candidate, expected) {
   return difference === 0;
 }
 
+export async function createSessionToken(secret, nowSeconds = Math.floor(Date.now() / 1000)) {
+  const payload = encodeBase64Url(new TextEncoder().encode(JSON.stringify({
+    exp: nowSeconds + SESSION_LIFETIME_SECONDS,
+    nonce: crypto.randomUUID()
+  })));
+  return `${payload}.${await signTokenPayload(payload, secret)}`;
+}
+
+export async function verifySessionToken(token, secret, nowSeconds = Math.floor(Date.now() / 1000)) {
+  const [payload, signature, extra] = token.split(".");
+  if (!payload || !signature || extra) return false;
+  const expectedSignature = await signTokenPayload(payload, secret);
+  if (!(await secureEqual(signature, expectedSignature))) return false;
+
+  try {
+    const data = JSON.parse(new TextDecoder().decode(decodeBase64Url(payload)));
+    return Number.isInteger(data.exp) && data.exp >= nowSeconds;
+  } catch {
+    return false;
+  }
+}
+
+async function signTokenPayload(payload, secret) {
+  const key = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+  const signature = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(payload));
+  return encodeBase64Url(new Uint8Array(signature));
+}
+
 function validateEnvironment(env) {
   const required = ["ADMIN_PASSWORD", "GITHUB_TOKEN", "GITHUB_OWNER", "GITHUB_REPO", "GITHUB_BRANCH", "SITE_BASE_URL", "ALLOWED_ORIGINS"];
   const missing = required.filter((key) => typeof env[key] !== "string" || !env[key].trim());
@@ -325,7 +387,7 @@ function getCorsHeaders(origin, configuredOrigins = "") {
   return {
     "Access-Control-Allow-Origin": origin,
     "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
     "Access-Control-Max-Age": "86400",
     Vary: "Origin"
   };
@@ -347,6 +409,22 @@ function jsonResponse(body, status, corsHeaders = null, additionalHeaders = {}) 
 function getString(form, key) {
   const value = form.get(key);
   return typeof value === "string" ? value : "";
+}
+
+function getBearerToken(value) {
+  const match = typeof value === "string" && value.match(/^Bearer\s+(.+)$/i);
+  return match ? match[1] : "";
+}
+
+function encodeBase64Url(bytes) {
+  let binary = "";
+  for (const byte of bytes) binary += String.fromCharCode(byte);
+  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+}
+
+function decodeBase64Url(value) {
+  const padded = value.replace(/-/g, "+").replace(/_/g, "/").padEnd(Math.ceil(value.length / 4) * 4, "=");
+  return Uint8Array.from(atob(padded), (character) => character.charCodeAt(0));
 }
 
 function encodeRef(ref) {
