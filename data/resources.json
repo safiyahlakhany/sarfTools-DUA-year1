@@ -7,10 +7,10 @@
       "studyTools": [
         {
           "id": "week-001-study-tool",
-          "title": "المضارع",
+          "title": "المُضارِع المَعْرُوف المُثْبَت",
           "path": "resources/week-001/study-tool.html",
           "publishedAt": "2026-08-30T06:51:44.311Z",
-          "updatedAt": "2026-08-30T07:36:43.002Z"
+          "updatedAt": "2026-08-30T14:21:08.564Z"
         }
       ],
       "accessibleHomeworks": [
@@ -22,5 +22,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-08-30T07:36:43.002Z"
+  "updatedAt": "2026-08-30T14:21:08.564Z"
 }
