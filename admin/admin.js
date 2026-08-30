@@ -534,7 +534,9 @@ function renderQuizEditor(quizzes) {
     row.dataset.quizId = quiz.id;
     const nextLabel = document.createElement("p");
     nextLabel.className = "quiz-next-label";
-    nextLabel.textContent = quiz.id === findNextQuizId(quizzes) ? "Next scheduled quiz" : "";
+    const isNext = quiz.id === findNextQuizId(quizzes);
+    if (isNext) row.classList.add("next");
+    nextLabel.textContent = isNext ? "Next scheduled quiz" : "";
     row.append(nextLabel);
     const grid = document.createElement("div");
     grid.className = "quiz-edit-grid";

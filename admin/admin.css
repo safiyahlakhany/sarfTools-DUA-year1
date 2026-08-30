@@ -381,13 +381,13 @@ input.invalid { border-color: #b23a2e; background: #fff7f5; }
 .week-edit-button { border: 0; background: transparent; color: var(--accent); cursor: pointer; font: inherit; font-size: .74rem; font-weight: 700; text-decoration: underline; }
 .quiz-manage-card { margin-top: 22px; }
 .quiz-manage-list { display: grid; gap: 12px; }
-.quiz-edit-row { padding: 13px; border: 1px solid var(--line); border-radius: 10px; background: #fbf8f1; }
+.quiz-edit-row { display: grid; gap: 8px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: #fbf8f1; }
 .quiz-edit-row.next { border-color: var(--gold); background: #fbf3e6; }
 .quiz-edit-grid { display: grid; gap: 10px; }
-.quiz-edit-row .publish-button { min-height: 44px; margin-top: 11px; font-size: .9rem; }
+.quiz-edit-row .publish-button { min-height: 42px; margin-top: 0; padding: 8px 15px; font-size: .86rem; }
 .quiz-edit-row label { margin-bottom: 4px; }
 .quiz-edit-row input { min-height: 42px; font-size: .9rem; }
-.quiz-next-label { margin: 0 0 8px; color: var(--gold); font-size: .72rem; font-weight: 700; text-transform: uppercase; }
+.quiz-next-label { min-height: 1em; margin: 0; color: var(--gold); font-size: .68rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
 
 .manage-week {
   overflow: hidden;
@@ -447,4 +447,7 @@ input.invalid { border-color: #b23a2e; background: #fff7f5; }
   .type-options,
   .field-grid,
   .quiz-edit-grid { grid-template-columns: 1fr 1fr; }
+  .quiz-edit-row { grid-template-columns: 1fr auto; align-items: end; }
+  .quiz-edit-grid { grid-column: 1 / -1; grid-template-columns: minmax(120px, .7fr) minmax(120px, .85fr) minmax(180px, 2fr); gap: 8px; }
+  .quiz-edit-row .publish-button { grid-column: 2; }
 }
