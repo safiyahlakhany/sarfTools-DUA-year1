@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Weekly study tools and accessible homework for Arabic class.">
+  <title>Ṣarf Class Resources</title>
+  <link rel="stylesheet" href="assets/site.css">
+  <script src="assets/site.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <p class="eyebrow">Arabic class resources</p>
+      <h1>Ṣarf Study <span class="arabic" lang="ar">دُرُوس الصَّرْف</span></h1>
+      <p class="intro">Study the weekly lesson, then complete the accessible homework. Previous weeks remain available here for review.</p>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="resource-guide" aria-labelledby="resource-guide-title">
+      <h2 id="resource-guide-title" class="visually-hidden">Resource types</h2>
+      <div class="guide-item">
+        <span class="guide-number" aria-hidden="true">1</span>
+        <div>
+          <h3>Weekly Study Tool</h3>
+          <p>Review the lesson, tables, and practice questions.</p>
+        </div>
+      </div>
+      <div class="guide-item">
+        <span class="guide-number" aria-hidden="true">2</span>
+        <div>
+          <h3>Weekly Accessible Homework</h3>
+          <p>Complete the tap-based assignment without handwriting.</p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="weeks-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow dark">Class archive</p>
+          <h2 id="weeks-title">Resources by week</h2>
+        </div>
+        <p class="week-count" id="week-count" aria-live="polite"></p>
+      </div>
+
+      <div id="resource-status" class="status" role="status">Loading class resources…</div>
+      <div id="week-list" class="week-list" aria-live="polite"></div>
+      <noscript>
+        <p class="status error">JavaScript is required to load the class resource list.</p>
+      </noscript>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Choose a resource above to open it as its own page.</p>
+  </footer>
+</body>
+</html>
+

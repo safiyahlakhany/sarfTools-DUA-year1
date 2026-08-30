@@ -1,0 +1,4 @@
+# Copy this file to .dev.vars for local Worker testing. Never commit .dev.vars.
+ADMIN_PASSWORD=choose-a-long-unique-password
+GITHUB_TOKEN=github-token-scoped-to-this-repository
+

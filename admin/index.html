@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="Publish weekly Arabic class resources.">
+  <title>Publish a Resource — Ṣarf Class</title>
+  <link rel="stylesheet" href="../assets/site.css">
+  <link rel="stylesheet" href="admin.css">
+  <script src="config.js" defer></script>
+  <script src="admin.js" defer></script>
+</head>
+<body>
+  <header class="site-header admin-header">
+    <div class="header-inner">
+      <a class="back-link" href="../">← Class resources</a>
+      <p class="eyebrow">Teacher administration</p>
+      <h1>Publish a Resource <span class="arabic" lang="ar">نَشْر الدَّرْس</span></h1>
+      <p class="intro">Add this week’s Study Tool or Accessible Homework to the class website.</p>
+    </div>
+  </header>
+
+  <main class="admin-shell">
+    <div id="connection-notice" class="connection-notice" hidden>
+      The publishing backend is not connected yet. You can test the form, but publishing will be enabled after the Cloudflare Worker is configured.
+    </div>
+
+    <form id="publish-form" class="publish-form" novalidate>
+      <section class="form-card" aria-labelledby="access-heading">
+        <div class="step-heading">
+          <span class="step-number" aria-hidden="true">1</span>
+          <div>
+            <h2 id="access-heading">Admin access</h2>
+            <p>Enter the password provided for publishing class resources.</p>
+          </div>
+        </div>
+
+        <label class="field-label" for="password">Admin password</label>
+        <div class="password-row">
+          <input id="password" name="password" type="password" autocomplete="current-password" required>
+          <button class="reveal-button" id="reveal-password" type="button" aria-pressed="false">Show</button>
+        </div>
+      </section>
+
+      <section class="form-card" aria-labelledby="details-heading">
+        <div class="step-heading">
+          <span class="step-number" aria-hidden="true">2</span>
+          <div>
+            <h2 id="details-heading">Resource details</h2>
+            <p>Choose where the file should appear on the class website.</p>
+          </div>
+        </div>
+
+        <fieldset class="type-fieldset">
+          <legend>Resource type</legend>
+          <div class="type-options">
+            <label class="type-option">
+              <input type="radio" name="resourceType" value="study-tool" required>
+              <span class="type-control">
+                <span class="type-mark" aria-hidden="true">S</span>
+                <span><strong>Weekly Study Tool</strong><small>Lesson notes, tables, and practice</small></span>
+              </span>
+            </label>
+            <label class="type-option">
+              <input type="radio" name="resourceType" value="accessible-homework" required>
+              <span class="type-control">
+                <span class="type-mark" aria-hidden="true">H</span>
+                <span><strong>Weekly Accessible Homework</strong><small>Tap-based homework assignment</small></span>
+              </span>
+            </label>
+          </div>
+        </fieldset>
+
+        <div class="field-grid">
+          <div>
+            <label class="field-label" for="week">Week number</label>
+            <input id="week" name="week" type="number" inputmode="numeric" min="1" max="999" step="1" placeholder="1" required>
+          </div>
+          <div>
+            <label class="field-label" for="title">Display title</label>
+            <input id="title" name="title" type="text" maxlength="120" placeholder="e.g. Present-Tense Practice" required>
+          </div>
+        </div>
+      </section>
+
+      <section class="form-card" aria-labelledby="file-heading">
+        <div class="step-heading">
+          <span class="step-number" aria-hidden="true">3</span>
+          <div>
+            <h2 id="file-heading">Choose the HTML file</h2>
+            <p>The original file will be published without changing its contents.</p>
+          </div>
+        </div>
+
+        <label class="file-picker" for="html-file">
+          <span class="file-icon" aria-hidden="true">HTML</span>
+          <span class="file-copy">
+            <strong id="file-label">Tap to choose a file</strong>
+            <small id="file-help">HTML files up to 2 MB</small>
+          </span>
+          <span class="choose-label">Choose</span>
+        </label>
+        <input class="visually-hidden" id="html-file" name="file" type="file" accept=".html,.htm,text/html" required>
+      </section>
+
+      <div id="form-message" class="form-message" role="alert" aria-live="assertive" hidden></div>
+
+      <button id="publish-button" class="publish-button" type="submit">
+        <span class="button-label">Publish resource</span>
+        <span class="button-progress" hidden>Publishing…</span>
+      </button>
+      <p class="publish-note">Publishing a file for an existing week and resource type will replace that resource after confirmation.</p>
+    </form>
+
+    <section id="publish-success" class="success-card" aria-labelledby="success-heading" hidden>
+      <div class="success-mark" aria-hidden="true">✓</div>
+      <p class="eyebrow dark">Published</p>
+      <h2 id="success-heading">Your resource is on its way</h2>
+      <p id="success-message">GitHub Pages may take a short time to make the new file available.</p>
+      <a id="published-link" class="published-link" href="#">Open published resource →</a>
+      <button id="publish-another" class="secondary-button" type="button">Publish another resource</button>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Your password is sent only to the secure publishing service and is never saved by this page.</p>
+  </footer>
+</body>
+</html>
+

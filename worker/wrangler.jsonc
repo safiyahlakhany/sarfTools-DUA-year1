@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "sarf-resource-publisher",
+  "main": "src/index.js",
+  "compatibility_date": "2026-08-29",
+  "workers_dev": true,
+  "vars": {
+    "GITHUB_OWNER": "safiyahlakhany",
+    "GITHUB_REPO": "sarfTools-DUA-year1",
+    "GITHUB_BRANCH": "main",
+    "SITE_BASE_URL": "https://safiyahlakhany.github.io/sarfTools-DUA-year1/",
+    "ALLOWED_ORIGINS": "http://localhost:8000,https://safiyahlakhany.github.io"
+  }
+}
