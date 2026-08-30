@@ -1,0 +1,26 @@
+[
+  {
+    "date": "2026-09-16",
+    "label": "Quiz 1",
+    "topic": "Present tense pronouns"
+  },
+  {
+    "date": "2026-10-07",
+    "label": "Quiz 2",
+    "topic": "Past tense pronouns",
+    "weight": "7.5%"
+  },
+  {
+    "date": "2026-10-28",
+    "label": "Quiz 3",
+    "topic": "Present and Past Tense Verbs, Combined",
+    "weight": "7.5%"
+  },
+  {
+    "date": "2026-11-28",
+    "label": "Quiz 4",
+    "topic": "Noun scales in morphology",
+    "weight": "7.5%"
+  }
+]
+

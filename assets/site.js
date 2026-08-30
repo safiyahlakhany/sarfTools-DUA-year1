@@ -18,6 +18,18 @@ const RESOURCE_TYPES = [
 const statusElement = document.querySelector("#resource-status");
 const listElement = document.querySelector("#week-list");
 const countElement = document.querySelector("#week-count");
+const WEEK_ONE_DATE_UTC = Date.UTC(2026, 7, 26);
+
+function formatWeekDate(weekNumber) {
+  const date = new Date(WEEK_ONE_DATE_UTC + (weekNumber - 1) * 7 * 24 * 60 * 60 * 1000);
+  const includeYear = date.getUTCFullYear() !== 2026;
+  return new Intl.DateTimeFormat("en-US", {
+    month: "long",
+    day: "numeric",
+    ...(includeYear ? { year: "numeric" } : {}),
+    timeZone: "UTC"
+  }).format(date);
+}
 
 function makeResourceItem(resource, type) {
   const item = document.createElement("a");
@@ -95,7 +107,7 @@ function renderWeeks(weeks) {
 
     const label = document.createElement("p");
     label.className = "week-label";
-    label.textContent = `Week ${week.week}`;
+    label.textContent = `Week ${week.week} · ${formatWeekDate(week.week)}`;
 
     const heading = document.createElement("h3");
     heading.className = "week-title";
@@ -142,3 +154,48 @@ async function loadResources() {
 }
 
 loadResources();
+loadUpcomingQuiz();
+
+async function loadUpcomingQuiz() {
+  const heading = document.querySelector("#upcoming-quiz-heading");
+  const countdown = document.querySelector("#quiz-countdown");
+  const badge = document.querySelector("#quiz-date-badge");
+  if (!heading || !countdown || !badge) return;
+
+  try {
+    const response = await fetch("data/quizzes.json", { cache: "no-cache" });
+    if (!response.ok) throw new Error("Quiz schedule could not be loaded");
+    const quizzes = await response.json();
+    const today = new Date();
+    const todayUtc = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
+    const upcoming = quizzes.find((quiz) => dateValue(quiz.date) >= todayUtc);
+
+    if (!upcoming) {
+      badge.textContent = "✓";
+      heading.textContent = "All scheduled quizzes are complete";
+      countdown.textContent = "View the complete schedule for this year.";
+      return;
+    }
+
+    const days = Math.round((dateValue(upcoming.date) - todayUtc) / 86400000);
+    const quizDate = parseDate(upcoming.date);
+    badge.textContent = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", timeZone: "UTC" })
+      .format(quizDate).replace(" ", "\n");
+    heading.textContent = `${upcoming.label}: ${upcoming.topic}`;
+    countdown.textContent = days === 0 ? "Today" : days === 1 ? "Tomorrow" : `${days} days away`;
+  } catch (error) {
+    console.error(error);
+    badge.textContent = "!";
+    heading.textContent = "Quiz schedule unavailable";
+    countdown.textContent = "Open the full schedule and try again.";
+  }
+}
+
+function parseDate(dateText) {
+  const [year, month, day] = dateText.split("-").map(Number);
+  return new Date(Date.UTC(year, month - 1, day));
+}
+
+function dateValue(dateText) {
+  return parseDate(dateText).getTime();
+}
