@@ -135,6 +135,21 @@
         <a id="published-link" class="published-link" href="#">Open published resource →</a>
         <button id="publish-another" class="secondary-button" type="button">Publish another resource</button>
       </section>
+
+      <section class="form-card manage-card" aria-labelledby="manage-heading">
+        <div class="manage-heading-row">
+          <div>
+            <p class="eyebrow dark">Published materials</p>
+            <h2 id="manage-heading">Manage resources</h2>
+          </div>
+          <button id="refresh-resources" class="secondary-button compact-button" type="button">Refresh</button>
+        </div>
+        <p class="manage-intro">Open a resource to review it, or delete it from the class website. Deleted files remain recoverable through Git history.</p>
+        <div id="manage-message" class="form-message" role="status" aria-live="polite" hidden></div>
+        <div id="manage-list" class="manage-list" aria-live="polite">
+          <p class="manage-loading">Loading published resources…</p>
+        </div>
+      </section>
     </div>
   </main>
 

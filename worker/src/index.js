@@ -78,7 +78,9 @@ export default {
         }, 200, corsHeaders);
       }
 
-      if (action !== "publish") throw new HttpError(400, "Unknown admin action.", "INVALID_ACTION");
+      if (!["publish", "list", "delete"].includes(action)) {
+        throw new HttpError(400, "Unknown admin action.", "INVALID_ACTION");
+      }
 
       const bearerToken = getBearerToken(request.headers.get("Authorization"));
       const legacyPassword = getString(form, "password");
@@ -86,6 +88,24 @@ export default {
         ? await verifySessionToken(bearerToken, env.ADMIN_PASSWORD)
         : Boolean(legacyPassword) && await secureEqual(legacyPassword, env.ADMIN_PASSWORD);
       if (!authenticated) throw new HttpError(401, "Your admin session is invalid or expired.", "SESSION_INVALID");
+
+      if (action === "list") {
+        return jsonResponse({ ok: true, manifest: await readCurrentManifest(env) }, 200, corsHeaders);
+      }
+
+      if (action === "delete") {
+        const resourceId = getString(form, "resourceId");
+        if (!/^[a-zA-Z0-9-]{1,100}$/.test(resourceId)) {
+          throw new HttpError(400, "Choose a valid resource to delete.", "INVALID_RESOURCE_ID");
+        }
+        const deleted = await deleteWithRetry(resourceId, env);
+        return jsonResponse({
+          ok: true,
+          resourceId,
+          commitSha: deleted.commitSha,
+          message: `“${deleted.resource.title}” was deleted. It remains recoverable through Git history.`
+        }, 200, corsHeaders);
+      }
 
       const input = await validateUpload(form);
       const result = await publishWithRetry(input, env);
@@ -201,7 +221,13 @@ export function updateManifest(manifest, input, publishedAt = new Date().toISOSt
 
 export function migrateManifest(manifest) {
   const next = structuredClone(manifest);
-  if (next.schemaVersion === 2) return next;
+  if (next.schemaVersion === 2) {
+    for (const week of next.weeks) {
+      if (!Array.isArray(week.studyTools)) week.studyTools = [];
+      if (!Array.isArray(week.accessibleHomeworks)) week.accessibleHomeworks = [];
+    }
+    return next;
+  }
 
   next.schemaVersion = 2;
   for (const week of next.weeks) {
@@ -215,6 +241,28 @@ export function migrateManifest(manifest) {
     delete week.accessibleHomework;
   }
   return next;
+}
+
+export function removeResourceFromManifest(manifest, resourceId, deletedAt = new Date().toISOString()) {
+  const next = migrateManifest(manifest);
+  for (const week of next.weeks) {
+    for (const typeDefinition of Object.values(RESOURCE_TYPES)) {
+      const collection = Array.isArray(week[typeDefinition.collectionKey]) ? week[typeDefinition.collectionKey] : [];
+      const index = collection.findIndex((resource) => resource.id === resourceId);
+      if (index === -1) continue;
+
+      const [resource] = collection.splice(index, 1);
+      if (!/^resources\/week-\d{3}\/[a-zA-Z0-9-]+\.html$/.test(resource.path)) {
+        throw new HttpError(500, "The resource has an unsafe repository path.", "INVALID_MANIFEST");
+      }
+      if (week.studyTools.length === 0 && week.accessibleHomeworks.length === 0) {
+        next.weeks = next.weeks.filter((entry) => entry.week !== week.week);
+      }
+      next.updatedAt = deletedAt;
+      return { manifest: next, resource, week: week.week, typeDefinition };
+    }
+  }
+  throw new HttpError(404, "That resource no longer exists.", "RESOURCE_NOT_FOUND");
 }
 
 async function publishWithRetry(input, env) {
@@ -286,6 +334,77 @@ async function publishOnce(input, env) {
     body: { sha: commit.sha, force: false }
   });
 
+  return { ...updated, commitSha: commit.sha };
+}
+
+async function readCurrentManifest(env) {
+  const github = createGitHubClient(env);
+  const file = await github(`/contents/${MANIFEST_PATH}?ref=${encodeURIComponent(env.GITHUB_BRANCH)}`);
+  try {
+    return migrateManifest(JSON.parse(decodeBase64Utf8(file.content)));
+  } catch (error) {
+    if (error instanceof HttpError) throw error;
+    throw new HttpError(500, "The current resource manifest could not be read.", "INVALID_MANIFEST");
+  }
+}
+
+async function deleteWithRetry(resourceId, env) {
+  let lastError;
+  for (let attempt = 1; attempt <= MAX_GITHUB_ATTEMPTS; attempt += 1) {
+    try {
+      return await deleteOnce(resourceId, env);
+    } catch (error) {
+      lastError = error;
+      if (!(error instanceof GitHubError) || error.endpoint !== "update-ref" || error.status !== 422) throw error;
+    }
+  }
+  console.error("GitHub branch changed during all deletion attempts", lastError);
+  throw new HttpError(409, "The repository changed while deleting. Please try again.", "DELETE_CONFLICT");
+}
+
+async function deleteOnce(resourceId, env) {
+  const github = createGitHubClient(env);
+  const branchRef = `heads/${env.GITHUB_BRANCH}`;
+  const ref = await github(`/git/ref/${encodeRef(branchRef)}`);
+  const baseCommitSha = ref.object.sha;
+  const baseCommit = await github(`/git/commits/${baseCommitSha}`);
+  const manifestFile = await github(`/contents/${MANIFEST_PATH}?ref=${encodeURIComponent(baseCommitSha)}`);
+
+  let manifest;
+  try {
+    manifest = JSON.parse(decodeBase64Utf8(manifestFile.content));
+  } catch {
+    throw new HttpError(500, "The current resource manifest could not be read.", "INVALID_MANIFEST");
+  }
+
+  const updated = removeResourceFromManifest(manifest, resourceId);
+  const manifestBlob = await github("/git/blobs", {
+    method: "POST",
+    body: { content: `${JSON.stringify(updated.manifest, null, 2)}\n`, encoding: "utf-8" }
+  });
+  const tree = await github("/git/trees", {
+    method: "POST",
+    body: {
+      base_tree: baseCommit.tree.sha,
+      tree: [
+        { path: updated.resource.path, mode: "100644", type: "blob", sha: null },
+        { path: MANIFEST_PATH, mode: "100644", type: "blob", sha: manifestBlob.sha }
+      ]
+    }
+  });
+  const commit = await github("/git/commits", {
+    method: "POST",
+    body: {
+      message: `Delete Week ${updated.week} ${updated.typeDefinition.label}: ${updated.resource.title}`,
+      tree: tree.sha,
+      parents: [baseCommitSha]
+    }
+  });
+  await github(`/git/refs/${encodeRef(branchRef)}`, {
+    method: "PATCH",
+    endpointName: "update-ref",
+    body: { sha: commit.sha, force: false }
+  });
   return { ...updated, commitSha: commit.sha };
 }
 

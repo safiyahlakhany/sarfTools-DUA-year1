@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   createSessionToken,
   migrateManifest,
+  removeResourceFromManifest,
   secureEqual,
   updateManifest,
   validateHtml,
@@ -92,4 +93,44 @@ test("updateManifest keeps weeks in ascending numeric order", () => {
     resourceId: "five"
   });
   assert.deepEqual(result.manifest.weeks.map((entry) => entry.week), [2, 5, 10]);
+});
+
+test("removeResourceFromManifest removes only the selected resource", () => {
+  const manifest = {
+    schemaVersion: 2,
+    weeks: [{
+      week: 1,
+      studyTools: [
+        { id: "keep", title: "Keep", path: "resources/week-001/study-tool-keep.html" },
+        { id: "delete", title: "Delete", path: "resources/week-001/study-tool-delete.html" }
+      ],
+      accessibleHomeworks: []
+    }]
+  };
+  const result = removeResourceFromManifest(manifest, "delete", "2026-08-30T12:00:00.000Z");
+  assert.equal(result.resource.title, "Delete");
+  assert.deepEqual(result.manifest.weeks[0].studyTools.map((resource) => resource.id), ["keep"]);
+  assert.equal(manifest.weeks[0].studyTools.length, 2, "the original manifest remains unchanged");
+});
+
+test("removeResourceFromManifest removes an empty week", () => {
+  const manifest = {
+    schemaVersion: 2,
+    weeks: [{
+      week: 9,
+      studyTools: [],
+      accessibleHomeworks: [{ id: "last", title: "Last", path: "resources/week-009/accessible-homework-last.html" }]
+    }]
+  };
+  const result = removeResourceFromManifest(manifest, "last");
+  assert.equal(result.manifest.weeks.length, 0);
+});
+
+test("removeResourceFromManifest rejects unknown IDs and unsafe paths", () => {
+  const manifest = {
+    schemaVersion: 2,
+    weeks: [{ week: 1, studyTools: [{ id: "bad", title: "Bad", path: "index.html" }], accessibleHomeworks: [] }]
+  };
+  assert.throws(() => removeResourceFromManifest(manifest, "missing"), (error) => error.code === "RESOURCE_NOT_FOUND");
+  assert.throws(() => removeResourceFromManifest(manifest, "bad"), (error) => error.code === "INVALID_MANIFEST");
 });

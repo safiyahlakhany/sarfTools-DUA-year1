@@ -18,6 +18,8 @@ const message = document.querySelector("#form-message");
 const submitButton = document.querySelector("#publish-button");
 const successCard = document.querySelector("#publish-success");
 const connectionNotice = document.querySelector("#connection-notice");
+const manageList = document.querySelector("#manage-list");
+const manageMessage = document.querySelector("#manage-message");
 
 if (!config.workerUrl) connectionNotice.hidden = false;
 
@@ -61,6 +63,7 @@ loginForm.addEventListener("submit", async (event) => {
     loginForm.hidden = true;
     workspace.hidden = false;
     weekInput.focus();
+    void loadResources();
   } catch (error) {
     passwordInput.value = "";
     passwordInput.focus();
@@ -79,6 +82,8 @@ function signOut(sessionExpired) {
   workspace.hidden = true;
   successCard.hidden = true;
   form.hidden = false;
+  manageList.innerHTML = '<p class="manage-loading">Loading published resources…</p>';
+  manageMessage.hidden = true;
   loginForm.hidden = false;
   if (sessionExpired) showLoginMessage("Your admin session expired. Enter the password again.");
   else loginMessage.hidden = true;
@@ -201,6 +206,7 @@ form.addEventListener("submit", async (event) => {
     document.querySelector("#success-message").textContent = result.message || "The site may take a short time to make the new file available.";
     document.querySelector("#published-link").href = result.url;
     successCard.scrollIntoView({ behavior: "smooth", block: "start" });
+    void loadResources();
   } catch (error) {
     showMessage(error.message || "Publishing failed. Please try again.");
   } finally {
@@ -216,3 +222,120 @@ document.querySelector("#publish-another").addEventListener("click", () => {
   clearValidation();
   weekInput.focus();
 });
+
+document.querySelector("#refresh-resources").addEventListener("click", () => void loadResources());
+
+async function loadResources() {
+  manageMessage.hidden = true;
+  manageList.innerHTML = '<p class="manage-loading">Loading published resources…</p>';
+  const body = new FormData();
+  body.set("action", "list");
+
+  try {
+    const response = await fetch(config.workerUrl, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${authToken}` },
+      body
+    });
+    const result = await response.json().catch(() => ({}));
+    if (response.status === 401 && result.code === "SESSION_INVALID") return signOut(true);
+    if (!response.ok || !result.manifest) throw new Error(result.error || "Resources could not be loaded.");
+    renderManagedResources(result.manifest.weeks || []);
+  } catch (error) {
+    manageList.replaceChildren();
+    showManageMessage(error.message || "Resources could not be loaded.", "error");
+  }
+}
+
+function renderManagedResources(weeks) {
+  const sortedWeeks = [...weeks].sort((a, b) => b.week - a.week);
+  if (sortedWeeks.length === 0) {
+    manageList.innerHTML = '<p class="manage-empty">No resources have been published yet.</p>';
+    return;
+  }
+
+  const fragment = document.createDocumentFragment();
+  for (const week of sortedWeeks) {
+    const section = document.createElement("section");
+    section.className = "manage-week";
+    const heading = document.createElement("h3");
+    heading.className = "manage-week-title";
+    heading.textContent = `Week ${week.week}`;
+    section.append(heading);
+
+    const groups = [
+      ["studyTools", "Study Tool"],
+      ["accessibleHomeworks", "Accessible Homework"]
+    ];
+    for (const [key, label] of groups) {
+      for (const resource of week[key] || []) section.append(makeManagedResource(resource, label));
+    }
+    fragment.append(section);
+  }
+  manageList.replaceChildren(fragment);
+}
+
+function makeManagedResource(resource, typeLabel) {
+  const row = document.createElement("div");
+  row.className = "manage-resource";
+
+  const copy = document.createElement("div");
+  copy.className = "manage-resource-copy";
+  const type = document.createElement("span");
+  type.className = "manage-resource-type";
+  type.textContent = typeLabel;
+  const title = document.createElement("span");
+  title.className = "manage-resource-title";
+  title.textContent = resource.title;
+  copy.append(type, title);
+
+  const actions = document.createElement("div");
+  actions.className = "manage-actions";
+  const open = document.createElement("a");
+  open.className = "manage-open";
+  open.href = new URL(`../${resource.path}`, window.location.href).toString();
+  open.textContent = "Open";
+  const remove = document.createElement("button");
+  remove.className = "delete-button";
+  remove.type = "button";
+  remove.textContent = "Delete";
+  remove.addEventListener("click", () => void deleteResource(resource, remove));
+  actions.append(open, remove);
+  row.append(copy, actions);
+  return row;
+}
+
+async function deleteResource(resource, button) {
+  const confirmed = window.confirm(`Delete “${resource.title}” from the class website?\n\nThis removes the public file, but it remains recoverable through Git history.`);
+  if (!confirmed) return;
+
+  button.disabled = true;
+  button.textContent = "Deleting…";
+  manageMessage.hidden = true;
+  const body = new FormData();
+  body.set("action", "delete");
+  body.set("resourceId", resource.id);
+
+  try {
+    const response = await fetch(config.workerUrl, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${authToken}` },
+      body
+    });
+    const result = await response.json().catch(() => ({}));
+    if (response.status === 401 && result.code === "SESSION_INVALID") return signOut(true);
+    if (!response.ok) throw new Error(result.error || "The resource could not be deleted.");
+    await loadResources();
+    showManageMessage(result.message || "The resource was deleted.", "notice");
+  } catch (error) {
+    button.disabled = false;
+    button.textContent = "Delete";
+    showManageMessage(error.message || "The resource could not be deleted.", "error");
+  }
+}
+
+function showManageMessage(text, kind) {
+  manageMessage.textContent = text;
+  manageMessage.className = `form-message ${kind}`;
+  manageMessage.hidden = false;
+}

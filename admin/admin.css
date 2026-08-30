@@ -287,6 +287,79 @@ input.invalid { border-color: #b23a2e; background: #fff7f5; }
 .published-link { margin: 20px 0 10px; }
 .success-card .secondary-button { width: 100%; min-height: 46px; }
 
+.manage-card { margin-top: 22px; }
+
+.manage-heading-row {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 13px;
+  border-bottom: 1px solid var(--line);
+}
+
+.manage-heading-row h2 {
+  margin: 0;
+  color: var(--accent);
+  font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  font-size: 1.22rem;
+}
+
+.compact-button { flex: 0 0 auto; min-height: 40px; padding: 8px 12px; }
+.manage-intro { margin: 13px 0 16px; color: var(--muted); font-size: .84rem; }
+.manage-loading,
+.manage-empty { margin: 0; color: var(--muted); font-size: .86rem; text-align: center; }
+.manage-list { display: grid; gap: 14px; }
+
+.manage-week {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fbf8f1;
+}
+
+.manage-week-title {
+  margin: 0;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--line);
+  color: var(--gold);
+  font-size: .76rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.manage-resource { display: flex; gap: 10px; align-items: center; padding: 11px 12px; }
+.manage-resource + .manage-resource { border-top: 1px solid var(--line); }
+.manage-resource-copy { min-width: 0; flex: 1; }
+.manage-resource-type { display: block; color: var(--muted); font-size: .7rem; font-weight: 700; text-transform: uppercase; }
+.manage-resource-title { display: block; margin-top: 2px; font-size: .87rem; font-weight: 600; }
+.manage-actions { display: flex; flex: 0 0 auto; gap: 6px; }
+
+.manage-open,
+.delete-button {
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--card);
+  cursor: pointer;
+  font: inherit;
+  font-size: .75rem;
+  font-weight: 700;
+  padding: 7px 9px;
+  text-decoration: none;
+}
+
+.manage-open { color: var(--accent); }
+.delete-button { border-color: #d6a8a1; color: #9d382e; }
+.delete-button:hover { background: #f7e7e4; }
+.delete-button:disabled { cursor: wait; opacity: .55; }
+
+@media (max-width: 470px) {
+  .manage-resource { align-items: flex-start; flex-wrap: wrap; }
+  .manage-actions { width: 100%; }
+  .manage-open,
+  .delete-button { flex: 1; text-align: center; }
+}
+
 @media (min-width: 620px) {
   .admin-shell { padding-top: 30px; }
   .form-card { padding: 21px; }
