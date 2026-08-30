@@ -130,6 +130,18 @@ input[type="text"] {
   padding: 10px 12px;
 }
 
+select {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: #fbf8f1;
+  color: var(--ink);
+  font: inherit;
+  font-size: .92rem;
+  padding: 10px 12px;
+}
+
 input:focus-visible,
 .reveal-button:focus-visible,
 .type-option input:focus-visible + .type-control,
@@ -311,6 +323,22 @@ input.invalid { border-color: #b23a2e; background: #fff7f5; }
 .manage-empty { margin: 0; color: var(--muted); font-size: .86rem; text-align: center; }
 .manage-list { display: grid; gap: 14px; }
 
+.edit-panel {
+  margin-bottom: 16px;
+  padding: 14px;
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  background: var(--accent-soft);
+}
+
+.edit-panel-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 13px; color: var(--accent-dark); }
+.edit-panel-heading button { border: 0; background: transparent; color: var(--accent); cursor: pointer; font: inherit; font-size: .8rem; text-decoration: underline; }
+.edit-grid { gap: 12px; }
+.optional-label { color: var(--muted); font-weight: 500; text-transform: lowercase; }
+#edit-file { width: 100%; color: var(--muted); font-size: .8rem; }
+.edit-help { margin: 10px 0; color: var(--muted); font-size: .76rem; }
+.edit-panel .publish-button { min-height: 46px; margin-top: 10px; }
+
 .manage-week {
   overflow: hidden;
   border: 1px solid var(--line);
@@ -336,6 +364,7 @@ input.invalid { border-color: #b23a2e; background: #fff7f5; }
 .manage-actions { display: flex; flex: 0 0 auto; gap: 6px; }
 
 .manage-open,
+.edit-button,
 .delete-button {
   border: 1px solid var(--line);
   border-radius: 7px;
@@ -349,6 +378,7 @@ input.invalid { border-color: #b23a2e; background: #fff7f5; }
 }
 
 .manage-open { color: var(--accent); }
+.edit-button { color: var(--gold); }
 .delete-button { border-color: #d6a8a1; color: #9d382e; }
 .delete-button:hover { background: #f7e7e4; }
 .delete-button:disabled { cursor: wait; opacity: .55; }
@@ -357,6 +387,7 @@ input.invalid { border-color: #b23a2e; background: #fff7f5; }
   .manage-resource { align-items: flex-start; flex-wrap: wrap; }
   .manage-actions { width: 100%; }
   .manage-open,
+  .edit-button,
   .delete-button { flex: 1; text-align: center; }
 }
 

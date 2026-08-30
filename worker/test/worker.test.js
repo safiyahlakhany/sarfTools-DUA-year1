@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   createSessionToken,
+  editResourceInManifest,
   migrateManifest,
   removeResourceFromManifest,
   secureEqual,
@@ -133,4 +134,53 @@ test("removeResourceFromManifest rejects unknown IDs and unsafe paths", () => {
   };
   assert.throws(() => removeResourceFromManifest(manifest, "missing"), (error) => error.code === "RESOURCE_NOT_FOUND");
   assert.throws(() => removeResourceFromManifest(manifest, "bad"), (error) => error.code === "INVALID_MANIFEST");
+});
+
+test("editResourceInManifest changes a title without changing its path", () => {
+  const manifest = {
+    schemaVersion: 2,
+    weeks: [{
+      week: 1,
+      studyTools: [{ id: "one", title: "Old", path: "resources/week-001/study-tool-one.html" }],
+      accessibleHomeworks: []
+    }]
+  };
+  const result = editResourceInManifest(manifest, {
+    resourceId: "one",
+    resourceType: "study-tool",
+    typeDefinition: studyType,
+    week: 1,
+    title: "New"
+  }, "2026-08-30T13:00:00.000Z");
+  assert.equal(result.pathChanged, false);
+  assert.equal(result.resource.path, "resources/week-001/study-tool-one.html");
+  assert.equal(result.resource.title, "New");
+});
+
+test("editResourceInManifest moves a resource to a new week and type", () => {
+  const homeworkType = {
+    collectionKey: "accessibleHomeworks",
+    filenamePrefix: "accessible-homework",
+    label: "Accessible Homework"
+  };
+  const manifest = {
+    schemaVersion: 2,
+    weeks: [{
+      week: 1,
+      studyTools: [{ id: "move", title: "Old", path: "resources/week-001/study-tool-move.html" }],
+      accessibleHomeworks: []
+    }]
+  };
+  const result = editResourceInManifest(manifest, {
+    resourceId: "move",
+    resourceType: "accessible-homework",
+    typeDefinition: homeworkType,
+    week: 3,
+    title: "Moved"
+  });
+  assert.equal(result.pathChanged, true);
+  assert.equal(result.manifest.weeks.length, 1);
+  assert.equal(result.manifest.weeks[0].week, 3);
+  assert.equal(result.resource.path, "resources/week-003/accessible-homework-move.html");
+  assert.equal(result.manifest.weeks[0].accessibleHomeworks[0].title, "Moved");
 });

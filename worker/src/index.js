@@ -78,7 +78,7 @@ export default {
         }, 200, corsHeaders);
       }
 
-      if (!["publish", "list", "delete"].includes(action)) {
+      if (!["publish", "list", "delete", "edit"].includes(action)) {
         throw new HttpError(400, "Unknown admin action.", "INVALID_ACTION");
       }
 
@@ -104,6 +104,17 @@ export default {
           resourceId,
           commitSha: deleted.commitSha,
           message: `“${deleted.resource.title}” was deleted. It remains recoverable through Git history.`
+        }, 200, corsHeaders);
+      }
+
+      if (action === "edit") {
+        const input = await validateEdit(form);
+        const edited = await editWithRetry(input, env);
+        return jsonResponse({
+          ok: true,
+          resource: edited.resource,
+          commitSha: edited.commitSha,
+          message: `“${edited.resource.title}” was updated successfully. The site may take a short time to refresh.`
         }, 200, corsHeaders);
       }
 
@@ -176,6 +187,51 @@ export async function validateUpload(form) {
     title,
     html,
     resourceId: crypto.randomUUID()
+  };
+}
+
+export async function validateEdit(form) {
+  const resourceId = getString(form, "resourceId");
+  if (!/^[a-zA-Z0-9-]{1,100}$/.test(resourceId)) {
+    throw new HttpError(400, "Choose a valid resource to edit.", "INVALID_RESOURCE_ID");
+  }
+
+  const resourceType = getString(form, "resourceType");
+  const typeDefinition = RESOURCE_TYPES[resourceType];
+  if (!typeDefinition) throw new HttpError(400, "Choose a valid resource type.", "INVALID_RESOURCE_TYPE");
+
+  const weekText = getString(form, "week");
+  if (!/^\d{1,3}$/.test(weekText) || Number(weekText) < 1 || Number(weekText) > 999) {
+    throw new HttpError(400, "Week must be a whole number between 1 and 999.", "INVALID_WEEK");
+  }
+
+  const title = getString(form, "title").trim();
+  if (!title || title.length > 120 || /[\u0000-\u001f\u007f]/u.test(title)) {
+    throw new HttpError(400, "Title must contain between 1 and 120 printable characters.", "INVALID_TITLE");
+  }
+
+  const file = form.get("file");
+  let html = null;
+  if (file && typeof file !== "string" && typeof file.arrayBuffer === "function" && file.size > 0) {
+    if (!/\.html?$/i.test(file.name || "")) {
+      throw new HttpError(400, "The replacement file must end in .html or .htm.", "INVALID_FILE");
+    }
+    if (file.size > MAX_FILE_SIZE) throw new HttpError(413, "The HTML file is larger than the 2 MB limit.", "FILE_TOO_LARGE");
+    try {
+      html = new TextDecoder("utf-8", { fatal: true }).decode(await file.arrayBuffer());
+    } catch {
+      throw new HttpError(400, "The HTML file must use valid UTF-8 text.", "INVALID_ENCODING");
+    }
+    validateHtml(html);
+  }
+
+  return {
+    resourceId,
+    resourceType,
+    typeDefinition,
+    week: Number(weekText),
+    title,
+    html
   };
 }
 
@@ -263,6 +319,56 @@ export function removeResourceFromManifest(manifest, resourceId, deletedAt = new
     }
   }
   throw new HttpError(404, "That resource no longer exists.", "RESOURCE_NOT_FOUND");
+}
+
+export function editResourceInManifest(manifest, input, editedAt = new Date().toISOString()) {
+  const next = migrateManifest(manifest);
+  let sourceWeek;
+  let sourceType;
+  let sourceResource;
+
+  for (const week of next.weeks) {
+    for (const [resourceType, typeDefinition] of Object.entries(RESOURCE_TYPES)) {
+      const collection = week[typeDefinition.collectionKey];
+      const index = collection.findIndex((resource) => resource.id === input.resourceId);
+      if (index === -1) continue;
+      sourceWeek = week;
+      sourceType = resourceType;
+      [sourceResource] = collection.splice(index, 1);
+      break;
+    }
+    if (sourceResource) break;
+  }
+
+  if (!sourceResource) throw new HttpError(404, "That resource no longer exists.", "RESOURCE_NOT_FOUND");
+  if (!/^resources\/week-\d{3}\/[a-zA-Z0-9-]+\.html$/.test(sourceResource.path)) {
+    throw new HttpError(500, "The resource has an unsafe repository path.", "INVALID_MANIFEST");
+  }
+
+  let targetWeek = next.weeks.find((week) => week.week === input.week);
+  if (!targetWeek) {
+    targetWeek = { week: input.week, title: `Week ${input.week} resources`, studyTools: [], accessibleHomeworks: [] };
+    next.weeks.push(targetWeek);
+  }
+
+  const pathChanged = sourceWeek.week !== input.week || sourceType !== input.resourceType;
+  const targetPath = pathChanged
+    ? `resources/week-${String(input.week).padStart(3, "0")}/${input.typeDefinition.filenamePrefix}-${input.resourceId}.html`
+    : sourceResource.path;
+  const resource = { ...sourceResource, title: input.title, path: targetPath, updatedAt: editedAt };
+  targetWeek[input.typeDefinition.collectionKey].push(resource);
+
+  next.weeks = next.weeks.filter((week) => week.studyTools.length > 0 || week.accessibleHomeworks.length > 0);
+  next.weeks.sort((a, b) => a.week - b.week);
+  next.updatedAt = editedAt;
+  return {
+    manifest: next,
+    resource,
+    sourceResource,
+    sourceWeek: sourceWeek.week,
+    targetWeek: input.week,
+    pathChanged
+  };
 }
 
 async function publishWithRetry(input, env) {
@@ -396,6 +502,83 @@ async function deleteOnce(resourceId, env) {
     method: "POST",
     body: {
       message: `Delete Week ${updated.week} ${updated.typeDefinition.label}: ${updated.resource.title}`,
+      tree: tree.sha,
+      parents: [baseCommitSha]
+    }
+  });
+  await github(`/git/refs/${encodeRef(branchRef)}`, {
+    method: "PATCH",
+    endpointName: "update-ref",
+    body: { sha: commit.sha, force: false }
+  });
+  return { ...updated, commitSha: commit.sha };
+}
+
+async function editWithRetry(input, env) {
+  let lastError;
+  for (let attempt = 1; attempt <= MAX_GITHUB_ATTEMPTS; attempt += 1) {
+    try {
+      return await editOnce(input, env);
+    } catch (error) {
+      lastError = error;
+      if (!(error instanceof GitHubError) || error.endpoint !== "update-ref" || error.status !== 422) throw error;
+    }
+  }
+  console.error("GitHub branch changed during all edit attempts", lastError);
+  throw new HttpError(409, "The repository changed while editing. Please try again.", "EDIT_CONFLICT");
+}
+
+async function editOnce(input, env) {
+  const github = createGitHubClient(env);
+  const branchRef = `heads/${env.GITHUB_BRANCH}`;
+  const ref = await github(`/git/ref/${encodeRef(branchRef)}`);
+  const baseCommitSha = ref.object.sha;
+  const baseCommit = await github(`/git/commits/${baseCommitSha}`);
+  const manifestFile = await github(`/contents/${MANIFEST_PATH}?ref=${encodeURIComponent(baseCommitSha)}`);
+
+  let manifest;
+  try {
+    manifest = JSON.parse(decodeBase64Utf8(manifestFile.content));
+  } catch {
+    throw new HttpError(500, "The current resource manifest could not be read.", "INVALID_MANIFEST");
+  }
+
+  const updated = editResourceInManifest(manifest, input);
+  const treeEntries = [];
+  let resourceBlobSha = null;
+
+  if (input.html !== null) {
+    const blob = await github("/git/blobs", {
+      method: "POST",
+      body: { content: input.html, encoding: "utf-8" }
+    });
+    resourceBlobSha = blob.sha;
+  } else if (updated.pathChanged) {
+    const currentFile = await github(`/contents/${encodePath(updated.sourceResource.path)}?ref=${encodeURIComponent(baseCommitSha)}`);
+    resourceBlobSha = currentFile.sha;
+  }
+
+  if (updated.pathChanged) {
+    treeEntries.push({ path: updated.sourceResource.path, mode: "100644", type: "blob", sha: null });
+  }
+  if (resourceBlobSha) {
+    treeEntries.push({ path: updated.resource.path, mode: "100644", type: "blob", sha: resourceBlobSha });
+  }
+
+  const manifestBlob = await github("/git/blobs", {
+    method: "POST",
+    body: { content: `${JSON.stringify(updated.manifest, null, 2)}\n`, encoding: "utf-8" }
+  });
+  treeEntries.push({ path: MANIFEST_PATH, mode: "100644", type: "blob", sha: manifestBlob.sha });
+
+  const tree = await github("/git/trees", {
+    method: "POST",
+    body: { base_tree: baseCommit.tree.sha, tree: treeEntries }
+  });
+  const commit = await github("/git/commits", {
+    method: "POST",
+    body: {
+      message: `Edit resource: ${updated.resource.title}`,
       tree: tree.sha,
       parents: [baseCommitSha]
     }
@@ -548,6 +731,10 @@ function decodeBase64Url(value) {
 
 function encodeRef(ref) {
   return ref.split("/").map(encodeURIComponent).join("/");
+}
+
+function encodePath(path) {
+  return path.split("/").map(encodeURIComponent).join("/");
 }
 
 function decodeBase64Utf8(value) {

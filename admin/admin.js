@@ -20,6 +20,9 @@ const successCard = document.querySelector("#publish-success");
 const connectionNotice = document.querySelector("#connection-notice");
 const manageList = document.querySelector("#manage-list");
 const manageMessage = document.querySelector("#manage-message");
+const editForm = document.querySelector("#edit-form");
+const editMessage = document.querySelector("#edit-message");
+const editSaveButton = document.querySelector("#save-edit");
 
 if (!config.workerUrl) connectionNotice.hidden = false;
 
@@ -84,6 +87,7 @@ function signOut(sessionExpired) {
   form.hidden = false;
   manageList.innerHTML = '<p class="manage-loading">Loading published resources…</p>';
   manageMessage.hidden = true;
+  closeEditForm();
   loginForm.hidden = false;
   if (sessionExpired) showLoginMessage("Your admin session expired. Enter the password again.");
   else loginMessage.hidden = true;
@@ -268,14 +272,15 @@ function renderManagedResources(weeks) {
       ["accessibleHomeworks", "Accessible Homework"]
     ];
     for (const [key, label] of groups) {
-      for (const resource of week[key] || []) section.append(makeManagedResource(resource, label));
+      const resourceType = key === "studyTools" ? "study-tool" : "accessible-homework";
+      for (const resource of week[key] || []) section.append(makeManagedResource(resource, label, week.week, resourceType));
     }
     fragment.append(section);
   }
   manageList.replaceChildren(fragment);
 }
 
-function makeManagedResource(resource, typeLabel) {
+function makeManagedResource(resource, typeLabel, week, resourceType) {
   const row = document.createElement("div");
   row.className = "manage-resource";
 
@@ -295,14 +300,88 @@ function makeManagedResource(resource, typeLabel) {
   open.className = "manage-open";
   open.href = new URL(`../${resource.path}`, window.location.href).toString();
   open.textContent = "Open";
+  const edit = document.createElement("button");
+  edit.className = "edit-button";
+  edit.type = "button";
+  edit.textContent = "Edit";
+  edit.addEventListener("click", () => openEditForm(resource, week, resourceType));
   const remove = document.createElement("button");
   remove.className = "delete-button";
   remove.type = "button";
   remove.textContent = "Delete";
   remove.addEventListener("click", () => void deleteResource(resource, remove));
-  actions.append(open, remove);
+  actions.append(open, edit, remove);
   row.append(copy, actions);
   return row;
+}
+
+function openEditForm(resource, week, resourceType) {
+  document.querySelector("#edit-resource-id").value = resource.id;
+  document.querySelector("#edit-title").value = resource.title;
+  document.querySelector("#edit-week").value = String(week);
+  document.querySelector("#edit-type").value = resourceType;
+  document.querySelector("#edit-file").value = "";
+  editMessage.hidden = true;
+  editForm.hidden = false;
+  editForm.scrollIntoView({ behavior: "smooth", block: "center" });
+  document.querySelector("#edit-title").focus();
+}
+
+function closeEditForm() {
+  editForm.reset();
+  editForm.hidden = true;
+  editMessage.hidden = true;
+}
+
+document.querySelector("#cancel-edit").addEventListener("click", closeEditForm);
+
+editForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  editMessage.hidden = true;
+  const title = document.querySelector("#edit-title").value.trim();
+  const week = Number(document.querySelector("#edit-week").value);
+  const resourceType = document.querySelector("#edit-type").value;
+  const file = document.querySelector("#edit-file").files[0];
+
+  if (!title) return showEditMessage("Enter the title students should see.");
+  if (!Number.isInteger(week) || week < 1 || week > 999) return showEditMessage("Enter a whole week number between 1 and 999.");
+  if (file) {
+    const fileError = await validateFile(file);
+    if (fileError) return showEditMessage(fileError);
+  }
+
+  const body = new FormData();
+  body.set("action", "edit");
+  body.set("resourceId", document.querySelector("#edit-resource-id").value);
+  body.set("title", title);
+  body.set("week", String(week));
+  body.set("resourceType", resourceType);
+  if (file) body.set("file", file, file.name);
+  setButtonBusy(editSaveButton, true);
+
+  try {
+    const response = await fetch(config.workerUrl, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${authToken}` },
+      body
+    });
+    const result = await response.json().catch(() => ({}));
+    if (response.status === 401 && result.code === "SESSION_INVALID") return signOut(true);
+    if (!response.ok) throw new Error(result.error || "The resource could not be updated.");
+    closeEditForm();
+    await loadResources();
+    showManageMessage(result.message || "The resource was updated.", "notice");
+  } catch (error) {
+    showEditMessage(error.message || "The resource could not be updated.");
+  } finally {
+    setButtonBusy(editSaveButton, false);
+  }
+});
+
+function showEditMessage(text) {
+  editMessage.textContent = text;
+  editMessage.className = "form-message error";
+  editMessage.hidden = false;
 }
 
 async function deleteResource(resource, button) {

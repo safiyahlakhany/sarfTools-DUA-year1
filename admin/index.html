@@ -145,6 +145,40 @@
           <button id="refresh-resources" class="secondary-button compact-button" type="button">Refresh</button>
         </div>
         <p class="manage-intro">Open a resource to review it, or delete it from the class website. Deleted files remain recoverable through Git history.</p>
+        <form id="edit-form" class="edit-panel" hidden>
+          <input id="edit-resource-id" type="hidden">
+          <div class="edit-panel-heading">
+            <strong>Edit resource</strong>
+            <button id="cancel-edit" type="button">Cancel</button>
+          </div>
+          <div class="field-grid edit-grid">
+            <div>
+              <label class="field-label" for="edit-title">Display title</label>
+              <input id="edit-title" type="text" maxlength="120" required>
+            </div>
+            <div>
+              <label class="field-label" for="edit-week">Week number</label>
+              <input id="edit-week" type="number" inputmode="numeric" min="1" max="999" step="1" required>
+            </div>
+            <div>
+              <label class="field-label" for="edit-type">Resource type</label>
+              <select id="edit-type" required>
+                <option value="study-tool">Weekly Study Tool</option>
+                <option value="accessible-homework">Weekly Accessible Homework</option>
+              </select>
+            </div>
+            <div>
+              <label class="field-label" for="edit-file">Replace HTML <span class="optional-label">optional</span></label>
+              <input id="edit-file" type="file" accept=".html,.htm,text/html">
+            </div>
+          </div>
+          <p class="edit-help">Leave the file empty to keep the existing HTML unchanged.</p>
+          <div id="edit-message" class="form-message" role="alert" aria-live="assertive" hidden></div>
+          <button id="save-edit" class="publish-button" type="submit">
+            <span class="button-label">Save changes</span>
+            <span class="button-progress" hidden>Saving…</span>
+          </button>
+        </form>
         <div id="manage-message" class="form-message" role="status" aria-live="polite" hidden></div>
         <div id="manage-list" class="manage-list" aria-live="polite">
           <p class="manage-loading">Loading published resources…</p>
