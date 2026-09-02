@@ -20,7 +20,19 @@
           "path": "resources/week-001/accessible-homework.html"
         }
       ]
+    },
+    {
+      "week": 2,
+      "title": "Week 2 resources",
+      "studyTools": [
+        {
+          "id": "9ac0b9bc-b8fe-48f2-8306-ddfd88bd724d",
+          "title": "Verb Characteristics - In Person",
+          "path": "resources/week-002/study-tool-9ac0b9bc-b8fe-48f2-8306-ddfd88bd724d.html",
+          "publishedAt": "2026-09-02T18:06:31.805Z"
+        }
+      ]
     }
   ],
-  "updatedAt": "2026-08-30T14:22:44.473Z"
+  "updatedAt": "2026-09-02T18:06:31.805Z"
 }

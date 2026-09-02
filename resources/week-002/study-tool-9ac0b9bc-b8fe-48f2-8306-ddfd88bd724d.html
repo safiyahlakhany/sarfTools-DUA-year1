@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seegha Quiz — الفعل المضارع المعروف</title>
+<style>
+  :root{
+    --ink:#1b1a17; --paper:#faf7f0; --line:#c9c0ad;
+    --accent:#3a6b5c; --accent-soft:#e3ede8;
+    --wrong:#9e3b2f; --right:#2f7a54; --muted:#6b6458;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+    line-height:1.5; padding:24px 16px 80px; max-width:760px; margin:0 auto;
+  }
+  header{border-bottom:2px solid var(--ink); padding-bottom:14px; margin-bottom:22px}
+  h1{font-size:1.55rem; font-weight:600; letter-spacing:-.01em}
+  .sub{color:var(--muted); font-size:.95rem; margin-top:4px}
+  .arabic{font-family:"Geeza Pro","Traditional Arabic","Times New Roman",serif; direction:rtl}
+  .bar{display:flex; gap:18px; align-items:baseline; margin:14px 0 26px; flex-wrap:wrap}
+  .bar .stat{font-size:.9rem; color:var(--muted)}
+  .bar .stat b{color:var(--ink); font-size:1.05rem}
+  button{font-family:inherit; cursor:pointer}
+  .btn{background:var(--ink); color:var(--paper); border:none; padding:9px 18px;
+    border-radius:2px; font-size:.95rem}
+  .btn:hover{background:#000}
+  .card{border:1px solid var(--line); border-radius:3px; background:#fff;
+    padding:22px 20px; margin-bottom:20px}
+  .verb{font-size:3rem; text-align:center; margin:6px 0 4px; line-height:1.2}
+  .gloss{text-align:center; color:var(--muted); font-size:.95rem; margin-bottom:6px; font-style:italic}
+  .ambig{text-align:center; color:var(--accent); font-size:.8rem; margin-bottom:14px}
+  .qnum{font-size:.8rem; color:var(--muted); letter-spacing:.04em}
+  .slot{border-top:1px solid var(--line); padding:12px 0}
+  .slot:first-of-type{border-top:none}
+  .slot .label{font-size:.85rem; color:var(--muted); margin-bottom:8px}
+  .opts{display:flex; flex-wrap:wrap; gap:8px}
+  .opt{border:1px solid var(--line); background:var(--paper); padding:8px 14px;
+    border-radius:2px; font-size:1.4rem; min-width:70px; text-align:center; position:relative}
+  .opt:hover:not(:disabled){border-color:var(--ink)}
+  .opt.chosen{border-color:var(--ink); border-width:2px; background:#fff}
+  .opt.sel-right{background:var(--accent-soft); border-color:var(--right); color:var(--right)}
+  .opt.sel-wrong{background:#f6e4e0; border-color:var(--wrong); color:var(--wrong)}
+  .opt.reveal-right{border-color:var(--right); border-width:2px}
+  .opt:disabled{cursor:default}
+  .roman{font-size:.72rem; display:block; color:var(--muted); direction:ltr; margin-top:2px}
+  .tick{position:absolute; top:2px; left:5px; font-size:.7rem; color:var(--right)}
+  .result{margin-top:14px; font-size:.88rem; min-height:1.2em}
+  .result.ok{color:var(--right)}
+  .result.no{color:var(--wrong)}
+  footer{text-align:center; margin-top:30px}
+  .score-final{font-size:1.2rem; text-align:center; padding:20px;
+    border:1px solid var(--accent); border-radius:3px; margin-bottom:20px; display:none}
+</style>
+</head>
+<body>
+<header>
+  <h1>Seegha Breakdown Quiz</h1>
+  <div class="sub arabic">الفِعْلُ المُضارِع — مَعْرُوف</div>
+  <div class="sub">Choose one term per row. Any consistent reading of the form is accepted.</div>
+</header>
+
+<div class="bar">
+  <div class="stat">Answered <b id="answered">0</b>/<b id="total">0</b></div>
+  <div class="stat">Correct <b id="correct">0</b></div>
+  <button class="btn" onclick="init()">Restart / Reshuffle</button>
+</div>
+
+<div class="score-final" id="finalScore"></div>
+<div id="quiz"></div>
+
+<footer><button class="btn" onclick="window.scrollTo(0,0)">Back to top</button></footer>
+
+<script>
+const OPTS = {
+  tense:[["الماضِي","al-māḍī"],["المُضارِع","al-muḍāriʿ"],["الأَمْر","al-amr"]],
+  voice:[["مَعْرُوف","maʿrūf"],["مَجْهُول","majhūl"]],
+  person:[["غائِب","ghāʾib"],["حاضِر","ḥāḍir"],["مُتَكَلِّم","mutakallim"]],
+  gender:[["مُذَكَّر","mudhakkar"],["مُؤَنَّث","muʾannath"]],
+  number:[["واحِد","wāḥid"],["تَثْنِيَة","tathniya"],["جَمْع","jamʿ"]],
+  affirm:[["مُثْبَت","muthbat"],["مَنْفِي","manfī"]],
+};
+const SLOT_ORDER=[
+  ["tense","1) الزَّمَن (Tense)"],
+  ["voice","2) البِناء (Voice)"],
+  ["person","3) الشَّخْص (Person)"],
+  ["gender","4) الجِنْس (Gender)"],
+  ["number","5) العَدَد (Number)"],
+  ["affirm","6) الإثْبات (Affirmation)"],
+];
+
+// readings = every valid person/gender/number triplet for the bare form.
+const VERBS = [
+  { v:"يَفْعَلُ",    gloss:"He/It(m) is doing", hasGender:true,
+    readings:[{person:"غائِب",gender:"مُذَكَّر",number:"واحِد"}] },
+  { v:"يَفْعَلَانِ", gloss:"They(d)(m) are doing", hasGender:true,
+    readings:[{person:"غائِب",gender:"مُذَكَّر",number:"تَثْنِيَة"}] },
+  { v:"يَفْعَلُونَ", gloss:"They(p)(m) are doing", hasGender:true,
+    readings:[{person:"غائِب",gender:"مُذَكَّر",number:"جَمْع"}] },
+  { v:"تَفْعَلُ",    gloss:"She/It(f) is doing  •  You(s)(m) are doing", hasGender:true,
+    readings:[{person:"غائِب",gender:"مُؤَنَّث",number:"واحِد"},
+              {person:"حاضِر",gender:"مُذَكَّر",number:"واحِد"}] },
+  { v:"تَفْعَلَانِ", gloss:"They(d)(f) • You(d)(m) • You(d)(f) are doing", hasGender:true,
+    readings:[{person:"غائِب",gender:"مُؤَنَّث",number:"تَثْنِيَة"},
+              {person:"حاضِر",gender:"مُذَكَّر",number:"تَثْنِيَة"},
+              {person:"حاضِر",gender:"مُؤَنَّث",number:"تَثْنِيَة"}] },
+  { v:"يَفْعَلْنَ",  gloss:"They(p)(f) are doing", hasGender:true,
+    readings:[{person:"غائِب",gender:"مُؤَنَّث",number:"جَمْع"}] },
+  { v:"تَفْعَلُونَ", gloss:"You(p)(m) are doing", hasGender:true,
+    readings:[{person:"حاضِر",gender:"مُذَكَّر",number:"جَمْع"}] },
+  { v:"تَفْعَلِينَ", gloss:"You(s)(f) are doing", hasGender:true,
+    readings:[{person:"حاضِر",gender:"مُؤَنَّث",number:"واحِد"}] },
+  { v:"تَفْعَلْنَ",  gloss:"You(p)(f) are doing", hasGender:true,
+    readings:[{person:"حاضِر",gender:"مُؤَنَّث",number:"جَمْع"}] },
+  { v:"أَفْعَلُ",    gloss:"I(s)(m/f) am doing", hasGender:false,
+    readings:[{person:"مُتَكَلِّم",number:"واحِد"}] },
+  { v:"نَفْعَلُ",    gloss:"We(p)(m/f) are doing", hasGender:false,
+    readings:[{person:"مُتَكَلِّم",number:"جَمْع"}] },
+];
+const CONST = { tense:"المُضارِع", voice:"مَعْرُوف", affirm:"مُثْبَت" };
+
+let answered=0, correct=0, cardsTotal=0;
+
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function validSet(verb, key){
+  if(key in CONST) return new Set([CONST[key]]);
+  const s=new Set();
+  verb.readings.forEach(r=>{ if(r[key]!==undefined) s.add(r[key]); });
+  return s;
+}
+
+function isValidReading(verb, sel){
+  if(sel.tense!==CONST.tense||sel.voice!==CONST.voice||sel.affirm!==CONST.affirm) return false;
+  return verb.readings.some(r=>{
+    if(sel.person!==r.person) return false;
+    if(sel.number!==r.number) return false;
+    if(verb.hasGender && sel.gender!==r.gender) return false;
+    return true;
+  });
+}
+
+function init(){
+  answered=0; correct=0; cardsTotal=0;
+  document.getElementById("finalScore").style.display="none";
+  const quiz=document.getElementById("quiz");
+  quiz.innerHTML="";
+  shuffle(VERBS).forEach((verb,vi)=>{
+    cardsTotal++;
+    const card=document.createElement("div");
+    card.className="card";
+    let html=`<div class="qnum">Verb ${vi+1}</div>
+      <div class="verb arabic">${verb.v}</div>`;
+    SLOT_ORDER.forEach(([key,label])=>{
+      if(key==="gender" && !verb.hasGender) return;
+      const optHtml=shuffle(OPTS[key]).map(([ar,ro])=>
+        `<button class="opt arabic" data-key="${key}" data-opt="${ar}"
+           onclick="pick(${vi},this)">${ar}<span class="roman">${ro}</span></button>`
+      ).join("");
+      html+=`<div class="slot" data-slot="${key}">
+        <div class="label">${label}</div>
+        <div class="opts">${optHtml}</div>
+      </div>`;
+    });
+    html+=`<div class="result" id="res${vi}"></div>`;
+    card.innerHTML=html;
+    quiz.appendChild(card);
+  });
+  document.getElementById("total").textContent=cardsTotal;
+  updateBar();
+}
+
+function pick(vi, btn){
+  const card=btn.closest(".card");
+  if(card.dataset.locked) return;
+  const slot=btn.closest(".slot");
+  slot.querySelectorAll(".opt").forEach(b=>b.classList.remove("chosen"));
+  btn.classList.add("chosen");
+  const chosen={}; let complete=true;
+  card.querySelectorAll(".slot").forEach(s=>{
+    const c=s.querySelector(".opt.chosen");
+    if(!c){complete=false;return;}
+    chosen[s.dataset.slot]=c.dataset.opt;
+  });
+  if(complete) grade(vi, card, chosen);
+}
+
+function grade(vi, card, sel){
+  card.dataset.locked="1";
+  const verb=VERBS.find(x=>x.v===card.querySelector(".verb").textContent);
+  const valid=isValidReading(verb, sel);
+  answered++; if(valid) correct++;
+  card.querySelectorAll(".slot").forEach(s=>{
+    const vset=validSet(verb,s.dataset.slot);
+    s.querySelectorAll(".opt").forEach(b=>{
+      b.disabled=true;
+      const term=b.dataset.opt;
+      const isValid=vset.has(term);
+      const isChosen=b.classList.contains("chosen");
+      if(isValid) b.classList.add("reveal-right");
+      if(isChosen) b.classList.add(isValid?"sel-right":"sel-wrong");
+      if(isValid && !isChosen){
+        const t=document.createElement("span"); t.className="tick"; t.textContent="✓";
+        b.appendChild(t);
+      }
+    });
+  });
+  const res=document.getElementById("res"+vi);
+  if(valid){
+    res.className="result ok";
+    res.textContent = verb.readings.length>1
+      ? "Correct. Other accepted readings are marked ✓."
+      : "Correct.";
+  }else{
+    res.className="result no";
+    res.textContent="Not a valid combination. All correct terms are bordered / marked ✓.";
+  }
+  updateBar(); checkDone();
+}
+
+function updateBar(){
+  document.getElementById("answered").textContent=answered;
+  document.getElementById("correct").textContent=correct;
+}
+function checkDone(){
+  if(answered===cardsTotal){
+    const pct=Math.round(correct/cardsTotal*100);
+    const box=document.getElementById("finalScore");
+    box.style.display="block";
+    box.innerHTML=`Complete — <b>${correct}/${cardsTotal}</b> correct (${pct}%)`;
+    box.scrollIntoView({behavior:"smooth"});
+  }
+}
+
+init();
+</script>
+</body>
+</html>
