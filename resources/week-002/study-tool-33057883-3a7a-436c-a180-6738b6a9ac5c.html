@@ -1,0 +1,358 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ṣarf Study — Week 2</title>
+<style>
+  :root{--ink:#26221c;--bg:#f7f3ea;--panel:#fffdf8;--panel2:#f0ebde;--line:#d9d2c2;
+    --accent:#8a6d3b;--accent2:#4f6d5a;--green:#3f7d54;--red:#b0483d;--muted:#7a7365;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Iowan Old Style","Palatino Linotype",Georgia,serif;line-height:1.55;}
+  .ar{font-family:"Amiri","Scheherazade New","Traditional Arabic","Arabic Typesetting",serif;
+    direction:rtl;unicode-bidi:isolate;}
+  .mut{color:var(--muted);}
+  .wrap{max-width:880px;margin:0 auto;padding:22px 16px 90px;}
+  header{border-bottom:2px solid var(--line);padding-bottom:16px;margin-bottom:6px;}
+  h1{margin:0 0 4px;font-size:1.5rem;} h1 .ar{font-size:1.9rem;color:var(--accent);}
+  .sub{color:var(--muted);font-size:.92rem;}
+  nav.tabs{position:sticky;top:0;z-index:20;background:var(--bg);display:flex;flex-wrap:wrap;gap:6px;
+    padding:12px 0;border-bottom:1px solid var(--line);}
+  nav.tabs button{background:var(--panel);color:var(--muted);border:1px solid var(--line);
+    border-radius:7px;padding:6px 11px;cursor:pointer;font:inherit;font-size:.82rem;}
+  nav.tabs button.on{background:var(--accent);color:#fff;border-color:var(--accent);}
+  section.view{display:none;} section.view.on{display:block;}
+  h2{font-size:1.22rem;margin:24px 0 10px;color:var(--accent);border-bottom:1px solid var(--line);padding-bottom:6px;}
+  h3{font-size:1.05rem;margin:18px 0 6px;color:var(--accent2);} h3 .ar{font-size:1.5em;}
+  .lead{color:var(--muted);font-size:.95rem;margin-bottom:14px;}
+  .box{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin:14px 0;}
+  .box ul{margin:6px 0;padding-left:20px;} .box li{margin:6px 0;}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0;}
+  .chip{background:var(--panel);border:1px solid var(--line);border-radius:99px;padding:6px 14px;font-size:.95rem;}
+  .chip b.ar{color:var(--accent);font-size:1.5em;margin-left:8px;vertical-align:-2px;}
+  code.k{background:var(--panel2);border:1px solid var(--line);border-radius:5px;padding:2px 10px;
+    font-family:"Amiri",serif;font-size:1.4em;vertical-align:-3px;}
+  table{width:100%;border-collapse:collapse;margin:10px 0 22px;}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;}
+  th{background:var(--panel2);color:var(--accent);font-size:.76rem;text-transform:uppercase;letter-spacing:.04em;}
+  th .ar{font-size:1.5em;}
+  tr.grp td{background:#efe7d6;color:var(--accent2);font-weight:600;text-align:center;
+    font-family:"Amiri",serif;font-size:1.25rem;direction:rtl;}
+  td.pro{font-size:1.5rem;color:var(--accent);width:90px;text-align:right;}
+  td.form{font-size:1.85rem;line-height:1.7;color:var(--ink);text-align:right;padding:4px 12px;white-space:nowrap;}
+  td.form.neg{color:#6b5730;}
+  .babtable.hidden{display:none;}
+  .babnav{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px;}
+  .babnav button{background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:6px 12px;
+    cursor:pointer;font:inherit;font-size:.9rem;} .babnav button.on{background:var(--accent2);color:#fff;border-color:var(--accent2);}
+  .qbar{display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:.9rem;margin:10px 0 16px;color:var(--muted);}
+  .track{flex:1;min-width:130px;height:8px;background:var(--panel2);border-radius:99px;overflow:hidden;}
+  .fill{height:100%;width:0;background:var(--accent);transition:width .25s;}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin:16px 0;}
+  .qnum{color:var(--accent);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;}
+  .prompt{font-size:1.15rem;margin:8px 0 16px;} .prompt .ar{color:var(--ink);}
+  .opts{display:flex;flex-direction:column;gap:10px;}
+  .opt{text-align:left;background:var(--panel2);color:var(--ink);border:1px solid var(--line);
+    border-radius:8px;padding:12px 16px;cursor:pointer;font:inherit;font-size:1.05rem;transition:.15s;}
+  .opt .ar{font-size:1.9rem;line-height:1.5;vertical-align:-4px;}
+  .opt:hover:not(:disabled){border-color:var(--accent);} .opt:disabled{cursor:default;}
+  .opt.correct{border-color:var(--green);background:#e4f0e6;}
+  .opt.wrong{border-color:var(--red);background:#f4e2e0;}
+  .opt .mk{float:right;font-weight:bold;font-size:1.2em;}
+  .opt.correct .mk{color:var(--green);} .opt.wrong .mk{color:var(--red);}
+  /* cycle letters */
+  .cycle{display:flex;flex-direction:row-reverse;justify-content:center;gap:4px;flex-wrap:wrap;
+    background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:22px 16px;margin:6px 0 4px;direction:rtl;}
+  .cyl{font-family:"Amiri",serif;font-size:3rem;line-height:1;cursor:pointer;padding:4px 6px 10px;
+    border-radius:8px;border:2px solid transparent;min-width:44px;text-align:center;user-select:none;}
+  .cyl:hover{background:#e8e0cf;} .cyl.set{border-color:var(--accent2);}
+  .cyl.locked{cursor:default;}
+  .cyl.ok{border-color:var(--green);background:#e4f0e6;} .cyl.bad{border-color:var(--red);background:#f4e2e0;}
+  .cyl small{display:block;font-family:Georgia,serif;font-size:.7rem;color:var(--muted);direction:ltr;margin-top:2px;}
+  .hintline{font-size:.85rem;color:var(--muted);text-align:center;margin:2px 0 10px;}
+  /* fill input */
+  .fillrow{display:flex;gap:8px;margin:6px 0;flex-wrap:wrap;}
+  .fillrow input{flex:1;min-width:180px;font:inherit;font-size:1.4rem;padding:10px 14px;border:1px solid var(--line);
+    border-radius:8px;background:var(--panel2);color:var(--ink);}
+  .fillrow input.ar{font-family:"Amiri",serif;text-align:right;direction:rtl;}
+  .fillrow input.ok{border-color:var(--green);background:#e4f0e6;}
+  .fillrow input.bad{border-color:var(--red);background:#f4e2e0;}
+  /* pronoun bank */
+  .bank{display:flex;flex-wrap:wrap;gap:8px;direction:rtl;margin:6px 0;}
+  .bank button{font-family:"Amiri",serif;font-size:1.6rem;padding:8px 16px;border:1px solid var(--line);
+    border-radius:8px;background:var(--panel2);color:var(--ink);cursor:pointer;}
+  .bank button:hover:not(:disabled){border-color:var(--accent);}
+  .bank button.ok{border-color:var(--green);background:#e4f0e6;}
+  .bank button.bad{border-color:var(--red);background:#f4e2e0;}
+  .bank button:disabled{cursor:default;}
+  .bank button.sel{border-color:var(--accent2);background:#e7ede9;}
+  .bank button.miss{border-color:var(--red);background:#f4e2e0;}
+  .check{margin-top:14px;background:var(--accent);color:#fff;border:none;padding:10px 22px;border-radius:8px;cursor:pointer;font:inherit;}
+  .check:disabled{opacity:.4;cursor:default;}
+  .fb{margin-top:13px;padding:12px 16px;border-left:4px solid var(--red);background:#f7e7e4;
+    border-radius:0 6px 6px 0;font-size:1rem;color:var(--ink);display:none;}
+  .fb.show{display:block;} .fb .ar{font-size:1.5em;vertical-align:-3px;color:var(--accent);}
+  .fb .lbl{color:var(--red);font-weight:600;text-transform:uppercase;font-size:.72rem;letter-spacing:.08em;display:block;margin-bottom:4px;}
+  .nav2{display:flex;justify-content:space-between;gap:10px;margin-top:16px;}
+  .nav2 button{background:var(--panel);color:var(--ink);border:1px solid var(--line);padding:10px 20px;border-radius:8px;cursor:pointer;font:inherit;}
+  .nav2 button:disabled{opacity:.4;cursor:default;} .nav2 .primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+  .result{text-align:center;padding:32px 18px;} .result .score{font-size:2.8rem;color:var(--accent);margin:6px 0;}
+  .result button{margin-top:16px;background:var(--accent);color:#fff;border:none;padding:11px 24px;border-radius:8px;cursor:pointer;font:inherit;}
+</style></head><body>
+<div class="wrap">
+  <header>
+    <h1>ṣarf Study — Week 2: <span class="ar">المُضارِع</span> Scales</h1>
+    <div class="sub">Negative form · 6 scales of <span class="ar">ثلاثي مجرد</span> · translation both directions</div>
+  </header>
+  <nav class="tabs" id="tabs"></nav>
+
+  <section class="view on" id="v-learn">
+    <h2>Review — forming the مُضارِع</h2>
+    <div class="box"><ul>
+      <li>A verb is <span class="ar">ماضي</span> (past), <span class="ar">مضارع</span> (present/future), or <span class="ar">أمر</span> (command).</li>
+      <li>To make a verb مضارع, add a prefix — <code class="k">أ</code><code class="k">ت</code><code class="k">ي</code><code class="k">ن</code>, the <span class="ar" style="font-size:1.3em">علامات المضارع</span>.</li>
+      <li>The <b>prefix</b> gives person &amp; gender; the <b>suffix</b> gives number.</li>
+    </ul></div>
+    <div class="chips">
+      <span class="chip">Third person male / third person plural female<b class="ar">يَ</b></span>
+      <span class="chip">Second person (M/F) or third person female<b class="ar">تَ</b></span>
+      <span class="chip">First person, singular, M/F<b class="ar">أَ</b></span>
+      <span class="chip">First person, dual/plural, M/F<b class="ar">نَ</b></span>
+    </div>
+    <div class="chips">
+      <span class="chip">Dual<b class="ar">ان</b></span>
+      <span class="chip">Plural male<b class="ar">ون</b></span>
+      <span class="chip">Singular female<b class="ar">ين</b></span>
+      <span class="chip">Plural Feminine<b class="ar">نَ</b></span>
+    </div>
+
+    <h2>Negative form — <span class="ar">مَنْفي</span></h2>
+    <div class="box"><p>Add <span class="ar" style="font-size:1.4em">لَا</span> before the مضارع verb.</p>
+      <p style="font-size:1.1rem"><span class="ar" style="font-size:1.6em">يَنْصُرُ</span> → <span class="ar" style="font-size:1.6em">لَا يَنْصُرُ</span></p>
+      <p class="mut" style="font-size:.9rem">(The past tense is negated with <span class="ar">مَا</span>.)</p></div>
+
+    <h2>Verb scales</h2>
+    <div class="box"><ul>
+      <li><span class="ar" style="font-size:1.3em">صرف كبير</span> — the 14 verbs showing every combination of POV, gender, and number.</li>
+      <li><span class="ar" style="font-size:1.3em">صرف صغير</span> — the set scale showing how a verb is built from its root letters.</li>
+    </ul></div>
+
+    <h2>The 6 scales of <span class="ar">ثلاثي مجرد</span></h2>
+    <p class="lead">Each باب is defined by the vowel on the <span class="ar">ع الكلمة</span>. Both the past and present ع-vowels are needed to fix the باب.</p>
+    <table id="scaletable">
+      <thead><tr><th>#</th><th>باب</th><th>Past ع <span class="ar">ماضي</span></th><th>Present ع <span class="ar">مضارع</span></th><th>Meaning</th></tr></thead>
+      <tbody><tr><td>1</td><td class="ar" style="font-size:1.5rem;text-align:right">نَصَرَ – يَنْصُرُ</td><td>fatḥa (ـَ)</td><td>ḍamma (ـُ)</td><td class="mut">to help</td></tr><tr><td>2</td><td class="ar" style="font-size:1.5rem;text-align:right">ضَرَبَ – يَضْرِبُ</td><td>fatḥa (ـَ)</td><td>kasra (ـِ)</td><td class="mut">to strike</td></tr><tr><td>3</td><td class="ar" style="font-size:1.5rem;text-align:right">سَمِعَ – يَسْمَعُ</td><td>kasra (ـِ)</td><td>fatḥa (ـَ)</td><td class="mut">to hear</td></tr><tr><td>4</td><td class="ar" style="font-size:1.5rem;text-align:right">فَتَحَ – يَفْتَحُ</td><td>fatḥa (ـَ)</td><td>fatḥa (ـَ)</td><td class="mut">to open</td></tr><tr><td>5</td><td class="ar" style="font-size:1.5rem;text-align:right">كَرُمَ – يَكْرُمُ</td><td>ḍamma (ـُ)</td><td>ḍamma (ـُ)</td><td class="mut">to be noble</td></tr><tr><td>6</td><td class="ar" style="font-size:1.5rem;text-align:right">حَسِبَ – يَحْسِبُ</td><td>kasra (ـِ)</td><td>kasra (ـِ)</td><td class="mut">to reckon</td></tr></tbody>
+    </table>
+
+    <h2>Determining the باب — Hans Wehr</h2>
+    <div class="box"><p>A Hans Wehr entry gives the vowels as letters — <b>u</b> = ḍamma, <b>i</b> = kasra, <b>a</b> = fatḥa. Both the past and present vowels are listed; you need both, since باب 3 and باب 4 share the same present vowel.</p></div>
+  </section>
+
+  <section class="view" id="v-table">
+    <h2>Complete صرف كبير — all 6 scales</h2>
+    <p class="lead">Affirmative <span class="ar">مثبت</span> and negative <span class="ar">منفي</span> side by side.</p>
+    <div class="babnav" id="babnav"></div>
+    <div id="babtables"><div class="babtable" data-bab="1"><h3><span class="ar">نَصَرَ – يَنْصُرُ</span> <span class="mut">— to help</span></h3><table><thead><tr><th>Pronoun</th><th>Affirmative <span class="ar">مثبت</span></th><th>Negative <span class="ar">منفي</span></th><th>Number</th><th>Gender</th></tr></thead><tbody><tr class="grp"><td colspan="5">غائب</td></tr><tr><td class="pro ar">هو</td><td class="form ar">يَنْصُرُ</td><td class="form ar neg">لَا يَنْصُرُ</td><td>Sing.</td><td>Masc.</td></tr><tr><td class="pro ar">هما</td><td class="form ar">يَنْصُرَانِ</td><td class="form ar neg">لَا يَنْصُرَانِ</td><td>Dual</td><td>Masc.</td></tr><tr><td class="pro ar">هم</td><td class="form ar">يَنْصُرُونَ</td><td class="form ar neg">لَا يَنْصُرُونَ</td><td>Plur.</td><td>Masc.</td></tr><tr><td class="pro ar">هي</td><td class="form ar">تَنْصُرُ</td><td class="form ar neg">لَا تَنْصُرُ</td><td>Sing.</td><td>Fem.</td></tr><tr><td class="pro ar">هما</td><td class="form ar">تَنْصُرَانِ</td><td class="form ar neg">لَا تَنْصُرَانِ</td><td>Dual</td><td>Fem.</td></tr><tr><td class="pro ar">هنّ</td><td class="form ar">يَنْصُرْنَ</td><td class="form ar neg">لَا يَنْصُرْنَ</td><td>Plur.</td><td>Fem.</td></tr><tr class="grp"><td colspan="5">حاضر</td></tr><tr><td class="pro ar">أنتَ</td><td class="form ar">تَنْصُرُ</td><td class="form ar neg">لَا تَنْصُرُ</td><td>Sing.</td><td>Masc.</td></tr><tr><td class="pro ar">أنتما</td><td class="form ar">تَنْصُرَانِ</td><td class="form ar neg">لَا تَنْصُرَانِ</td><td>Dual</td><td>Masc.</td></tr><tr><td class="pro ar">أنتم</td><td class="form ar">تَنْصُرُونَ</td><td class="form ar neg">لَا تَنْصُرُونَ</td><td>Plur.</td><td>Masc.</td></tr><tr><td class="pro ar">أنتِ</td><td class="form ar">تَنْصُرِينَ</td><td class="form ar neg">لَا تَنْصُرِينَ</td><td>Sing.</td><td>Fem.</td></tr><tr><td class="pro ar">أنتما</td><td class="form ar">تَنْصُرَانِ</td><td class="form ar neg">لَا تَنْصُرَانِ</td><td>Dual</td><td>Fem.</td></tr><tr><td class="pro ar">أنتنّ</td><td class="form ar">تَنْصُرْنَ</td><td class="form ar neg">لَا تَنْصُرْنَ</td><td>Plur.</td><td>Fem.</td></tr><tr class="grp"><td colspan="5">متكلم</td></tr><tr><td class="pro ar">أنا</td><td class="form ar">أَنْصُرُ</td><td class="form ar neg">لَا أَنْصُرُ</td><td>Sing.</td><td>M/F</td></tr><tr><td class="pro ar">نحن</td><td class="form ar">نَنْصُرُ</td><td class="form ar neg">لَا نَنْصُرُ</td><td>Dual/Pl.</td><td>M/F</td></tr></tbody></table></div><div class="babtable" data-bab="2"><h3><span class="ar">ضَرَبَ – يَضْرِبُ</span> <span class="mut">— to strike</span></h3><table><thead><tr><th>Pronoun</th><th>Affirmative <span class="ar">مثبت</span></th><th>Negative <span class="ar">منفي</span></th><th>Number</th><th>Gender</th></tr></thead><tbody><tr class="grp"><td colspan="5">غائب</td></tr><tr><td class="pro ar">هو</td><td class="form ar">يَضْرِبُ</td><td class="form ar neg">لَا يَضْرِبُ</td><td>Sing.</td><td>Masc.</td></tr><tr><td class="pro ar">هما</td><td class="form ar">يَضْرِبَانِ</td><td class="form ar neg">لَا يَضْرِبَانِ</td><td>Dual</td><td>Masc.</td></tr><tr><td class="pro ar">هم</td><td class="form ar">يَضْرِبُونَ</td><td class="form ar neg">لَا يَضْرِبُونَ</td><td>Plur.</td><td>Masc.</td></tr><tr><td class="pro ar">هي</td><td class="form ar">تَضْرِبُ</td><td class="form ar neg">لَا تَضْرِبُ</td><td>Sing.</td><td>Fem.</td></tr><tr><td class="pro ar">هما</td><td class="form ar">تَضْرِبَانِ</td><td class="form ar neg">لَا تَضْرِبَانِ</td><td>Dual</td><td>Fem.</td></tr><tr><td class="pro ar">هنّ</td><td class="form ar">يَضْرِبْنَ</td><td class="form ar neg">لَا يَضْرِبْنَ</td><td>Plur.</td><td>Fem.</td></tr><tr class="grp"><td colspan="5">حاضر</td></tr><tr><td class="pro ar">أنتَ</td><td class="form ar">تَضْرِبُ</td><td class="form ar neg">لَا تَضْرِبُ</td><td>Sing.</td><td>Masc.</td></tr><tr><td class="pro ar">أنتما</td><td class="form ar">تَضْرِبَانِ</td><td class="form ar neg">لَا تَضْرِبَانِ</td><td>Dual</td><td>Masc.</td></tr><tr><td class="pro ar">أنتم</td><td class="form ar">تَضْرِبُونَ</td><td class="form ar neg">لَا تَضْرِبُونَ</td><td>Plur.</td><td>Masc.</td></tr><tr><td class="pro ar">أنتِ</td><td class="form ar">تَضْرِبِينَ</td><td class="form ar neg">لَا تَضْرِبِينَ</td><td>Sing.</td><td>Fem.</td></tr><tr><td class="pro ar">أنتما</td><td class="form ar">تَضْرِبَانِ</td><td class="form ar neg">لَا تَضْرِبَانِ</td><td>Dual</td><td>Fem.</td></tr><tr><td class="pro ar">أنتنّ</td><td class="form ar">تَضْرِبْنَ</td><td class="form ar neg">لَا تَضْرِبْنَ</td><td>Plur.</td><td>Fem.</td></tr><tr class="grp"><td colspan="5">متكلم</td></tr><tr><td class="pro ar">أنا</td><td class="form ar">أَضْرِبُ</td><td class="form ar neg">لَا أَضْرِبُ</td><td>Sing.</td><td>M/F</td></tr><tr><td class="pro ar">نحن</td><td class="form ar">نَضْرِبُ</td><td class="form ar neg">لَا نَضْرِبُ</td><td>Dual/Pl.</td><td>M/F</td></tr></tbody></table></div><div class="babtable" data-bab="3"><h3><span class="ar">سَمِعَ – يَسْمَعُ</span> <span class="mut">— to hear</span></h3><table><thead><tr><th>Pronoun</th><th>Affirmative <span class="ar">مثبت</span></th><th>Negative <span class="ar">منفي</span></th><th>Number</th><th>Gender</th></tr></thead><tbody><tr class="grp"><td colspan="5">غائب</td></tr><tr><td class="pro ar">هو</td><td class="form ar">يَسْمَعُ</td><td class="form ar neg">لَا يَسْمَعُ</td><td>Sing.</td><td>Masc.</td></tr><tr><td class="pro ar">هما</td><td class="form ar">يَسْمَعَانِ</td><td class="form ar neg">لَا يَسْمَعَانِ</td><td>Dual</td><td>Masc.</td></tr><tr><td class="pro ar">هم</td><td class="form ar">يَسْمَعُونَ</td><td class="form ar neg">لَا يَسْمَعُونَ</td><td>Plur.</td><td>Masc.</td></tr><tr><td class="pro ar">هي</td><td class="form ar">تَسْمَعُ</td><td class="form ar neg">لَا تَسْمَعُ</td><td>Sing.</td><td>Fem.</td></tr><tr><td class="pro ar">هما</td><td class="form ar">تَسْمَعَانِ</td><td class="form ar neg">لَا تَسْمَعَانِ</td><td>Dual</td><td>Fem.</td></tr><tr><td class="pro ar">هنّ</td><td class="form ar">يَسْمَعْنَ</td><td class="form ar neg">لَا يَسْمَعْنَ</td><td>Plur.</td><td>Fem.</td></tr><tr class="grp"><td colspan="5">حاضر</td></tr><tr><td class="pro ar">أنتَ</td><td class="form ar">تَسْمَعُ</td><td class="form ar neg">لَا تَسْمَعُ</td><td>Sing.</td><td>Masc.</td></tr><tr><td class="pro ar">أنتما</td><td class="form ar">تَسْمَعَانِ</td><td class="form ar neg">لَا تَسْمَعَانِ</td><td>Dual</td><td>Masc.</td></tr><tr><td class="pro ar">أنتم</td><td class="form ar">تَسْمَعُونَ</td><td class="form ar neg">لَا تَسْمَعُونَ</td><td>Plur.</td><td>Masc.</td></tr><tr><td class="pro ar">أنتِ</td><td class="form ar">تَسْمَعِينَ</td><td class="form ar neg">لَا تَسْمَعِينَ</td><td>Sing.</td><td>Fem.</td></tr><tr><td class="pro ar">أنتما</td><td class="form ar">تَسْمَعَانِ</td><td class="form ar neg">لَا تَسْمَعَانِ</td><td>Dual</td><td>Fem.</td></tr><tr><td class="pro ar">أنتنّ</td><td class="form ar">تَسْمَعْنَ</td><td class="form ar neg">لَا تَسْمَعْنَ</td><td>Plur.</td><td>Fem.</td></tr><tr class="grp"><td colspan="5">متكلم</td></tr><tr><td class="pro ar">أنا</td><td class="form ar">أَسْمَعُ</td><td class="form ar neg">لَا أَسْمَعُ</td><td>Sing.</td><td>M/F</td></tr><tr><td class="pro ar">نحن</td><td class="form ar">نَسْمَعُ</td><td class="form ar neg">لَا نَسْمَعُ</td><td>Dual/Pl.</td><td>M/F</td></tr></tbody></table></div><div class="babtable" data-bab="4"><h3><span class="ar">فَتَحَ – يَفْتَحُ</span> <span class="mut">— to open</span></h3><table><thead><tr><th>Pronoun</th><th>Affirmative <span class="ar">مثبت</span></th><th>Negative <span class="ar">منفي</span></th><th>Number</th><th>Gender</th></tr></thead><tbody><tr class="grp"><td colspan="5">غائب</td></tr><tr><td class="pro ar">هو</td><td class="form ar">يَفْتَحُ</td><td class="form ar neg">لَا يَفْتَحُ</td><td>Sing.</td><td>Masc.</td></tr><tr><td class="pro ar">هما</td><td class="form ar">يَفْتَحَانِ</td><td class="form ar neg">لَا يَفْتَحَانِ</td><td>Dual</td><td>Masc.</td></tr><tr><td class="pro ar">هم</td><td class="form ar">يَفْتَحُونَ</td><td class="form ar neg">لَا يَفْتَحُونَ</td><td>Plur.</td><td>Masc.</td></tr><tr><td class="pro ar">هي</td><td class="form ar">تَفْتَحُ</td><td class="form ar neg">لَا تَفْتَحُ</td><td>Sing.</td><td>Fem.</td></tr><tr><td class="pro ar">هما</td><td class="form ar">تَفْتَحَانِ</td><td class="form ar neg">لَا تَفْتَحَانِ</td><td>Dual</td><td>Fem.</td></tr><tr><td class="pro ar">هنّ</td><td class="form ar">يَفْتَحْنَ</td><td class="form ar neg">لَا يَفْتَحْنَ</td><td>Plur.</td><td>Fem.</td></tr><tr class="grp"><td colspan="5">حاضر</td></tr><tr><td class="pro ar">أنتَ</td><td class="form ar">تَفْتَحُ</td><td class="form ar neg">لَا تَفْتَحُ</td><td>Sing.</td><td>Masc.</td></tr><tr><td class="pro ar">أنتما</td><td class="form ar">تَفْتَحَانِ</td><td class="form ar neg">لَا تَفْتَحَانِ</td><td>Dual</td><td>Masc.</td></tr><tr><td class="pro ar">أنتم</td><td class="form ar">تَفْتَحُونَ</td><td class="form ar neg">لَا تَفْتَحُونَ</td><td>Plur.</td><td>Masc.</td></tr><tr><td class="pro ar">أنتِ</td><td class="form ar">تَفْتَحِينَ</td><td class="form ar neg">لَا تَفْتَحِينَ</td><td>Sing.</td><td>Fem.</td></tr><tr><td class="pro ar">أنتما</td><td class="form ar">تَفْتَحَانِ</td><td class="form ar neg">لَا تَفْتَحَانِ</td><td>Dual</td><td>Fem.</td></tr><tr><td class="pro ar">أنتنّ</td><td class="form ar">تَفْتَحْنَ</td><td class="form ar neg">لَا تَفْتَحْنَ</td><td>Plur.</td><td>Fem.</td></tr><tr class="grp"><td colspan="5">متكلم</td></tr><tr><td class="pro ar">أنا</td><td class="form ar">أَفْتَحُ</td><td class="form ar neg">لَا أَفْتَحُ</td><td>Sing.</td><td>M/F</td></tr><tr><td class="pro ar">نحن</td><td class="form ar">نَفْتَحُ</td><td class="form ar neg">لَا نَفْتَحُ</td><td>Dual/Pl.</td><td>M/F</td></tr></tbody></table></div><div class="babtable" data-bab="5"><h3><span class="ar">كَرُمَ – يَكْرُمُ</span> <span class="mut">— to be noble</span></h3><table><thead><tr><th>Pronoun</th><th>Affirmative <span class="ar">مثبت</span></th><th>Negative <span class="ar">منفي</span></th><th>Number</th><th>Gender</th></tr></thead><tbody><tr class="grp"><td colspan="5">غائب</td></tr><tr><td class="pro ar">هو</td><td class="form ar">يَكْرُمُ</td><td class="form ar neg">لَا يَكْرُمُ</td><td>Sing.</td><td>Masc.</td></tr><tr><td class="pro ar">هما</td><td class="form ar">يَكْرُمَانِ</td><td class="form ar neg">لَا يَكْرُمَانِ</td><td>Dual</td><td>Masc.</td></tr><tr><td class="pro ar">هم</td><td class="form ar">يَكْرُمُونَ</td><td class="form ar neg">لَا يَكْرُمُونَ</td><td>Plur.</td><td>Masc.</td></tr><tr><td class="pro ar">هي</td><td class="form ar">تَكْرُمُ</td><td class="form ar neg">لَا تَكْرُمُ</td><td>Sing.</td><td>Fem.</td></tr><tr><td class="pro ar">هما</td><td class="form ar">تَكْرُمَانِ</td><td class="form ar neg">لَا تَكْرُمَانِ</td><td>Dual</td><td>Fem.</td></tr><tr><td class="pro ar">هنّ</td><td class="form ar">يَكْرُمْنَ</td><td class="form ar neg">لَا يَكْرُمْنَ</td><td>Plur.</td><td>Fem.</td></tr><tr class="grp"><td colspan="5">حاضر</td></tr><tr><td class="pro ar">أنتَ</td><td class="form ar">تَكْرُمُ</td><td class="form ar neg">لَا تَكْرُمُ</td><td>Sing.</td><td>Masc.</td></tr><tr><td class="pro ar">أنتما</td><td class="form ar">تَكْرُمَانِ</td><td class="form ar neg">لَا تَكْرُمَانِ</td><td>Dual</td><td>Masc.</td></tr><tr><td class="pro ar">أنتم</td><td class="form ar">تَكْرُمُونَ</td><td class="form ar neg">لَا تَكْرُمُونَ</td><td>Plur.</td><td>Masc.</td></tr><tr><td class="pro ar">أنتِ</td><td class="form ar">تَكْرُمِينَ</td><td class="form ar neg">لَا تَكْرُمِينَ</td><td>Sing.</td><td>Fem.</td></tr><tr><td class="pro ar">أنتما</td><td class="form ar">تَكْرُمَانِ</td><td class="form ar neg">لَا تَكْرُمَانِ</td><td>Dual</td><td>Fem.</td></tr><tr><td class="pro ar">أنتنّ</td><td class="form ar">تَكْرُمْنَ</td><td class="form ar neg">لَا تَكْرُمْنَ</td><td>Plur.</td><td>Fem.</td></tr><tr class="grp"><td colspan="5">متكلم</td></tr><tr><td class="pro ar">أنا</td><td class="form ar">أَكْرُمُ</td><td class="form ar neg">لَا أَكْرُمُ</td><td>Sing.</td><td>M/F</td></tr><tr><td class="pro ar">نحن</td><td class="form ar">نَكْرُمُ</td><td class="form ar neg">لَا نَكْرُمُ</td><td>Dual/Pl.</td><td>M/F</td></tr></tbody></table></div><div class="babtable" data-bab="6"><h3><span class="ar">حَسِبَ – يَحْسِبُ</span> <span class="mut">— to reckon</span></h3><table><thead><tr><th>Pronoun</th><th>Affirmative <span class="ar">مثبت</span></th><th>Negative <span class="ar">منفي</span></th><th>Number</th><th>Gender</th></tr></thead><tbody><tr class="grp"><td colspan="5">غائب</td></tr><tr><td class="pro ar">هو</td><td class="form ar">يَحْسِبُ</td><td class="form ar neg">لَا يَحْسِبُ</td><td>Sing.</td><td>Masc.</td></tr><tr><td class="pro ar">هما</td><td class="form ar">يَحْسِبَانِ</td><td class="form ar neg">لَا يَحْسِبَانِ</td><td>Dual</td><td>Masc.</td></tr><tr><td class="pro ar">هم</td><td class="form ar">يَحْسِبُونَ</td><td class="form ar neg">لَا يَحْسِبُونَ</td><td>Plur.</td><td>Masc.</td></tr><tr><td class="pro ar">هي</td><td class="form ar">تَحْسِبُ</td><td class="form ar neg">لَا تَحْسِبُ</td><td>Sing.</td><td>Fem.</td></tr><tr><td class="pro ar">هما</td><td class="form ar">تَحْسِبَانِ</td><td class="form ar neg">لَا تَحْسِبَانِ</td><td>Dual</td><td>Fem.</td></tr><tr><td class="pro ar">هنّ</td><td class="form ar">يَحْسِبْنَ</td><td class="form ar neg">لَا يَحْسِبْنَ</td><td>Plur.</td><td>Fem.</td></tr><tr class="grp"><td colspan="5">حاضر</td></tr><tr><td class="pro ar">أنتَ</td><td class="form ar">تَحْسِبُ</td><td class="form ar neg">لَا تَحْسِبُ</td><td>Sing.</td><td>Masc.</td></tr><tr><td class="pro ar">أنتما</td><td class="form ar">تَحْسِبَانِ</td><td class="form ar neg">لَا تَحْسِبَانِ</td><td>Dual</td><td>Masc.</td></tr><tr><td class="pro ar">أنتم</td><td class="form ar">تَحْسِبُونَ</td><td class="form ar neg">لَا تَحْسِبُونَ</td><td>Plur.</td><td>Masc.</td></tr><tr><td class="pro ar">أنتِ</td><td class="form ar">تَحْسِبِينَ</td><td class="form ar neg">لَا تَحْسِبِينَ</td><td>Sing.</td><td>Fem.</td></tr><tr><td class="pro ar">أنتما</td><td class="form ar">تَحْسِبَانِ</td><td class="form ar neg">لَا تَحْسِبَانِ</td><td>Dual</td><td>Fem.</td></tr><tr><td class="pro ar">أنتنّ</td><td class="form ar">تَحْسِبْنَ</td><td class="form ar neg">لَا تَحْسِبْنَ</td><td>Plur.</td><td>Fem.</td></tr><tr class="grp"><td colspan="5">متكلم</td></tr><tr><td class="pro ar">أنا</td><td class="form ar">أَحْسِبُ</td><td class="form ar neg">لَا أَحْسِبُ</td><td>Sing.</td><td>M/F</td></tr><tr><td class="pro ar">نحن</td><td class="form ar">نَحْسِبُ</td><td class="form ar neg">لَا نَحْسِبُ</td><td>Dual/Pl.</td><td>M/F</td></tr></tbody></table></div></div>
+  </section>
+
+  <section class="view" id="v-quiz">
+    <h2 id="quiz-title"></h2>
+    <p class="lead" id="quiz-desc"></p>
+    <div class="qbar"><div class="track"><div class="fill" id="fill"></div></div>
+      <div><b id="pos">1</b>/<span id="tot">10</span></div><div>✓ <b id="right">0</b></div></div>
+    <div id="stage"></div>
+  </section>
+</div>
+
+<script>
+const SECTIONS=[{"name": "ع vowel", "desc": "Pick the correct ع-vowel. Choices: fatḥa (top), ḍamma (middle), kasra (bottom).", "questions": [{"type": "mcq_fixed", "prompt": "Root <span class='ar' style='font-size:1.8rem'>كتب</span> on باب <span class='ar'>نصر - ينصر</span> — which vowel goes on the <span class='ar'>ع</span>?<br><span style='font-size:.85rem;color:var(--muted)'>Pronoun: They (p, m)</span>", "options": ["يَكْتَبُونَ", "يَكْتُبُونَ", "يَكْتِبُونَ"], "answer": "يَكْتُبُونَ", "wrong_fb": "باب <span class='ar'>نصر</span> takes ḍamma on the ع: <span class='ar'>يَكْتُبُونَ</span>."}, {"type": "mcq_fixed", "prompt": "Root <span class='ar' style='font-size:1.8rem'>طلب</span> on باب <span class='ar'>نصر - ينصر</span> — which vowel goes on the <span class='ar'>ع</span>?<br><span style='font-size:.85rem;color:var(--muted)'>Pronoun: He (s, m)</span>", "options": ["يَطْلَبُ", "يَطْلُبُ", "يَطْلِبُ"], "answer": "يَطْلُبُ", "wrong_fb": "باب <span class='ar'>نصر</span> takes ḍamma on the ع: <span class='ar'>يَطْلُبُ</span>."}, {"type": "mcq_fixed", "prompt": "Root <span class='ar' style='font-size:1.8rem'>غسل</span> on باب <span class='ar'>ضرب - يضرب</span> — which vowel goes on the <span class='ar'>ع</span>?<br><span style='font-size:.85rem;color:var(--muted)'>Pronoun: They (p, m)</span>", "options": ["يَغْسَلُونَ", "يَغْسُلُونَ", "يَغْسِلُونَ"], "answer": "يَغْسِلُونَ", "wrong_fb": "باب <span class='ar'>ضرب</span> takes kasra on the ع: <span class='ar'>يَغْسِلُونَ</span>."}, {"type": "mcq_fixed", "prompt": "Root <span class='ar' style='font-size:1.8rem'>كسب</span> on باب <span class='ar'>ضرب - يضرب</span> — which vowel goes on the <span class='ar'>ع</span>?<br><span style='font-size:.85rem;color:var(--muted)'>Pronoun: You (s, f)</span>", "options": ["تَكْسَبِينَ", "تَكْسُبِينَ", "تَكْسِبِينَ"], "answer": "تَكْسِبِينَ", "wrong_fb": "باب <span class='ar'>ضرب</span> takes kasra on the ع: <span class='ar'>تَكْسِبِينَ</span>."}, {"type": "mcq_fixed", "prompt": "Root <span class='ar' style='font-size:1.8rem'>شرب</span> on باب <span class='ar'>سمع - يسمع</span> — which vowel goes on the <span class='ar'>ع</span>?<br><span style='font-size:.85rem;color:var(--muted)'>Pronoun: You (p, m)</span>", "options": ["تَشْرَبُونَ", "تَشْرُبُونَ", "تَشْرِبُونَ"], "answer": "تَشْرَبُونَ", "wrong_fb": "باب <span class='ar'>سمع</span> takes fatḥa on the ع: <span class='ar'>تَشْرَبُونَ</span>."}, {"type": "mcq_fixed", "prompt": "Root <span class='ar' style='font-size:1.8rem'>قرأ</span> on باب <span class='ar'>فتح - يفتح</span> — which vowel goes on the <span class='ar'>ع</span>?<br><span style='font-size:.85rem;color:var(--muted)'>Pronoun: They (p, m)</span>", "options": ["يَقْرَأُونَ", "يَقْرُأُونَ", "يَقْرِأُونَ"], "answer": "يَقْرَأُونَ", "wrong_fb": "باب <span class='ar'>فتح</span> takes fatḥa on the ع: <span class='ar'>يَقْرَأُونَ</span>."}, {"type": "mcq_fixed", "prompt": "Root <span class='ar' style='font-size:1.8rem'>ذهب</span> on باب <span class='ar'>فتح - يفتح</span> — which vowel goes on the <span class='ar'>ع</span>?<br><span style='font-size:.85rem;color:var(--muted)'>Pronoun: He (s, m)</span>", "options": ["يَذْهَبُ", "يَذْهُبُ", "يَذْهِبُ"], "answer": "يَذْهَبُ", "wrong_fb": "باب <span class='ar'>فتح</span> takes fatḥa on the ع: <span class='ar'>يَذْهَبُ</span>."}, {"type": "mcq_fixed", "prompt": "Root <span class='ar' style='font-size:1.8rem'>كبر</span> on باب <span class='ar'>كرم - يكرم</span> — which vowel goes on the <span class='ar'>ع</span>?<br><span style='font-size:.85rem;color:var(--muted)'>Pronoun: He (s, m)</span>", "options": ["يَكْبَرُ", "يَكْبُرُ", "يَكْبِرُ"], "answer": "يَكْبُرُ", "wrong_fb": "باب <span class='ar'>كرم</span> takes ḍamma on the ع: <span class='ar'>يَكْبُرُ</span>."}, {"type": "mcq_fixed", "prompt": "Root <span class='ar' style='font-size:1.8rem'>حسن</span> on باب <span class='ar'>كرم - يكرم</span> — which vowel goes on the <span class='ar'>ع</span>?<br><span style='font-size:.85rem;color:var(--muted)'>Pronoun: They (p, m)</span>", "options": ["يَحْسَنُونَ", "يَحْسُنُونَ", "يَحْسِنُونَ"], "answer": "يَحْسُنُونَ", "wrong_fb": "باب <span class='ar'>كرم</span> takes ḍamma on the ع: <span class='ar'>يَحْسُنُونَ</span>."}, {"type": "mcq_fixed", "prompt": "Root <span class='ar' style='font-size:1.8rem'>فهم</span> on باب <span class='ar'>سمع - يسمع</span> — which vowel goes on the <span class='ar'>ع</span>?<br><span style='font-size:.85rem;color:var(--muted)'>Pronoun: You (p, f)</span>", "options": ["تَفْهَمْنَ", "تَفْهُمْنَ", "تَفْهِمْنَ"], "answer": "تَفْهَمْنَ", "wrong_fb": "باب <span class='ar'>سمع</span> takes fatḥa on the ع: <span class='ar'>تَفْهَمْنَ</span>."}]}, {"name": "Characterize", "desc": "Identify tense (ماضي/مضارع) and polarity (مثبت/منفي).", "questions": [{"type": "mcq_fixed", "prompt": "Characterize this verb: <span class='ar' style='font-size:1.9rem'>يَكْتُبُ</span>", "options": ["مضارع · مثبت", "مضارع · منفي", "ماضي · مثبت", "ماضي · منفي"], "answer": "مضارع · مثبت", "wrong_fb": "It has a مضارع prefix (<span class='ar'>ي</span>), so it is مضارع. There is no negative particle, so it is مثبت."}, {"type": "mcq_fixed", "prompt": "Characterize this verb: <span class='ar' style='font-size:1.9rem'>يَشْرَبُونَ</span>", "options": ["مضارع · مثبت", "مضارع · منفي", "ماضي · مثبت", "ماضي · منفي"], "answer": "مضارع · مثبت", "wrong_fb": "It has a مضارع prefix (<span class='ar'>ي</span>), so it is مضارع. There is no negative particle, so it is مثبت."}, {"type": "mcq_fixed", "prompt": "Characterize this verb: <span class='ar' style='font-size:1.9rem'>لَا يَطْلُبُ</span>", "options": ["مضارع · مثبت", "مضارع · منفي", "ماضي · مثبت", "ماضي · منفي"], "answer": "مضارع · منفي", "wrong_fb": "It has a مضارع prefix (<span class='ar'>ي</span>), so it is مضارع. It begins with <span class='ar'>لَا</span>, so it is منفي."}, {"type": "mcq_fixed", "prompt": "Characterize this verb: <span class='ar' style='font-size:1.9rem'>لَا تَغْسِلُ</span>", "options": ["مضارع · مثبت", "مضارع · منفي", "ماضي · مثبت", "ماضي · منفي"], "answer": "مضارع · منفي", "wrong_fb": "It has a مضارع prefix (<span class='ar'>ت</span>), so it is مضارع. It begins with <span class='ar'>لَا</span>, so it is منفي."}, {"type": "mcq_fixed", "prompt": "Characterize this verb: <span class='ar' style='font-size:1.9rem'>دَخَلَ</span>", "options": ["مضارع · مثبت", "مضارع · منفي", "ماضي · مثبت", "ماضي · منفي"], "answer": "ماضي · مثبت", "wrong_fb": "It has no مضارع prefix, so it is ماضي. There is no negative particle, so it is مثبت."}, {"type": "mcq_fixed", "prompt": "Characterize this verb: <span class='ar' style='font-size:1.9rem'>جَلَسْنَا</span>", "options": ["مضارع · مثبت", "مضارع · منفي", "ماضي · مثبت", "ماضي · منفي"], "answer": "ماضي · مثبت", "wrong_fb": "It has no مضارع prefix, so it is ماضي. There is no negative particle, so it is مثبت."}, {"type": "mcq_fixed", "prompt": "Characterize this verb: <span class='ar' style='font-size:1.9rem'>مَا كَسَبَ</span>", "options": ["مضارع · مثبت", "مضارع · منفي", "ماضي · مثبت", "ماضي · منفي"], "answer": "ماضي · منفي", "wrong_fb": "It has no مضارع prefix, so it is ماضي. It begins with <span class='ar'>مَا</span>, so it is منفي."}, {"type": "mcq_fixed", "prompt": "Characterize this verb: <span class='ar' style='font-size:1.9rem'>مَا لَبِسَ</span>", "options": ["مضارع · مثبت", "مضارع · منفي", "ماضي · مثبت", "ماضي · منفي"], "answer": "ماضي · منفي", "wrong_fb": "It has no مضارع prefix, so it is ماضي. It begins with <span class='ar'>مَا</span>, so it is منفي."}, {"type": "mcq_fixed", "prompt": "Characterize this verb: <span class='ar' style='font-size:1.9rem'>يَقْرَأُونَ</span>", "options": ["مضارع · مثبت", "مضارع · منفي", "ماضي · مثبت", "ماضي · منفي"], "answer": "مضارع · مثبت", "wrong_fb": "It has a مضارع prefix (<span class='ar'>ي</span>), so it is مضارع. There is no negative particle, so it is مثبت."}, {"type": "mcq_fixed", "prompt": "Characterize this verb: <span class='ar' style='font-size:1.9rem'>مَا ذَهَبَ</span>", "options": ["مضارع · مثبت", "مضارع · منفي", "ماضي · مثبت", "ماضي · منفي"], "answer": "ماضي · منفي", "wrong_fb": "It has no مضارع prefix, so it is ماضي. It begins with <span class='ar'>مَا</span>, so it is منفي."}]}, {"name": "باب — Hans Wehr", "desc": "Read the past verb and the present vowel letter(s) to find the باب.", "questions": [{"type": "mcq_fixed", "prompt": "Hans Wehr lists: <b style='font-size:1.15rem'>dhahaba a</b><br><span style='font-size:.85rem;color:var(--muted)'>(the past-tense verb, then the present-tense vowel)</span><br>Which باب?", "options": ["نصر - ينصر", "ضرب - يضرب", "سمع - يسمع", "فتح - يفتح", "كرم - يكرم", "حسب - يحسب"], "answer": "فتح - يفتح", "wrong_fb": "The past-tense verb <i>dhahaba</i> with present vowel ‘a’ (fatḥa) → باب <span class='ar'>فتح</span>."}, {"type": "mcq_fixed", "prompt": "Hans Wehr lists: <b style='font-size:1.15rem'>baʿuda u</b><br><span style='font-size:.85rem;color:var(--muted)'>(the past-tense verb, then the present-tense vowel)</span><br>Which باب?", "options": ["نصر - ينصر", "ضرب - يضرب", "سمع - يسمع", "فتح - يفتح", "كرم - يكرم", "حسب - يحسب"], "answer": "كرم - يكرم", "wrong_fb": "The past-tense verb <i>baʿuda</i> with present vowel ‘u’ (ḍamma) → باب <span class='ar'>كرم</span>."}, {"type": "mcq_fixed", "prompt": "Hans Wehr lists: <b style='font-size:1.15rem'>ghasala i</b><br><span style='font-size:.85rem;color:var(--muted)'>(the past-tense verb, then the present-tense vowel)</span><br>Which باب?", "options": ["نصر - ينصر", "ضرب - يضرب", "سمع - يسمع", "فتح - يفتح", "كرم - يكرم", "حسب - يحسب"], "answer": "ضرب - يضرب", "wrong_fb": "The past-tense verb <i>ghasala</i> with present vowel ‘i’ (kasra) → باب <span class='ar'>ضرب</span>."}, {"type": "mcq_fixed", "prompt": "Hans Wehr lists: <b style='font-size:1.15rem'>shariba a</b><br><span style='font-size:.85rem;color:var(--muted)'>(the past-tense verb, then the present-tense vowel)</span><br>Which باب?", "options": ["نصر - ينصر", "ضرب - يضرب", "سمع - يسمع", "فتح - يفتح", "كرم - يكرم", "حسب - يحسب"], "answer": "سمع - يسمع", "wrong_fb": "The past-tense verb <i>shariba</i> with present vowel ‘a’ (fatḥa) → باب <span class='ar'>سمع</span>."}, {"type": "mcq_fixed", "prompt": "Hans Wehr lists: <b style='font-size:1.15rem'>kasaba i</b><br><span style='font-size:.85rem;color:var(--muted)'>(the past-tense verb, then the present-tense vowel)</span><br>Which باب?", "options": ["نصر - ينصر", "ضرب - يضرب", "سمع - يسمع", "فتح - يفتح", "كرم - يكرم", "حسب - يحسب"], "answer": "ضرب - يضرب", "wrong_fb": "The past-tense verb <i>kasaba</i> with present vowel ‘i’ (kasra) → باب <span class='ar'>ضرب</span>."}, {"type": "mcq_fixed", "prompt": "Hans Wehr lists: <b style='font-size:1.15rem'>rakiba a</b><br><span style='font-size:.85rem;color:var(--muted)'>(the past-tense verb, then the present-tense vowel)</span><br>Which باب?", "options": ["نصر - ينصر", "ضرب - يضرب", "سمع - يسمع", "فتح - يفتح", "كرم - يكرم", "حسب - يحسب"], "answer": "سمع - يسمع", "wrong_fb": "The past-tense verb <i>rakiba</i> with present vowel ‘a’ (fatḥa) → باب <span class='ar'>سمع</span>."}, {"type": "mcq_fixed", "prompt": "Hans Wehr lists: <b style='font-size:1.15rem'>labisa a</b><br><span style='font-size:.85rem;color:var(--muted)'>(the past-tense verb, then the present-tense vowel)</span><br>Which باب?", "options": ["نصر - ينصر", "ضرب - يضرب", "سمع - يسمع", "فتح - يفتح", "كرم - يكرم", "حسب - يحسب"], "answer": "سمع - يسمع", "wrong_fb": "The past-tense verb <i>labisa</i> with present vowel ‘a’ (fatḥa) → باب <span class='ar'>سمع</span>."}, {"type": "mcq_fixed", "prompt": "Hans Wehr lists: <b style='font-size:1.15rem'>qaṭaʿa a</b><br><span style='font-size:.85rem;color:var(--muted)'>(the past-tense verb, then the present-tense vowel)</span><br>Which باب?", "options": ["نصر - ينصر", "ضرب - يضرب", "سمع - يسمع", "فتح - يفتح", "كرم - يكرم", "حسب - يحسب"], "answer": "فتح - يفتح", "wrong_fb": "The past-tense verb <i>qaṭaʿa</i> with present vowel ‘a’ (fatḥa) → باب <span class='ar'>فتح</span>."}, {"type": "mcq_fixed", "prompt": "Hans Wehr lists: <b style='font-size:1.15rem'>fahima a</b><br><span style='font-size:.85rem;color:var(--muted)'>(the past-tense verb, then the present-tense vowel)</span><br>Which باب?", "options": ["نصر - ينصر", "ضرب - يضرب", "سمع - يسمع", "فتح - يفتح", "كرم - يكرم", "حسب - يحسب"], "answer": "سمع - يسمع", "wrong_fb": "The past-tense verb <i>fahima</i> with present vowel ‘a’ (fatḥa) → باب <span class='ar'>سمع</span>."}, {"type": "mcq_fixed", "prompt": "Hans Wehr lists: <b style='font-size:1.15rem'>ṣaghura u</b><br><span style='font-size:.85rem;color:var(--muted)'>(the past-tense verb, then the present-tense vowel)</span><br>Which باب?", "options": ["نصر - ينصر", "ضرب - يضرب", "سمع - يسمع", "فتح - يفتح", "كرم - يكرم", "حسب - يحسب"], "answer": "كرم - يكرم", "wrong_fb": "The past-tense verb <i>ṣaghura</i> with present vowel ‘u’ (ḍamma) → باب <span class='ar'>كرم</span>."}]}, {"name": "Arabic → English", "desc": "Type the pronoun in spelled format.", "questions": [{"type": "fill", "prompt": "Translate to spelled format — <span class='ar' style='font-size:1.9rem'>يَكْتُبُ</span>", "answer": "He (s, m)", "accept": "he(sm)", "hint": "Format: Person (number, gender), e.g. They (p, m)", "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female. It has no dual or plural suffix, so it is singular. → He (s, m)."}, {"type": "fill", "prompt": "Translate to spelled format — <span class='ar' style='font-size:1.9rem'>يَشْرَبُونَ</span>", "answer": "They (p, m)", "accept": "they(pm)", "hint": "Format: Person (number, gender), e.g. They (p, m)", "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female. The suffix <span class='ar'>ون</span> is for the Plural male. → They (p, m)."}, {"type": "fill", "prompt": "Translate to spelled format — <span class='ar' style='font-size:1.9rem'>تَقْرَأِينَ</span>", "answer": "You (s, f)", "accept": "you(sf)", "hint": "Format: Person (number, gender), e.g. They (p, m)", "wrong_fb": "The prefix <span class='ar'>ت</span> is for the Second person (M/F) or third person female. The suffix <span class='ar'>ين</span> is for the Singular female. → You (s, f)."}, {"type": "fill", "prompt": "Translate to spelled format — <span class='ar' style='font-size:1.9rem'>يَطْلُبْنَ</span>", "answer": "They (p, f)", "accept": "they(pf)", "hint": "Format: Person (number, gender), e.g. They (p, m)", "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female. The suffix <span class='ar'>نَ</span> is for the Plural Feminine. → They (p, f)."}, {"type": "fill", "prompt": "Translate to spelled format — <span class='ar' style='font-size:1.9rem'>نَغْسِلُ</span>", "answer": "We (p, m/f)", "accept": "we(pm/f)", "hint": "Format: Person (number, gender), e.g. They (p, m)", "wrong_fb": "The prefix <span class='ar'>ن</span> is for the First person, dual/plural, M/F. It has no dual or plural suffix, so it is singular. → We (p, m/f)."}, {"type": "fill", "prompt": "Translate to spelled format — <span class='ar' style='font-size:1.9rem'>تَلْبَسُونَ</span>", "answer": "You (p, m)", "accept": "you(pm)", "hint": "Format: Person (number, gender), e.g. They (p, m)", "wrong_fb": "The prefix <span class='ar'>ت</span> is for the Second person (M/F) or third person female. The suffix <span class='ar'>ون</span> is for the Plural male. → You (p, m)."}, {"type": "fill", "prompt": "Translate to spelled format — <span class='ar' style='font-size:1.9rem'>يَذْهَبُونَ</span>", "answer": "They (p, m)", "accept": "they(pm)", "hint": "Format: Person (number, gender), e.g. They (p, m)", "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female. The suffix <span class='ar'>ون</span> is for the Plural male. → They (p, m)."}, {"type": "fill", "prompt": "Translate to spelled format — <span class='ar' style='font-size:1.9rem'>يَكْبُرُ</span>", "answer": "He (s, m)", "accept": "he(sm)", "hint": "Format: Person (number, gender), e.g. They (p, m)", "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female. It has no dual or plural suffix, so it is singular. → He (s, m)."}, {"type": "fill", "prompt": "Translate to spelled format — <span class='ar' style='font-size:1.9rem'>تَفْهَمْنَ</span>", "answer": "You (p, f)", "accept": "you(pf)", "hint": "Format: Person (number, gender), e.g. They (p, m)", "wrong_fb": "The prefix <span class='ar'>ت</span> is for the Second person (M/F) or third person female. The suffix <span class='ar'>نَ</span> is for the Plural Feminine. → You (p, f)."}, {"type": "fill", "prompt": "Translate to spelled format — <span class='ar' style='font-size:1.9rem'>تَدْخُلُ</span>", "answer": "You (s, m)", "accept": "you(sm)", "hint": "Format: Person (number, gender), e.g. They (p, m)", "wrong_fb": "The prefix <span class='ar'>ت</span> is for the Second person (M/F) or third person female. It has no dual or plural suffix, so it is singular. → You (s, m)."}]}, {"name": "Pronoun bank", "desc": "Tap every pronoun the verb can represent.", "questions": [{"type": "multibank", "prompt": "Tap all pronouns that <span class='ar' style='font-size:1.9rem'>تَشْرَبَانِ</span> can be", "bank": ["هو", "هما (m)", "هم", "هي", "هما (f)", "هنّ", "أنتَ", "أنتما (m)", "أنتم", "أنتِ", "أنتما (f)", "أنتنّ", "أنا", "نحن"], "answers": ["هما (f)", "أنتما (m)", "أنتما (f)"], "wrong_fb": "The prefix <span class='ar'>ت</span> is for the Second person (M/F) or third person female. The suffix <span class='ar'>ان</span> is for the Dual. This form is shared — valid pronouns: <span class='ar'>هما (f)</span>، <span class='ar'>أنتما (m)</span>، <span class='ar'>أنتما (f)</span>."}, {"type": "multibank", "prompt": "Tap all pronouns that <span class='ar' style='font-size:1.9rem'>تَكْتُبُ</span> can be", "bank": ["هو", "هما (m)", "هم", "هي", "هما (f)", "هنّ", "أنتَ", "أنتما (m)", "أنتم", "أنتِ", "أنتما (f)", "أنتنّ", "أنا", "نحن"], "answers": ["هي", "أنتَ"], "wrong_fb": "The prefix <span class='ar'>ت</span> is for the Second person (M/F) or third person female. It has no dual or plural suffix, so it is singular. This form is shared — valid pronouns: <span class='ar'>هي</span>، <span class='ar'>أنتَ</span>."}, {"type": "multibank", "prompt": "Tap all pronouns that <span class='ar' style='font-size:1.9rem'>يَطْلُبُ</span> can be", "bank": ["هو", "هما (m)", "هم", "هي", "هما (f)", "هنّ", "أنتَ", "أنتما (m)", "أنتم", "أنتِ", "أنتما (f)", "أنتنّ", "أنا", "نحن"], "answers": ["هو"], "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female. It has no dual or plural suffix, so it is singular. → <span class='ar'>هو</span>."}, {"type": "multibank", "prompt": "Tap all pronouns that <span class='ar' style='font-size:1.9rem'>يَقْرَأُونَ</span> can be", "bank": ["هو", "هما (m)", "هم", "هي", "هما (f)", "هنّ", "أنتَ", "أنتما (m)", "أنتم", "أنتِ", "أنتما (f)", "أنتنّ", "أنا", "نحن"], "answers": ["هم"], "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female. The suffix <span class='ar'>ون</span> is for the Plural male. → <span class='ar'>هم</span>."}, {"type": "multibank", "prompt": "Tap all pronouns that <span class='ar' style='font-size:1.9rem'>تَغْسِلَانِ</span> can be", "bank": ["هو", "هما (m)", "هم", "هي", "هما (f)", "هنّ", "أنتَ", "أنتما (m)", "أنتم", "أنتِ", "أنتما (f)", "أنتنّ", "أنا", "نحن"], "answers": ["هما (f)", "أنتما (m)", "أنتما (f)"], "wrong_fb": "The prefix <span class='ar'>ت</span> is for the Second person (M/F) or third person female. The suffix <span class='ar'>ان</span> is for the Dual. This form is shared — valid pronouns: <span class='ar'>هما (f)</span>، <span class='ar'>أنتما (m)</span>، <span class='ar'>أنتما (f)</span>."}, {"type": "multibank", "prompt": "Tap all pronouns that <span class='ar' style='font-size:1.9rem'>تَذْهَبِينَ</span> can be", "bank": ["هو", "هما (m)", "هم", "هي", "هما (f)", "هنّ", "أنتَ", "أنتما (m)", "أنتم", "أنتِ", "أنتما (f)", "أنتنّ", "أنا", "نحن"], "answers": ["أنتِ"], "wrong_fb": "The prefix <span class='ar'>ت</span> is for the Second person (M/F) or third person female. The suffix <span class='ar'>ين</span> is for the Singular female. → <span class='ar'>أنتِ</span>."}, {"type": "multibank", "prompt": "Tap all pronouns that <span class='ar' style='font-size:1.9rem'>يَلْبَسَانِ</span> can be", "bank": ["هو", "هما (m)", "هم", "هي", "هما (f)", "هنّ", "أنتَ", "أنتما (m)", "أنتم", "أنتِ", "أنتما (f)", "أنتنّ", "أنا", "نحن"], "answers": ["هما (m)"], "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female. The suffix <span class='ar'>ان</span> is for the Dual. → <span class='ar'>هما (m)</span>."}, {"type": "multibank", "prompt": "Tap all pronouns that <span class='ar' style='font-size:1.9rem'>يَفْهَمْنَ</span> can be", "bank": ["هو", "هما (m)", "هم", "هي", "هما (f)", "هنّ", "أنتَ", "أنتما (m)", "أنتم", "أنتِ", "أنتما (f)", "أنتنّ", "أنا", "نحن"], "answers": ["هنّ"], "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female. The suffix <span class='ar'>نَ</span> is for the Plural Feminine. → <span class='ar'>هنّ</span>."}, {"type": "multibank", "prompt": "Tap all pronouns that <span class='ar' style='font-size:1.9rem'>نَدْخُلُ</span> can be", "bank": ["هو", "هما (m)", "هم", "هي", "هما (f)", "هنّ", "أنتَ", "أنتما (m)", "أنتم", "أنتِ", "أنتما (f)", "أنتنّ", "أنا", "نحن"], "answers": ["نحن"], "wrong_fb": "The prefix <span class='ar'>ن</span> is for the First person, dual/plural, M/F. It has no dual or plural suffix, so it is singular. → <span class='ar'>نحن</span>."}, {"type": "multibank", "prompt": "Tap all pronouns that <span class='ar' style='font-size:1.9rem'>تَكْبُرُونَ</span> can be", "bank": ["هو", "هما (m)", "هم", "هي", "هما (f)", "هنّ", "أنتَ", "أنتما (m)", "أنتم", "أنتِ", "أنتما (f)", "أنتنّ", "أنا", "نحن"], "answers": ["أنتم"], "wrong_fb": "The prefix <span class='ar'>ت</span> is for the Second person (M/F) or third person female. The suffix <span class='ar'>ون</span> is for the Plural male. → <span class='ar'>أنتم</span>."}]}, {"name": "True / False", "desc": "Decide whether each statement is true or false.", "questions": [{"type": "mcq_fixed", "prompt": "باب <span class='ar'>سمع</span> and باب <span class='ar'>فتح</span> have the same present ع-vowel but different past ع-vowels.", "options": ["True", "False"], "answer": "True", "wrong_fb": "True — both present-fatḥa, but past is kasra (<span class='ar'>سَمِعَ</span>) vs fatḥa (<span class='ar'>فَتَحَ</span>)."}, {"type": "mcq_fixed", "prompt": "You can always tell a verb’s باب from its مضارع alone.", "options": ["True", "False"], "answer": "False", "wrong_fb": "False — باب <span class='ar'>سمع</span> and <span class='ar'>فتح</span> share the same مضارع vowel; you need the ماضي too."}, {"type": "mcq_fixed", "prompt": "<span class='ar'>يَكْتُبُونَ</span> is on باب <span class='ar'>ضرب</span>.", "options": ["True", "False"], "answer": "False", "wrong_fb": "False — <span class='ar'>كتب</span> is باب <span class='ar'>نصر</span> (ḍamma on the ع): <span class='ar'>يَكْتُبُونَ</span>."}, {"type": "mcq_fixed", "prompt": "In باب <span class='ar'>كرم</span> both the past and present ع carry a ḍamma.", "options": ["True", "False"], "answer": "True", "wrong_fb": "True — <span class='ar'>كَرُمَ – يَكْرُمُ</span>."}, {"type": "mcq_fixed", "prompt": "The past tense (<span class='ar'>ماضي</span>) is negated with <span class='ar'>لَا</span>.", "options": ["True", "False"], "answer": "False", "wrong_fb": "False — the past is negated with <span class='ar'>مَا</span>; <span class='ar'>لَا</span> negates the present."}, {"type": "mcq_fixed", "prompt": "<span class='ar'>تَشْرَبُ</span> can be either <span class='ar'>هي</span> or <span class='ar'>أنتَ</span>.", "options": ["True", "False"], "answer": "True", "wrong_fb": "True — the ت prefix serves 3rd fem. sing. and 2nd masc. sing."}, {"type": "mcq_fixed", "prompt": "In a Hans Wehr entry, the letter after the past verb gives the present-tense vowel.", "options": ["True", "False"], "answer": "True", "wrong_fb": "True — e.g. <i>kataba u</i> → present ḍamma."}, {"type": "mcq_fixed", "prompt": "<span class='ar'>يَذْهَبُ</span> and <span class='ar'>يَقْرَأُ</span> both take fatḥa on the ع.", "options": ["True", "False"], "answer": "True", "wrong_fb": "True — both are باب <span class='ar'>فتح</span>."}, {"type": "mcq_fixed", "prompt": "<span class='ar'>لَا يَلْبَسُ</span> is <span class='ar'>مضارع منفي</span>.", "options": ["True", "False"], "answer": "True", "wrong_fb": "True — a مضارع verb negated by <span class='ar'>لَا</span>."}, {"type": "mcq_fixed", "prompt": "The past ع-vowel of باب <span class='ar'>نصر</span> is a ḍamma.", "options": ["True", "False"], "answer": "False", "wrong_fb": "False — the past ع of <span class='ar'>نَصَرَ</span> is a fatḥa; the ḍamma is on the present <span class='ar'>يَنْصُرُ</span>."}]}, {"name": "Odd one out", "desc": "Each set shares a feature except one. Find the exception.", "questions": [{"type": "mcq", "prompt": "Which is NOT plural?", "options": ["يَكْتُبْنَ", "يَكْتُبُونَ", "يَكْتُبُ", "تَشْرَبُونَ"], "answer": "يَكْتُبُ", "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female. It has no dual or plural suffix, so it is singular."}, {"type": "mcq", "prompt": "Which is NOT 3rd person (<span class='ar'>غائب</span>)?", "options": ["يَطْلُبُونَ", "تَطْلُبُونَ", "يَطْلُبُ", "يَطْلُبْنَ"], "answer": "تَطْلُبُونَ", "wrong_fb": "The prefix <span class='ar'>ت</span> is for the Second person (M/F) or third person female. The suffix <span class='ar'>ون</span> is for the Plural male."}, {"type": "mcq", "prompt": "Which is NOT dual?", "options": ["يَكْتُبَانِ", "يَشْرَبُونَ", "يَشْرَبَانِ", "تَقْرَأَانِ"], "answer": "يَشْرَبُونَ", "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female. The suffix <span class='ar'>ون</span> is for the Plural male."}, {"type": "mcq", "prompt": "Which is NOT feminine?", "options": ["تَغْسِلِينَ", "يَغْسِلُونَ", "تَغْسِلْنَ", "يَغْسِلْنَ"], "answer": "يَغْسِلُونَ", "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female. The suffix <span class='ar'>ون</span> is for the Plural male."}, {"type": "mcq", "prompt": "Which is 1st person (<span class='ar'>متكلم</span>)?", "options": ["نَذْهَبُ", "يَذْهَبُونَ", "يَذْهَبْنَ", "يَذْهَبُ"], "answer": "نَذْهَبُ", "wrong_fb": "The prefix <span class='ar'>ن</span> is for the First person, dual/plural, M/F. It has no dual or plural suffix, so it is singular."}, {"type": "mcq", "prompt": "Which is NOT on باب <span class='ar'>نصر</span>?", "options": ["نَدْخُلُ", "يَطْلُبُونَ", "يَكْتُبُ", "يَشْرَبُ"], "answer": "يَشْرَبُ", "wrong_fb": "<span class='ar'>شرب</span> is on باب <span class='ar'>سمع</span> (fatḥa on the ع)."}, {"type": "mcq", "prompt": "Which does NOT take ḍamma on the ع?", "options": ["يَكْبُرُ", "يَشْرَبُ", "يَكْتُبُ", "يَطْلُبُ"], "answer": "يَشْرَبُ", "wrong_fb": "<span class='ar'>شرب</span> takes fatḥa on the ع."}, {"type": "mcq", "prompt": "Which is NOT masculine?", "options": ["يَكْتُبُونَ", "يَكْتُبْنَ", "يَكْتُبَانِ", "يَكْتُبُ"], "answer": "يَكْتُبْنَ", "wrong_fb": "The prefix <span class='ar'>ي</span> is for the Third person male or third person plural female. The suffix <span class='ar'>نَ</span> is for the Plural Feminine."}, {"type": "mcq", "prompt": "Which is a negative (<span class='ar'>منفي</span>) form?", "options": ["يَكْتُبُ", "لَا يَشْرَبُ", "يَقْرَأُونَ", "يَطْلُبُونَ"], "answer": "لَا يَشْرَبُ", "wrong_fb": "The <span class='ar'>لَا</span> before the verb makes it منفي."}, {"type": "mcq", "prompt": "Which is NOT on باب <span class='ar'>كرم</span>?", "options": ["يَكْبُرُ", "يَكْبُرُونَ", "يَصْغُرُ", "يَشْرَبُ"], "answer": "يَشْرَبُ", "wrong_fb": "<span class='ar'>شرب</span> is on باب <span class='ar'>سمع</span> (fatḥa on the ع)."}]}];
+function shuffle(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+const F="\u064E",K="\u0650",D="\u064F",S="\u0652";       // harakat
+const CYCLE=["",F,D,K,S];                                // tap order incl. bare
+const MARKNAME={"":"—","\u064E":"a","\u064F":"u","\u0650":"i","\u0652":"°"};
+
+// strip tashkeel + spaces for lenient Arabic comparison
+function bare(s){return (s||"").normalize("NFC").replace(/[\u064B-\u0652]/g,"").replace(/\s+/g,"");}
+
+const tabs=document.getElementById('tabs');
+const tabDefs=[{id:'learn',label:'Lesson'},{id:'table',label:'صرف كبير'}]
+  .concat(SECTIONS.map((s,i)=>({id:'q'+i,label:s.name})));
+tabDefs.forEach(t=>{const b=document.createElement('button');b.textContent=t.label;b.dataset.id=t.id;
+  if(t.id==='learn')b.classList.add('on');b.onclick=()=>go(t.id);tabs.appendChild(b);});
+function go(id){[...tabs.children].forEach(b=>b.classList.toggle('on',b.dataset.id===id));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
+  if(id==='learn')document.getElementById('v-learn').classList.add('on');
+  else if(id==='table')document.getElementById('v-table').classList.add('on');
+  else{document.getElementById('v-quiz').classList.add('on');loadQuiz(+id.slice(1));}
+  window.scrollTo(0,0);}
+
+let Q=[],pos=0,ans={};
+function loadQuiz(i){const s=SECTIONS[i];
+  Q=shuffle(s.questions).map(q=> q.type==='mcq'? Object.assign({},q,{options:shuffle(q.options)}) : q);
+  pos=0;ans={};mbSel=[];
+  document.getElementById('quiz-title').textContent=s.name;
+  document.getElementById('quiz-desc').textContent=s.desc;
+  document.getElementById('tot').textContent=Q.length;render();}
+
+function header(){const right=Object.values(ans).filter(a=>a.correct).length;
+  document.getElementById('pos').textContent=pos+1;
+  document.getElementById('right').textContent=right;
+  document.getElementById('fill').style.width=(100*(pos+1)/Q.length)+'%';}
+
+function navHtml(){return `<div class="nav2">
+    <button onclick="pv()" ${pos===0?'disabled':''}>← Prev</button>
+    <button class="primary" onclick="nx()">${pos===Q.length-1?'Finish':'Next →'}</button></div>`;}
+function fbHtml(a,q){const show=a&&!a.correct;
+  return `<div class="fb ${show?'show':''}"><span class="lbl">Review</span>${q.wrong_fb}</div>`;}
+
+function render(){header();const q=Q[pos];const a=ans[pos];
+  const stage=document.getElementById('stage');
+  if(q.type==='mcq'||q.type==='mcq_fixed') stage.innerHTML=renderMCQ(q,a);
+  else if(q.type==='cycle') stage.innerHTML=renderCycle(q,a);
+  else if(q.type==='fill') stage.innerHTML=renderFill(q,a);
+  else if(q.type==='bank') stage.innerHTML=renderBank(q,a);
+  else if(q.type==='multibank') stage.innerHTML=renderMultiBank(q,a);
+  // reattach cycle state if answered
+  if(q.type==='cycle'&&a){ /* locked view already rendered */ }
+}
+
+function renderMCQ(q,a){
+  const opts=q.options.map(o=>{let cls='opt',mk='';
+    if(a){const ok=(o===q.answer);
+      if(ok){cls+=' correct';mk='<span class="mk">✓</span>';}
+      else if(o===a.picked){cls+=' wrong';mk='<span class="mk">✕</span>';}}
+    const disp = /[\u0600-\u06FF]/.test(o)? `<span class="ar">${o}</span>` : o;
+    return `<button class="${cls}" ${a?'disabled':''} onclick='pickMCQ(${JSON.stringify(o)})'>${disp}${mk}</button>`;
+  }).join('');
+  return `<div class="card"><div class="qnum">Question ${pos+1}</div>
+    <div class="prompt">${q.prompt}</div><div class="opts">${opts}</div>${fbHtml(a,q)}${navHtml()}</div>`;
+}
+function pickMCQ(o){if(ans[pos])return;ans[pos]={picked:o,correct:o===Q[pos].answer};render();}
+
+// ---- CYCLE (tap letters to set harakah) ----
+let cycleState=[];  // current marks
+function renderCycle(q,a){
+  const locked=!!a;
+  if(!a) cycleState=q.letters.map(()=> "");   // reset for this question
+  const marks = a? a.marks : cycleState;
+  const letters=q.letters.map((L,i)=>{
+    let cls='cyl';
+    if(locked){cls+= (marks[i]===q.answer_marks[i])?' ok':' bad';cls+=' locked';}
+    else if(marks[i]!=="") cls+=' set';
+    const shown = L + (marks[i]||"");
+    return `<div class="${cls}" data-i="${i}" ${locked?'':'onclick="cycleTap('+i+')"'}>${shown}</div>`;
+  }).join('');
+  const canCheck = !locked;
+  return `<div class="card"><div class="qnum">Question ${pos+1}</div>
+    <div class="prompt">${q.prompt}</div>
+    <div class="cycle" dir="rtl">${letters}</div>
+    <div class="hintline">Tap a letter repeatedly: none → a(fatḥa) → u(ḍamma) → i(kasra) → sukūn</div>
+    ${locked? '' : '<button class="check" id="ckbtn" onclick="checkCycle()">Check</button>'}
+    ${fbHtml(a,q)}${navHtml()}</div>`;
+}
+function cycleTap(i){
+  const q=Q[pos]; if(ans[pos])return;
+  const cur=cycleState[i]; const ni=(CYCLE.indexOf(cur)+1)%CYCLE.length;
+  cycleState[i]=CYCLE[ni];
+  // update just that glyph
+  const el=document.querySelector('.cyl[data-i="'+i+'"]');
+  el.firstChild&&(el.textContent=q.letters[i]+(cycleState[i]||""));
+  el.classList.toggle('set',cycleState[i]!=="");
+}
+function checkCycle(){
+  const q=Q[pos];
+  const correct = q.answer_marks.every((m,i)=> (cycleState[i]||"")===(m||""));
+  ans[pos]={marks:cycleState.slice(),correct};
+  render();
+}
+
+// ---- FILL (typed) ----
+function renderFill(q,a){
+  const isAr = q.arabic_input || /[\u0600-\u06FF]/.test(q.answer);
+  const locked=!!a;
+  const val = a? a.text : "";
+  const cls = locked? (a.correct?'ok':'bad'):'';
+  const inp = `<input id="fillinp" class="${isAr?'ar':''} ${cls}" ${locked?'disabled':''}
+      value="${val.replace(/"/g,'&quot;')}" placeholder="${(q.hint||'Type your answer').replace(/"/g,'&quot;')}"
+      onkeydown="if(event.key==='Enter')checkFill()">`;
+  const shownAns = locked&&!a.correct ? `<div class="hintline">Answer: ${/[\u0600-\u06FF]/.test(q.answer)?'<span class="ar" style="font-size:1.5em">'+q.answer+'</span>':q.answer}</div>`:'';
+  return `<div class="card"><div class="qnum">Question ${pos+1}</div>
+    <div class="prompt">${q.prompt}</div>
+    <div class="fillrow">${inp}</div>
+    ${q.hint?`<div class="hintline">${q.hint}</div>`:''}
+    ${locked?'':'<button class="check" onclick="checkFill()">Check</button>'}
+    ${shownAns}${fbHtml(a,q)}${navHtml()}</div>`;
+}
+function checkFill(){
+  const q=Q[pos]; if(ans[pos])return;
+  const v=document.getElementById('fillinp').value;
+  let ok;
+  if(q.accept!==undefined && /[\u0600-\u06FF]/.test(q.answer||q.accept)===false && !q.arabic_input){
+    // english spelled: compare loosely
+    const norm=x=>x.toLowerCase().replace(/[\s,()]/g,"");
+    ok = norm(v)===norm(q.answer) || norm(v)===q.accept;
+  } else if(q.arabic_input){
+    ok = bare(v)===q.accept;   // lenient on tashkeel/spaces
+  } else {
+    const norm=x=>x.toLowerCase().replace(/[\s,()]/g,"");
+    ok = norm(v)===norm(q.answer) || norm(v)===(q.accept||"");
+  }
+  ans[pos]={text:v,correct:ok};render();
+}
+
+// ---- PRONOUN BANK ----
+function renderBank(q,a){
+  const btns=q.bank.map(p=>{let cls='';
+    if(a){ if(p===q.answer)cls='ok'; else if(p===a.picked)cls='bad';}
+    return `<button class="${cls}" ${a?'disabled':''} onclick='pickBank(${JSON.stringify(p)})'>${p}</button>`;
+  }).join('');
+  return `<div class="card"><div class="qnum">Question ${pos+1}</div>
+    <div class="prompt">${q.prompt}</div>
+    <div class="bank">${btns}</div>${fbHtml(a,q)}${navHtml()}</div>`;
+}
+function pickBank(p){if(ans[pos])return;ans[pos]={picked:p,correct:p===Q[pos].answer};render();}
+
+
+let mbSel=[];
+function renderMultiBank(q,a){
+  const locked=!!a;const chosen=a?a.picked:mbSel;
+  const btns=q.bank.map(p=>{let cls='';
+    if(locked){const isAns=q.answers.includes(p),wasSel=a.picked.includes(p);
+      if(isAns&&wasSel)cls='ok';else if(isAns&&!wasSel)cls='miss';else if(!isAns&&wasSel)cls='bad';}
+    else if(chosen.includes(p))cls='sel';
+    return `<button class="${cls}" ${locked?'disabled':''} onclick='toggleMB(${JSON.stringify(p)})'>${p}</button>`;
+  }).join('');
+  return `<div class="card"><div class="qnum">Question ${pos+1}</div>
+    <div class="prompt">${q.prompt}</div><div class="bank">${btns}</div>
+    ${locked?'':'<button class="check" onclick="checkMB()">Check</button>'}
+    ${fbHtml(a,q)}${navHtml()}</div>`;
+}
+function toggleMB(p){if(ans[pos])return;const i=mbSel.indexOf(p);
+  if(i>=0)mbSel.splice(i,1);else mbSel.push(p);render();}
+function checkMB(){const q=Q[pos];const sel=[...mbSel].sort(),need=[...q.answers].sort();
+  const correct=sel.length===need.length&&sel.every((v,i)=>v===need[i]);
+  ans[pos]={picked:[...mbSel],correct};mbSel=[];render();}
+
+function nx(){mbSel=[];if(pos<Q.length-1){pos++;render();}else summary();}
+function pv(){mbSel=[];if(pos>0){pos--;render();}}
+function summary(){const right=Object.values(ans).filter(a=>a.correct).length;
+  const done=Object.keys(ans).length;const pct=Math.round(100*right/Q.length);
+  document.getElementById('stage').innerHTML=`
+    <div class="card result"><div class="qnum">Section results</div>
+      <div class="score">${right} / ${Q.length}</div>
+      <div class="mut">${pct}% · ${done} attempted</div>
+      <button onclick="restart()">Retry section</button></div>`;
+  document.getElementById('fill').style.width='100%';}
+function restart(){pos=0;ans={};render();}
+
+// ===== صرف كبير tables (built at load) =====
+// (kept minimal: reuse verified full data from Week-2 v2 tables is out of scope here;
+//  we render a compact 6-scale reference already in Lesson. Provide a note.)
+const babnav=document.getElementById('babnav');
+const babs=[...document.querySelectorAll('.babtable')];
+[{n:'0',t:'All'}].concat(babs.map(b=>({n:b.dataset.bab,t:'باب '+b.dataset.bab}))).forEach((o,i)=>{
+  const btn=document.createElement('button');btn.textContent=o.t;btn.dataset.n=o.n;
+  if(i===0)btn.classList.add('on');
+  btn.onclick=()=>{[...babnav.children].forEach(x=>x.classList.remove('on'));btn.classList.add('on');
+    babs.forEach(b=>b.classList.toggle('hidden',o.n!=='0'&&b.dataset.bab!==o.n));};
+  babnav.appendChild(btn);
+});
+</script></body></html>
