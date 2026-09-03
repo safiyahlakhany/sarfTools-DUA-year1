@@ -33,9 +33,10 @@
         },
         {
           "id": "33057883-3a7a-436c-a180-6738b6a9ac5c",
-          "title": "Week 2 Study Tool",
+          "title": "المُضارِع Scales",
           "path": "resources/week-002/study-tool-33057883-3a7a-436c-a180-6738b6a9ac5c.html",
-          "publishedAt": "2026-09-03T04:56:20.119Z"
+          "publishedAt": "2026-09-03T04:56:20.119Z",
+          "updatedAt": "2026-09-03T04:57:44.949Z"
         }
       ],
       "accessibleHomeworks": [
@@ -48,5 +49,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-09-03T04:57:01.327Z"
+  "updatedAt": "2026-09-03T04:57:44.949Z"
 }
