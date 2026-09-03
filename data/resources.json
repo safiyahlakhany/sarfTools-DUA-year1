@@ -38,8 +38,15 @@
           "publishedAt": "2026-09-03T04:56:20.119Z"
         }
       ],
-      "accessibleHomeworks": []
+      "accessibleHomeworks": [
+        {
+          "id": "84567a5e-e131-45cc-9327-2e79c29ea7b5",
+          "title": "Accessible Homework",
+          "path": "resources/week-002/accessible-homework-84567a5e-e131-45cc-9327-2e79c29ea7b5.html",
+          "publishedAt": "2026-09-03T04:57:01.327Z"
+        }
+      ]
     }
   ],
-  "updatedAt": "2026-09-03T04:56:20.119Z"
+  "updatedAt": "2026-09-03T04:57:01.327Z"
 }

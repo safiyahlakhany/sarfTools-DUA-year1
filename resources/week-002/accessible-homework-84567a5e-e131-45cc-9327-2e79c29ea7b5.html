@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ṣarf Practice — No Writing</title>
+<style>
+  :root{
+    --ink:#1c2a2f;--paper:#f6f3ec;--card:#fffdf8;--line:#d8cfbe;
+    --accent:#3a6b5f;--accent-soft:#e2ede9;--gold:#b08842;
+    --right:#2e7d5b;--wrong:#b23a2e;
+    --shadow:0 1px 0 rgba(0,0,0,.04),0 6px 20px rgba(30,50,45,.06);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:"Segoe UI",-apple-system,system-ui,sans-serif;line-height:1.5;-webkit-text-size-adjust:100%}
+  .arabic{font-family:"Traditional Arabic","Amiri","Scheherazade New",serif;direction:rtl}
+  header{background:var(--accent);color:#f6f3ec;padding:22px 18px 16px}
+  header .wrap{max-width:980px;margin:0 auto}
+  header h1{margin:0;font-size:1.35rem;font-weight:600}
+  header p{margin:6px 0 0;opacity:.9;font-size:.9rem;max-width:64ch}
+  nav{position:sticky;top:0;z-index:20;background:var(--card);border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
+  nav .wrap{max-width:980px;margin:0 auto;display:flex;gap:6px;padding:10px 14px;flex-wrap:wrap;align-items:center}
+  nav button.tab{border:1px solid var(--line);background:transparent;color:var(--ink);padding:7px 12px;border-radius:999px;cursor:pointer;font-size:.82rem;font-weight:500}
+  nav button.tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .score{margin-left:auto;font-size:.82rem;color:var(--accent);font-weight:600}
+  main{max-width:980px;margin:0 auto;padding:20px 16px 90px}
+  section{display:none}section.active{display:block}
+  .lead{background:var(--accent-soft);border-left:4px solid var(--accent);padding:12px 16px;border-radius:8px;margin-bottom:20px;font-size:.92rem}
+  .lead b{color:var(--accent)}
+  .grid{display:grid;gap:16px}
+  @media(min-width:640px){.grid{grid-template-columns:1fr 1fr}}
+  @media(min-width:920px){.grid{grid-template-columns:1fr 1fr 1fr}}
+  .vcard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:var(--shadow)}
+  .vword{font-size:2.6rem;text-align:center;margin:2px 0 14px}
+  .rows{display:flex;flex-direction:column;gap:9px}
+  .prow{display:flex;align-items:center;gap:10px;justify-content:space-between}
+  .plabel{font-size:.82rem;font-weight:600;color:var(--gold)}
+  .slot{min-width:56px;height:44px;border:2px dashed var(--line);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;background:#fbf8f1;transition:.15s;padding:0 4px}
+  .slot.filled{border-style:solid;border-color:var(--accent)}
+  .slot.right{border-color:var(--right);background:#e8f5ee}
+  .slot.wrong{border-color:var(--wrong);background:#fbeae7}
+  .bank{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)}
+  .tile{font-size:1.7rem;min-width:48px;height:48px;padding:0 6px;border:1px solid var(--accent);background:#fff;color:var(--accent);border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:500;transition:.12s}
+  .tile:hover{background:var(--accent);color:#fff}
+  .tile.used{opacity:.25;pointer-events:none}
+  .cardbtns{display:flex;gap:8px;margin-top:14px}
+  .mini{flex:1;border:1px solid var(--line);background:transparent;color:var(--ink);padding:7px;border-radius:8px;cursor:pointer;font-size:.82rem}
+  .mini.check{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .progress{position:sticky;top:50px;z-index:9;background:var(--card);border-bottom:1px solid var(--line);box-shadow:var(--shadow);margin:-20px -16px 20px}
+  .progress .pwrap{max-width:980px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .round-dots{display:flex;gap:6px;flex-wrap:wrap}
+  .dot{min-width:22px;height:22px;padding:0 5px;border-radius:11px;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:700;color:var(--line)}
+  .dot.active{border-color:var(--accent);color:var(--accent)}
+  .dot.done{background:var(--right);border-color:var(--right);color:#fff}
+  .count{margin-left:auto;font-size:.85rem;font-weight:600;color:var(--accent)}
+  .drill-wrap{max-width:660px;margin:0 auto}
+  .card2{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:20px 16px;text-align:center}
+  .qnum{font-size:.78rem;color:var(--gold);font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+  .meaning{font-size:1.3rem;font-weight:600;margin:10px 6px 2px}
+  .sub{font-size:.85rem;color:#6a6155;margin-bottom:18px}
+  .build{direction:rtl;display:flex;justify-content:center;align-items:center;gap:4px;margin:6px 0 18px;font-size:2.3rem;min-height:66px;flex-wrap:wrap}
+  .slot2{min-width:58px;min-height:54px;border:2px dashed var(--line);border-radius:10px;display:inline-flex;align-items:center;justify-content:center;background:#fbf8f1;font-family:"Traditional Arabic","Amiri",serif;padding:0 6px;transition:.15s}
+  .slot2.filled{border-style:solid;border-color:var(--accent)}
+  .slot2.right{border-color:var(--right);background:#e8f5ee}
+  .slot2.wrong{border-color:var(--wrong);background:#fbeae7}
+  .stemframe{color:var(--ink);opacity:.85;font-family:"Traditional Arabic","Amiri",serif;padding:0 2px}
+  .banklabel{font-size:.72rem;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;margin:10px 0 6px}
+  .partbank{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+  .part{font-size:1.8rem;min-width:60px;min-height:54px;padding:4px 10px;border:1px solid var(--accent);background:#fff;color:var(--accent);border-radius:10px;cursor:pointer;transition:.12s;display:inline-flex;align-items:center;justify-content:center;font-family:"Traditional Arabic","Amiri",serif}
+  .part:active{transform:scale(.96)}
+  .part.used{opacity:.25;pointer-events:none}
+  .seegha{margin-top:8px;padding-top:14px;border-top:1px dashed var(--line)}
+  .seegha .sgrow{display:flex;align-items:center;gap:8px;justify-content:space-between;margin:8px 0;flex-wrap:wrap}
+  .sglabel{font-size:.78rem;color:#6a6155;min-width:64px;text-align:left}
+  .sgopts{display:flex;gap:6px;flex-wrap:wrap;flex:1;justify-content:flex-end}
+  .sgopt{font-size:1rem;border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 10px;cursor:pointer;transition:.1s;font-family:"Traditional Arabic","Amiri",serif}
+  .sgopt.sel{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .sgopt.right{background:#e8f5ee;border-color:var(--right);color:var(--right)}
+  .sgopt.wrong{background:#fbeae7;border-color:var(--wrong);color:var(--wrong)}
+  .feedback{margin-top:16px;min-height:22px;font-size:.9rem;font-weight:600}
+  .feedback.good{color:var(--right)}.feedback.bad{color:var(--wrong)}
+  .checkbtn,.nextbtn{margin-top:14px;width:100%;background:var(--accent);color:#fff;border:none;padding:14px;border-radius:12px;font-size:1rem;font-weight:600;cursor:pointer}
+  .checkbtn.hide{display:none}
+  .nextbtn{display:none}.nextbtn.show{display:block}
+  .drill-done{display:none;text-align:center;padding:28px 10px}
+  .drill-done h3{color:var(--accent);margin:0 0 6px}
+  .negtoggle{margin:0 0 6px}
+  .negbtn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:1.4rem;font-family:"Traditional Arabic","Amiri",serif;color:var(--accent)}
+  .negbtn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .stat-row{display:flex;gap:10px;margin:16px 0;flex-wrap:wrap}
+  .stat{flex:1;min-width:120px;background:var(--accent-soft);border-radius:10px;padding:12px;text-align:center}
+  .stat .big{font-size:1.4rem;font-weight:700;color:var(--accent)}
+  .stat .lbl{font-size:.74rem;color:#6a6155}
+  .report{width:100%;min-height:280px;border:1px solid var(--line);border-radius:10px;padding:12px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.78rem;background:#fbf8f1;color:var(--ink);resize:vertical;margin-top:8px;line-height:1.55}
+  .copybtn{margin-top:12px;width:100%;background:var(--gold);color:#fff;border:none;padding:14px;border-radius:12px;font-size:1rem;font-weight:600;cursor:pointer}
+  .copybtn.copied{background:var(--right)}
+  .instr{font-size:.85rem;color:#6a6155;margin-top:14px}
+  .pending{background:#fbf3e6;border:1px solid var(--gold);border-radius:10px;padding:14px 16px;font-size:.9rem;color:#7a5c1f}
+  .resetall{margin-top:24px;border:1px solid var(--line);background:transparent;padding:9px 16px;border-radius:8px;cursor:pointer;color:var(--ink)}
+  footer{max-width:980px;margin:0 auto;padding:0 16px 60px;color:#8a8172;font-size:.82rem}
+</style>
+</head>
+<body>
+<header><div class="wrap"><h1>Ṣarf Practice — Tap, Don't Write</h1>
+<p>Five exercises, all answered by tapping. Finish them, then open the Report tab to copy one summary for your teacher.</p></div></header>
+<nav><div class="wrap">
+  <button class="tab active" data-tab="babs">1 · The 6 Bābs</button>
+  <button class="tab" data-tab="ex4">2 · Seegha → Verb</button>
+  <button class="tab" data-tab="ex5">3 · English → Verb + Seegha</button>
+  <button class="tab" data-tab="report">Report</button>
+  <span class="score" id="score">0 correct</span>
+</div></nav>
+<main>
+  <section id="babs" class="active">
+    <div class="lead">The six <b>bābs</b> of the sound triliteral verb are defined by the vowel on the middle root (ʿayn) — first in the <b>māḍī</b> (past), then in the <b>muḍāriʿ</b> (present). Learn the table, then drill it with the table hidden. The drill repeats until you can recall all six from memory.</div>
+    <div id="bab-ref"></div>
+    <div class="progress" id="bab-prog" style="display:none"><div class="pwrap"><div class="round-dots" id="dotsB"></div><span class="count" id="countB"></span></div></div>
+    <div class="drill-wrap" id="bab-drillwrap" style="display:none">
+      <div class="card2" id="cardB"><div id="stageB"></div></div>
+      <div class="drill-done" id="doneB"><h3>The six bābs — complete ✓</h3><p class="sub">Open the Report tab when you've finished the other exercises too.</p></div>
+    </div>
+  </section>
+  <section id="ex4">
+    <div class="lead">Read the grammatical breakdown (seegha) and build the verb it describes. Tap a prefix, then an ending.</div>
+    <div class="progress"><div class="pwrap"><div class="round-dots" id="dots4"></div><span class="count" id="count4"></span></div></div>
+    <div class="drill-wrap"><div class="card2" id="card4"><div id="stage4"></div></div>
+      <div class="drill-done" id="done4"><h3>Exercise 4 complete ✓</h3><p class="sub">Open the Report tab when you've finished the others too.</p></div></div>
+  </section>
+  <section id="ex5">
+    <div class="lead">Read the English, then build the verb <b>and</b> select its seegha. If the sentence says “not”, tap the <span class="arabic">لا</span> button first.</div>
+    <div class="progress"><div class="pwrap"><div class="round-dots" id="dots5"></div><span class="count" id="count5"></span></div></div>
+    <div class="drill-wrap"><div class="card2" id="card5"><div id="stage5"></div></div>
+      <div class="drill-done" id="done5"><h3>Exercise 5 complete ✓</h3><p class="sub">Open the Report tab to copy your summary.</p></div></div>
+  </section>
+  <section id="report">
+    <div class="lead">One report covers all five exercises. Finish them, then copy this and send it to your teacher.</div>
+    <div id="report-pending" class="pending"></div>
+    <div id="report-ready" style="display:none">
+      <div class="stat-row">
+        <div class="stat"><div class="big" id="s-total">–</div><div class="lbl">Total correct (first try)</div></div>
+        <div class="stat"><div class="big" id="s-acc">–</div><div class="lbl">First-try accuracy</div></div>
+        <div class="stat"><div class="big" id="s-time">–</div><div class="lbl">Time taken</div></div>
+      </div>
+      <textarea class="report" id="reporttext" readonly></textarea>
+      <button class="copybtn" id="copybtn">Copy report</button>
+      <p class="instr">On a phone: tap “Copy report,” open Messages or Mail, then hold to paste.</p>
+    </div>
+  </section>
+  <button class="resetall" id="resetall">Reset everything</button>
+</main>
+<footer>Built for practice without handwriting. Works on a phone, tablet, or computer.</footer>
+<script>
+const SUK='\u0652',FAT='\u064E',DAM='\u064F',KAS='\u0650';
+const VERB={
+  faala:{r1:'ف',r2:'ع',r3:'ل',mv:FAT},
+  kill:{r1:'ق',r2:'ت',r3:'ل',mv:DAM}, open:{r1:'ف',r2:'ت',r3:'ح',mv:FAT},
+  help:{r1:'ن',r2:'ص',r3:'ر',mv:DAM}, wash:{r1:'غ',r2:'س',r3:'ل',mv:KAS},
+  hit:{r1:'ض',r2:'ر',r3:'ب',mv:KAS}, brk:{r1:'ك',r2:'س',r3:'ر',mv:KAS},
+  ask:{r1:'س',r2:'أ',r3:'ل',mv:FAT}, undr:{r1:'ف',r2:'ه',r3:'م',mv:FAT},
+  sit:{r1:'ج',r2:'ل',r3:'س',mv:KAS}, cut:{r1:'ق',r2:'ط',r3:'ع',mv:FAT}
+};
+function stemOf(vk){const v=VERB[vk];return v.r1+SUK+v.r2+v.mv;}
+function r3Of(vk){return VERB[vk].r3;}
+const PARA={
+ 'gh|m|1':['يَ','X'+DAM],'gh|m|2':['يَ','X'+FAT+'انِ'],'gh|m|3':['يَ','X'+DAM+'ونَ'],
+ 'gh|f|1':['تَ','X'+DAM],'gh|f|2':['تَ','X'+FAT+'انِ'],'gh|f|3':['يَ','X'+SUK+'نَ'],
+ 'ha|m|1':['تَ','X'+DAM],'ha|m|2':['تَ','X'+FAT+'انِ'],'ha|m|3':['تَ','X'+DAM+'ونَ'],
+ 'ha|f|1':['تَ','X'+KAS+'ينَ'],'ha|f|2':['تَ','X'+FAT+'انِ'],'ha|f|3':['تَ','X'+SUK+'نَ'],
+ 'mu|x|1':['أَ','X'+DAM],'mu|x|3':['نَ','X'+DAM]
+};
+function endOf(vk,key){return PARA[key][1].replace('X',r3Of(vk));}
+function preOf(key){return PARA[key][0];}
+function conj(vk,key){return preOf(key)+stemOf(vk)+endOf(vk,key);}
+const ALL_PRE=['يَ','تَ','أَ','نَ'];
+function allEndsFor(vk){return [...new Set(Object.keys(PARA).map(k=>endOf(vk,k)))];}
+const WP={gh:'غَائِب',ha:'حَاضِر',mu:'مُتَكَلِّم'},WG={m:'مُذَكَّر',f:'مُؤَنَّث',x:'مُذَكَّر أو مُؤَنَّث'},WN={'1':'وَاحِد','2':'تَثْنِيَة','3':'جَمْع'};
+function seeghaText(key,neg){const p=key.split('|');return `الفِعْل المُضَارِع – مَعْرُوف – ${WP[p[0]]} – ${WG[p[1]]} – ${WN[p[2]]} – ${neg?'مَنْفِي':'مُثْبَت'}`;}
+function sh(a){return [...a].sort(()=>Math.random()-0.5);}
+
+let startTime=Date.now();
+const stats={babs:{done:0,total:0,ok:false},ex4:{done:0,total:0,ok:false},ex5:{done:0,total:0,ok:false}};
+let firstTryTotal=0, missLog=[];
+function updateScore(){document.getElementById('score').textContent=firstTryTotal+' correct';}
+
+/* EX1 */
+/* ===== THE 6 BABS ===== */
+const HARAKA={fatha:{ar:'فَتْحَة',mark:'\u064E',en:'a'},damma:{ar:'ضَمَّة',mark:'\u064F',en:'u'},kasra:{ar:'كَسْرَة',mark:'\u0650',en:'i'}};
+const BABS=[
+ {n:1,madi:'نَصَرَ',mud:'يَنْصُرُ',v1:'fatha',v2:'damma'},
+ {n:2,madi:'ضَرَبَ',mud:'يَضْرِبُ',v1:'fatha',v2:'kasra'},
+ {n:3,madi:'فَتَحَ',mud:'يَفْتَحُ',v1:'fatha',v2:'fatha'},
+ {n:4,madi:'سَمِعَ',mud:'يَسْمَعُ',v1:'kasra',v2:'fatha'},
+ {n:5,madi:'كَرُمَ',mud:'يَكْرُمُ',v1:'damma',v2:'damma'},
+ {n:6,madi:'حَسِبَ',mud:'يَحْسِبُ',v1:'kasra',v2:'kasra'}
+];
+// Reference table with a "hide & start drill" button
+(function(){
+  const ref=document.getElementById('bab-ref');
+  let html='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)">'
+    +'<thead><tr style="background:var(--accent-soft)">'
+    +'<th style="padding:10px;font-size:.8rem;color:var(--accent)">Bāb</th>'
+    +'<th style="padding:10px;font-size:.8rem;color:var(--accent)">Māḍī → Muḍāriʿ</th>'
+    +'<th style="padding:10px;font-size:.8rem;color:var(--accent)">ʿAyn vowel</th>'
+    +'<th style="padding:10px;font-size:.8rem;color:var(--accent)">Pattern</th></tr></thead><tbody>';
+  BABS.forEach(b=>{
+    html+='<tr style="border-top:1px solid var(--line)">'
+      +'<td style="padding:12px;text-align:center;font-weight:700;color:var(--gold);font-size:1.1rem">'+b.n+'</td>'
+      +'<td style="padding:12px;text-align:center"><span class="arabic" style="font-size:1.9rem">'+b.madi+' → '+b.mud+'</span></td>'
+      +'<td style="padding:12px;text-align:center;font-size:.9rem"><span class="arabic">'+HARAKA[b.v1].ar+'</span> → <span class="arabic">'+HARAKA[b.v2].ar+'</span></td>'
+      +'<td style="padding:12px;text-align:center;font-weight:600;color:var(--accent)">'+HARAKA[b.v1].en+' → '+HARAKA[b.v2].en+'</td></tr>';
+  });
+  html+='</tbody></table></div>'
+    +'<button id="startBab" style="margin-top:18px;width:100%;background:var(--accent);color:#fff;border:none;padding:15px;border-radius:12px;font-size:1rem;font-weight:600;cursor:pointer">I\u2019ve studied it — hide the table and start the drill</button>'
+    +'<button id="showBab" style="display:none;margin-top:10px;width:100%;background:transparent;border:1px solid var(--line);color:var(--ink);padding:12px;border-radius:12px;cursor:pointer">Show the table again</button>';
+  ref.innerHTML=html;
+  document.getElementById('startBab').onclick=()=>{
+    document.querySelector('#bab-ref table').closest('div').style.display='none';
+    document.getElementById('startBab').style.display='none';
+    document.getElementById('showBab').style.display='block';
+    document.getElementById('bab-prog').style.display='';
+    document.getElementById('bab-drillwrap').style.display='';
+    if(!window.__babStarted){window.__babStarted=true;startBabDrill();}
+  };
+  document.getElementById('showBab').onclick=()=>{
+    document.querySelector('#bab-ref table').closest('div').style.display='';
+  };
+})();
+
+// The bab drill: given a bab (number + representative madi verb), recall
+// (a) the mudari vowel pattern (two haraka picks) and (b) the matching mudari example.
+// 3 rounds through all 6, shuffled.
+const BAB_ROUNDS=3;
+stats.babs.total=BAB_ROUNDS*BABS.length;
+function startBabDrill(){
+  let round=0,qi=0,order=[],hadError,solved;
+  const stage=document.getElementById('stageB');
+  function dots(){const d=document.getElementById('dotsB');d.innerHTML='';
+    for(let i=0;i<BAB_ROUNDS;i++){const e=document.createElement('div');e.className='dot'+(i<round?' done':i===round?' active':'');e.textContent=i+1;d.appendChild(e);}}
+  function startRound(){order=sh(BABS.map((_,i)=>i));qi=0;dots();showQ();}
+  function showQ(){
+    const b=BABS[order[qi]];hadError=false;solved=false;
+    document.getElementById('countB').textContent=(round*BABS.length+qi+1)+' / '+stats.babs.total;
+    const bareMadi=b.madi.replace(/[\u064B-\u0652]/g,'');
+    let html='<div class="qnum">The 6 Bābs · '+(qi+1)+' of 6 · round '+(round+1)+'</div>'
+      +'<div class="meaning">Bāb '+b.n+' &nbsp;·&nbsp; <span class="arabic" style="font-size:1.7rem">'+bareMadi+'</span></div>'
+      +'<div class="sub">Recall this bāb: pick the ʿayn vowel for the māḍī, then for the muḍāriʿ</div>'
+      +'<div class="banklabel">Māḍī ʿayn vowel</div><div class="partbank" id="v1B">'
+        +sh(['fatha','damma','kasra']).map(v=>'<button class="part" data-h="'+v+'" style="min-width:96px">'+HARAKA[v].ar+'</button>').join('')+'</div>'
+      +'<div class="banklabel">Muḍāriʿ ʿayn vowel</div><div class="partbank" id="v2B">'
+        +sh(['fatha','damma','kasra']).map(v=>'<button class="part" data-h="'+v+'" style="min-width:96px">'+HARAKA[v].ar+'</button>').join('')+'</div>'
+      +'<div class="feedback" id="fbB"></div>'
+      +'<button class="checkbtn" id="ckB">Check</button><button class="nextbtn" id="nxB">Next</button>';
+    stage.innerHTML=html;
+    let selV1=null,selV2=null;
+    function pick(group,btn){if(solved)return;group.querySelectorAll('.part').forEach(x=>x.classList.remove('used'));btn.classList.add('used');return btn;}
+    const g1=document.getElementById('v1B'),g2=document.getElementById('v2B');
+    g1.querySelectorAll('.part').forEach(btn=>btn.onclick=()=>{selV1=pick(g1,btn);});
+    g2.querySelectorAll('.part').forEach(btn=>btn.onclick=()=>{selV2=pick(g2,btn);});
+    document.getElementById('ckB').onclick=()=>{
+      const fb=document.getElementById('fbB');
+      if(!selV1||!selV2){fb.textContent='Pick both vowels first';fb.className='feedback bad';return;}
+      const okV1=selV1.dataset.h===b.v1,okV2=selV2.dataset.h===b.v2;
+      [[selV1,okV1],[selV2,okV2]].forEach(([el,ok])=>{el.classList.remove('used');el.style.borderColor=ok?'var(--right)':'var(--wrong)';el.style.background=ok?'#e8f5ee':'#fbeae7';});
+      if(okV1&&okV2){solved=true;
+        if(!hadError){firstTryTotal++;stats.babs.done++;}else{missLog.push('Bāb '+b.n+' ('+b.madi+')');}
+        updateScore();fb.textContent=hadError?'Correct now — keep going':'Correct';fb.className='feedback good';
+        document.getElementById('ckB').classList.add('hide');document.getElementById('nxB').classList.add('show');
+      }else{hadError=true;const bits=[];if(!okV1)bits.push('māḍī vowel');if(!okV2)bits.push('muḍāriʿ vowel');
+        fb.textContent='Check the '+bits.join(', ')+', then Check again';fb.className='feedback bad';
+        [[selV1,okV1],[selV2,okV2]].forEach(([el,ok])=>{if(!ok){el.style.borderColor='';el.style.background='';}});
+      }
+    };
+    document.getElementById('nxB').onclick=()=>{qi++;
+      if(qi<BABS.length){showQ();}
+      else{round++;if(round<BAB_ROUNDS){startRound();}
+        else{document.getElementById('cardB').style.display='none';document.getElementById('doneB').style.display='block';stats.babs.ok=true;checkDone();}}};
+  }
+  startRound();
+}
+
+/* GENERIC ASSEMBLY DRILL */
+function makeDrill(cfg){
+  const {stageId,dotsId,countId,doneId,cardId,statKey,itemFactory,rounds,label,dotLabels}=cfg;
+  let round=0,qi=0,order=[],items=[],hadError=false,solved=false,negState=false;
+  const stage=document.getElementById(stageId);
+  stats[statKey].total=0;for(let r=0;r<rounds;r++)stats[statKey].total+=itemFactory(r).length;
+  function buildDots(){const d=document.getElementById(dotsId);d.innerHTML='';
+    for(let i=0;i<rounds;i++){const e=document.createElement('div');e.className='dot'+(i<round?' done':i===round?' active':'');e.textContent=dotLabels?dotLabels[i]:(i+1);d.appendChild(e);}}
+  function startRound(){items=itemFactory(round);order=sh(items.map((_,i)=>i));qi=0;buildDots();showQ();}
+  function sgRow(name,opts){return '<div class="sgrow"><span class="sglabel">'+name+'</span><div class="sgopts" data-sg="'+name+'">'+opts.map(o=>'<button class="sgopt arabic" data-val="'+o[1]+'">'+o[0]+'</button>').join('')+'</div></div>';}
+  function showQ(){
+    const it=items[order[qi]];hadError=false;solved=false;negState=false;
+    const total=stats[statKey].total,globalIdx=(function(){let c=0;for(let r=0;r<round;r++)c+=itemFactory(r).length;return c+qi+1;})();
+    document.getElementById(countId).textContent=globalIdx+' / '+total;
+    let html='<div class="qnum">'+label+' · '+(qi+1)+' of '+items.length+(rounds>1?' · round '+(round+1):'')+'</div>'
+      +'<div class="meaning '+(it.arabicPrompt?'arabic':'')+'">'+it.prompt+'</div>'
+      +'<div class="sub">'+(it.sub||'Tap a prefix, then an ending')+'</div>';
+    if(it.allowNeg){html+='<div class="negtoggle"><button class="negbtn" id="neg-'+stageId+'">لا (not)</button></div>';}
+    html+='<div class="build"><span class="slot2" id="sp-'+stageId+'"></span><span class="stemframe">'+stemOf(it.vk)+'</span><span class="slot2" id="se-'+stageId+'"></span></div>'
+      +'<div class="banklabel">Prefix</div><div class="partbank" id="bp-'+stageId+'"></div>'
+      +'<div class="banklabel">Ending</div><div class="partbank" id="be-'+stageId+'"></div>';
+    if(it.needSeegha){html+='<div class="seegha" id="sg-'+stageId+'"><div class="banklabel">Seegha — tap one in each row</div>'
+      +sgRow('person',[['غَائِب','gh'],['حَاضِر','ha'],['مُتَكَلِّم','mu']])
+      +sgRow('gender',[['مُذَكَّر','m'],['مُؤَنَّث','f'],['مُذَكَّر أو مُؤَنَّث','x']])
+      +sgRow('number',[['وَاحِد','1'],['تَثْنِيَة','2'],['جَمْع','3']])
+      +sgRow('aff',[['مُثْبَت','pos'],['مَنْفِي','neg']])+'</div>';}
+    html+='<div class="feedback" id="fb-'+stageId+'"></div><button class="checkbtn" id="ck-'+stageId+'">Check</button><button class="nextbtn" id="nx-'+stageId+'">Next</button>';
+    stage.innerHTML=html;wire(it);
+  }
+  function wire(it){
+    if(it.allowNeg){const nb=document.getElementById('neg-'+stageId);nb.onclick=()=>{if(solved)return;negState=!negState;nb.classList.toggle('on',negState);};}
+    const bp=document.getElementById('bp-'+stageId),be=document.getElementById('be-'+stageId);
+    function mkPart(val,type){const b=document.createElement('button');b.className='part';b.textContent=val;b.dataset.val=val;b.onclick=()=>place(b,val,type);return b;}
+    function place(btn,val,type){if(solved)return;const slot=document.getElementById((type==='pre'?'sp-':'se-')+stageId);const bank=type==='pre'?bp:be;
+      if(slot.dataset.val){[...bank.children].forEach(c=>{if(c.dataset.val===slot.dataset.val)c.classList.remove('used');});}
+      slot.textContent=val;slot.dataset.val=val;slot.classList.add('filled');slot.classList.remove('right','wrong');[...bank.children].forEach(c=>c.classList.remove('used'));btn.classList.add('used');}
+    sh(ALL_PRE).forEach(val=>bp.appendChild(mkPart(val,'pre')));
+    sh(allEndsFor(it.vk)).forEach(val=>be.appendChild(mkPart(val,'end')));
+    ['sp','se'].forEach(pfx=>{const slot=document.getElementById(pfx+'-'+stageId);slot.onclick=()=>{if(solved||!slot.dataset.val)return;const bank=pfx==='sp'?bp:be;[...bank.children].forEach(c=>{if(c.dataset.val===slot.dataset.val)c.classList.remove('used');});slot.textContent='';slot.className='slot2';delete slot.dataset.val;};});
+    if(it.needSeegha){stage.querySelectorAll('#sg-'+stageId+' .sgopts').forEach(rowEl=>{rowEl.querySelectorAll('.sgopt').forEach(o=>o.onclick=()=>{if(solved)return;rowEl.querySelectorAll('.sgopt').forEach(x=>x.classList.remove('sel'));o.classList.add('sel');});});}
+    document.getElementById('ck-'+stageId).onclick=()=>check(it);
+    document.getElementById('nx-'+stageId).onclick=()=>next();
+  }
+  function check(it){
+    const sp=document.getElementById('sp-'+stageId),se=document.getElementById('se-'+stageId),fb=document.getElementById('fb-'+stageId);
+    if(!sp.dataset.val||!se.dataset.val){fb.textContent='Fill both the prefix and the ending first';fb.className='feedback bad';return;}
+    const preOK=sp.dataset.val===preOf(it.key),endOK=se.dataset.val===endOf(it.vk,it.key);
+    sp.classList.toggle('right',preOK);sp.classList.toggle('wrong',!preOK);
+    se.classList.toggle('right',endOK);se.classList.toggle('wrong',!endOK);
+    let negOK=true;if(it.allowNeg)negOK=(negState===!!it.forceNeg);
+    let sgOK=true;
+    if(it.needSeegha){const p=it.key.split('|');const want={person:p[0],gender:p[1],number:p[2],aff:it.forceNeg?'neg':'pos'};
+      stage.querySelectorAll('#sg-'+stageId+' .sgopts').forEach(rowEl=>{const name=rowEl.dataset.sg,sel=rowEl.querySelector('.sgopt.sel');
+        rowEl.querySelectorAll('.sgopt').forEach(o=>o.classList.remove('right','wrong'));
+        if(!sel){sgOK=false;return;}if(sel.dataset.val===want[name])sel.classList.add('right');else{sel.classList.add('wrong');sgOK=false;}});}
+    if(preOK&&endOK&&negOK&&sgOK){
+      solved=true;if(!hadError){firstTryTotal++;stats[statKey].done++;}else{missLog.push(label+': '+(it.plain||it.prompt));}
+      updateScore();fb.textContent=hadError?'Correct now — keep going':'Correct';fb.className='feedback good';
+      document.getElementById('ck-'+stageId).classList.add('hide');document.getElementById('nx-'+stageId).classList.add('show');
+      if(it.allowNeg){const nb=document.getElementById('neg-'+stageId);if(nb)nb.style.pointerEvents='none';}
+    }else{hadError=true;const bits=[];if(!preOK)bits.push('prefix');if(!endOK)bits.push('ending');if(!negOK)bits.push('لا/not');if(!sgOK)bits.push('seegha');
+      fb.textContent='Check the '+bits.join(', ')+', then Check again';fb.className='feedback bad';}
+  }
+  function next(){qi++;if(qi<items.length){showQ();}else{round++;if(round<rounds){startRound();}else{document.getElementById(cardId).style.display='none';document.getElementById(doneId).style.display='block';stats[statKey].ok=true;checkDone();}}}
+  startRound();
+}
+
+const EX4=[['faala','gh|m|2'],['faala','gh|f|3'],['wash','mu|x|3'],['wash','gh|m|2'],['help','gh|f|1'],['help','gh|f|3'],['help','ha|m|2']]
+  .map(o=>({vk:o[0],key:o[1],prompt:seeghaText(o[1],false),arabicPrompt:true,sub:'Build the verb this describes',plain:seeghaText(o[1],false)}));
+makeDrill({stageId:'stage4',dotsId:'dots4',countId:'count4',doneId:'done4',cardId:'card4',statKey:'ex4',rounds:1,label:'Seegha→Verb',itemFactory:()=>EX4});
+
+const EX5=[
+ ["We are not washing.",'wash','mu|x|3',true],["They (2m) are not breaking.",'brk','gh|m|2',true],
+ ["She is not asking.",'ask','gh|f|1',true],["You (1f) are not killing.",'kill','ha|f|1',true],
+ ["They (3f) are opening.",'open','gh|f|3',false],["You (1m) are cutting.",'cut','ha|m|1',false],
+ ["We are not understanding.",'undr','mu|x|3',true],["She is not breaking.",'brk','gh|f|1',true],
+ ["They (2f) are not opening.",'open','gh|f|2',true],["I am not understanding.",'undr','mu|x|1',true],
+ ["We are not washing.",'wash','mu|x|3',true],["They (2m) are not breaking.",'brk','gh|m|2',true],
+ ["You (1m) are not understanding.",'undr','ha|m|1',true]
+].map(o=>({vk:o[1],key:o[2],prompt:o[0],plain:o[0],allowNeg:true,forceNeg:o[3],needSeegha:true,sub:'Build the verb, tap لا if needed, then pick the seegha'}));
+makeDrill({stageId:'stage5',dotsId:'dots5',countId:'count5',doneId:'done5',cardId:'card5',statKey:'ex5',rounds:1,label:'English→Verb',itemFactory:()=>EX5});
+
+function checkDone(){buildReport();}
+function buildReport(){
+  const pend=document.getElementById('report-pending'),ready=document.getElementById('report-ready');
+  const names={babs:'The 6 bābs',ex4:'Seegha → verb',ex5:'English → verb + seegha'};
+  const left=[];for(const k of ['babs','ex4','ex5']){if(!stats[k].ok)left.push(names[k]+' ('+stats[k].done+'/'+stats[k].total+' done)');}
+  if(left.length){ready.style.display='none';pend.style.display='block';pend.innerHTML='Not finished yet. Still to complete:<br>• '+left.join('<br>• ');return;}
+  pend.style.display='none';ready.style.display='block';
+  const totalQ=Object.values(stats).reduce((a,s)=>a+s.total,0),acc=Math.round((firstTryTotal/totalQ)*100),secs=Math.round((Date.now()-startTime)/1000),timeStr=Math.floor(secs/60)+'m '+(secs%60)+'s';
+  document.getElementById('s-total').textContent=firstTryTotal+'/'+totalQ;
+  document.getElementById('s-acc').textContent=acc+'%';
+  document.getElementById('s-time').textContent=timeStr;
+  const code=((firstTryTotal*13)+secs).toString(36).toUpperCase().slice(-5);
+  const line=(k,n)=>'  '+n+': '+stats[k].done+'/'+stats[k].total;
+  const misses=missLog.length?missLog.map(m=>'   • '+m).join("\n"):'   none — all correct on first try';
+  document.getElementById('reporttext').value=
+'==== SARF WORKBOOK — COMPLETION REPORT ====\n'+
+'Completed: '+new Date().toLocaleString()+'\n\n'+
+'First-try correct by exercise:\n'+
+line('babs','1 The 6 babs')+'\n'+line('ex4','2 Seegha->verb')+'\n'+line('ex5','3 English->verb+seegha')+'\n\n'+
+'Overall first-try: '+firstTryTotal+'/'+totalQ+' ('+acc+'%)\n'+
+'Time taken: '+timeStr+'\n\n'+
+'Items that needed a retry:\n'+misses+'\n\n'+
+'Verification code: '+code+'\n'+
+'===========================================';
+}
+
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+  t.classList.add('active');document.getElementById(t.dataset.tab).classList.add('active');
+  if(t.dataset.tab==='report')buildReport();window.scrollTo({top:0,behavior:'smooth'});});
+document.getElementById('copybtn').onclick=async()=>{const ta=document.getElementById('reporttext'),btn=document.getElementById('copybtn');
+  try{await navigator.clipboard.writeText(ta.value);}catch(e){ta.removeAttribute('readonly');ta.select();document.execCommand('copy');ta.setAttribute('readonly','');}
+  btn.textContent='Copied ✓';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copy report';btn.classList.remove('copied');},2200);};
+document.getElementById('resetall').onclick=()=>location.reload();
+buildReport();updateScore();
+</script>
+</body>
+</html>
