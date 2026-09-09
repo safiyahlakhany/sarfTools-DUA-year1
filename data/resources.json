@@ -55,12 +55,14 @@
       "studyTools": [
         {
           "id": "743e0e7d-f6b0-4204-8a04-b5cdfd1d6332",
-          "title": "Week 3 Study Tool",
+          "title": "المَجْهُول",
           "path": "resources/week-003/study-tool-743e0e7d-f6b0-4204-8a04-b5cdfd1d6332.html",
-          "publishedAt": "2026-09-09T15:56:57.986Z"
+          "publishedAt": "2026-09-09T15:56:57.986Z",
+          "updatedAt": "2026-09-09T15:57:50.209Z"
         }
-      ]
+      ],
+      "accessibleHomeworks": []
     }
   ],
-  "updatedAt": "2026-09-09T15:56:57.986Z"
+  "updatedAt": "2026-09-09T15:57:50.209Z"
 }
