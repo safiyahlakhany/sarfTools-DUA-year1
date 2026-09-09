@@ -48,7 +48,19 @@
           "updatedAt": "2026-09-03T04:58:27.390Z"
         }
       ]
+    },
+    {
+      "week": 3,
+      "title": "Week 3 resources",
+      "studyTools": [
+        {
+          "id": "743e0e7d-f6b0-4204-8a04-b5cdfd1d6332",
+          "title": "Week 3 Study Tool",
+          "path": "resources/week-003/study-tool-743e0e7d-f6b0-4204-8a04-b5cdfd1d6332.html",
+          "publishedAt": "2026-09-09T15:56:57.986Z"
+        }
+      ]
     }
   ],
-  "updatedAt": "2026-09-03T04:58:27.390Z"
+  "updatedAt": "2026-09-09T15:56:57.986Z"
 }
