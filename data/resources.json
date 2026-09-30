@@ -73,8 +73,21 @@
           "path": "resources/week-004/study-tool-47d100e4-314b-42b1-9890-f055682e2fdb.html",
           "publishedAt": "2026-09-30T18:00:17.794Z"
         }
+      ],
+      "accessibleHomeworks": []
+    },
+    {
+      "week": 5,
+      "title": "Week 5 resources",
+      "studyTools": [
+        {
+          "id": "ba9aad0d-077e-4e81-9cba-3c2d3900f832",
+          "title": "Week 5 Study Tool",
+          "path": "resources/week-005/study-tool-ba9aad0d-077e-4e81-9cba-3c2d3900f832.html",
+          "publishedAt": "2026-09-30T18:00:44.379Z"
+        }
       ]
     }
   ],
-  "updatedAt": "2026-09-30T18:00:17.794Z"
+  "updatedAt": "2026-09-30T18:00:44.379Z"
 }
