@@ -62,7 +62,19 @@
         }
       ],
       "accessibleHomeworks": []
+    },
+    {
+      "week": 4,
+      "title": "Week 4 resources",
+      "studyTools": [
+        {
+          "id": "47d100e4-314b-42b1-9890-f055682e2fdb",
+          "title": "Week 4 Study Tool",
+          "path": "resources/week-004/study-tool-47d100e4-314b-42b1-9890-f055682e2fdb.html",
+          "publishedAt": "2026-09-30T18:00:17.794Z"
+        }
+      ]
     }
   ],
-  "updatedAt": "2026-09-09T15:57:50.209Z"
+  "updatedAt": "2026-09-30T18:00:17.794Z"
 }
