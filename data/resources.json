@@ -99,8 +99,21 @@
           "path": "resources/week-006/accessible-homework-341f02de-7c23-43fd-97a7-ad774faefbbd.html",
           "publishedAt": "2026-09-30T18:02:04.533Z"
         }
+      ],
+      "studyTools": []
+    },
+    {
+      "week": 7,
+      "title": "Week 7 resources",
+      "studyTools": [
+        {
+          "id": "6aaaf8b0-0c90-4837-9d1f-a3cc8c610447",
+          "title": "Week 7 Study Tool",
+          "path": "resources/week-007/study-tool-6aaaf8b0-0c90-4837-9d1f-a3cc8c610447.html",
+          "publishedAt": "2026-10-07T16:43:07.829Z"
+        }
       ]
     }
   ],
-  "updatedAt": "2026-09-30T18:02:04.533Z"
+  "updatedAt": "2026-10-07T16:43:07.829Z"
 }
