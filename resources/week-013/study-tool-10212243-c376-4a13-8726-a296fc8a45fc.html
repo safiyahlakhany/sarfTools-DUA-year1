@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>اختبار الأفعال العربية</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Scheherazade+New:wght@400;700&family=Noto+Kufi+Arabic:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0c0a;
+    --surface: #1a1612;
+    --card: #221e18;
+    --border: #3d3528;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --gold-dim: #7a6330;
+    --text: #f0e6d0;
+    --text-muted: #9e8e72;
+    --correct: #4a7c59;
+    --correct-light: #6aad7e;
+    --wrong: #7c3a3a;
+    --wrong-light: #b05555;
+    --accent: #8b5e3c;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem 4rem;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 20% 10%, rgba(201,168,76,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 80% 90%, rgba(139,94,60,0.06) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .page-header h1 {
+    font-family: 'Scheherazade New', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    color: var(--gold);
+    letter-spacing: 0.03em;
+    line-height: 1.2;
+    text-shadow: 0 0 40px rgba(201,168,76,0.3);
+  }
+
+  .page-header p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-weight: 300;
+  }
+
+  .ornament {
+    color: var(--gold-dim);
+    font-size: 1.4rem;
+    letter-spacing: 0.5em;
+    margin: 0.4rem 0;
+    display: block;
+  }
+
+  .progress-bar-wrap {
+    width: 100%;
+    max-width: 680px;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+  }
+
+  .progress-track {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold-dim), var(--gold));
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  .score-bar {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .score-pill {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.35rem 1rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .score-pill span {
+    font-weight: 700;
+    font-size: 1rem;
+  }
+
+  .score-pill.correct-score span { color: var(--correct-light); }
+  .score-pill.wrong-score span { color: var(--wrong-light); }
+  .score-pill.total-score span { color: var(--gold); }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem 2rem 1.5rem;
+    width: 100%;
+    max-width: 680px;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(201,168,76,0.04) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .q-number {
+    font-size: 0.75rem;
+    color: var(--gold-dim);
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+
+  .verb-display {
+    font-family: 'Scheherazade New', serif;
+    font-size: clamp(2.4rem, 7vw, 4rem);
+    color: var(--gold-light);
+    text-align: center;
+    padding: 1.2rem 0;
+    letter-spacing: 0.05em;
+    line-height: 1.4;
+    text-shadow: 0 0 30px rgba(232,201,122,0.2);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1.5rem;
+  }
+
+  .dropdowns-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .dropdown-group label {
+    display: block;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .dropdown-group select {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 0.9rem;
+    padding: 0.55rem 0.6rem;
+    border-radius: 8px;
+    appearance: none;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    direction: rtl;
+  }
+
+  .dropdown-group select:focus {
+    outline: none;
+    border-color: var(--gold-dim);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.1);
+  }
+
+  .dropdown-group select.correct {
+    border-color: var(--correct-light);
+    background: rgba(74,124,89,0.15);
+    color: var(--correct-light);
+  }
+
+  .dropdown-group select.wrong {
+    border-color: var(--wrong-light);
+    background: rgba(124,58,58,0.15);
+    color: var(--wrong-light);
+  }
+
+  .tense-row {
+    margin-bottom: 1.5rem;
+  }
+
+  .tense-row label {
+    display: block;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .tense-options {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+  }
+
+  .tense-btn {
+    flex: 1;
+    max-width: 160px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 0.9rem;
+    padding: 0.55rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+
+  .tense-btn:hover {
+    border-color: var(--gold-dim);
+    color: var(--gold-light);
+  }
+
+  .tense-btn.selected {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.12);
+    color: var(--gold-light);
+  }
+
+  .tense-btn.correct {
+    border-color: var(--correct-light);
+    background: rgba(74,124,89,0.15);
+    color: var(--correct-light);
+  }
+
+  .tense-btn.wrong {
+    border-color: var(--wrong-light);
+    background: rgba(124,58,58,0.15);
+    color: var(--wrong-light);
+  }
+
+  .feedback-box {
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    display: none;
+    line-height: 1.6;
+    font-family: 'Noto Kufi Arabic', sans-serif;
+  }
+
+  .feedback-box.show { display: block; }
+
+  .feedback-box.correct-fb {
+    background: rgba(74,124,89,0.15);
+    border: 1px solid var(--correct-light);
+    color: var(--correct-light);
+  }
+
+  .feedback-box.wrong-fb {
+    background: rgba(124,58,58,0.15);
+    border: 1px solid var(--wrong-light);
+    color: #e08080;
+  }
+
+  .feedback-box .answer-label {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+
+  .feedback-box .correct-answer {
+    font-family: 'Scheherazade New', serif;
+    font-size: 1.1rem;
+    color: var(--gold-light);
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+  }
+
+  .btn {
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 0.9rem;
+    padding: 0.65rem 1.8rem;
+    border-radius: 8px;
+    border: 1px solid;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #8b6a20, var(--gold));
+    border-color: var(--gold);
+    color: #1a1000;
+  }
+
+  .btn-primary:hover {
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    box-shadow: 0 4px 20px rgba(201,168,76,0.3);
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    border-color: var(--border);
+    color: var(--text-muted);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--gold-dim);
+    color: var(--gold-light);
+  }
+
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .results-card {
+    display: none;
+    text-align: center;
+    padding: 3rem 2rem;
+  }
+
+  .results-card.show { display: block; }
+
+  .results-score {
+    font-family: 'Scheherazade New', serif;
+    font-size: 5rem;
+    color: var(--gold);
+    line-height: 1;
+    text-shadow: 0 0 60px rgba(201,168,76,0.4);
+  }
+
+  .results-label {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .results-breakdown {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+
+  .rb-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    text-align: center;
+  }
+
+  .rb-item .rb-num {
+    font-size: 2rem;
+    font-weight: 700;
+    display: block;
+  }
+
+  .rb-item .rb-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .rb-item.rb-correct .rb-num { color: var(--correct-light); }
+  .rb-item.rb-wrong .rb-num { color: var(--wrong-light); }
+
+  @media (max-width: 480px) {
+    .dropdowns-grid { grid-template-columns: 1fr; }
+    .card { padding: 1.5rem 1rem; }
+    .results-breakdown { flex-direction: column; align-items: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>اختبار الأفعال</h1>
+  <span class="ornament">❧ ✦ ❧</span>
+  <p>حدّد الصيغة الصرفية لكل فعل من أفعال الباب الثاني</p>
+</div>
+
+<div class="progress-bar-wrap">
+  <div class="progress-info">
+    <span id="progressText">السؤال ١ من ١٠٠</span>
+    <span id="progressPct">٠٪</span>
+  </div>
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill" style="width:0%"></div>
+  </div>
+</div>
+
+<div class="score-bar">
+  <div class="score-pill correct-score">✓ <span id="scoreCorrect">٠</span></div>
+  <div class="score-pill wrong-score">✗ <span id="scoreWrong">٠</span></div>
+  <div class="score-pill total-score">المجموع <span id="scoreTotal">٠/١٠٠</span></div>
+</div>
+
+<div class="card" id="quizCard">
+  <div class="q-number" id="qNumber">السؤال ١</div>
+
+  <div class="verb-display" id="verbDisplay">يُكَرِّمُ</div>
+
+  <div class="dropdowns-grid">
+    <div class="dropdown-group">
+      <label>العدد</label>
+      <select id="selNumber">
+        <option value="">— اختر —</option>
+        <option value="واحد">واحد</option>
+        <option value="تثنية">تثنية</option>
+        <option value="جمع">جمع</option>
+      </select>
+    </div>
+    <div class="dropdown-group">
+      <label>الجنس</label>
+      <select id="selGender">
+        <option value="">— اختر —</option>
+        <option value="مذكر">مذكر</option>
+        <option value="مؤنث">مؤنث</option>
+        <option value="—">— (متكلم)</option>
+      </select>
+    </div>
+    <div class="dropdown-group">
+      <label>الضمير</label>
+      <select id="selPerson">
+        <option value="">— اختر —</option>
+        <option value="غائب">غائب</option>
+        <option value="حاضر">حاضر</option>
+        <option value="متكلم">متكلم</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="tense-row">
+    <label>الزمن</label>
+    <div class="tense-options">
+      <button class="tense-btn" id="btnMadi" onclick="selectTense('ماضي')">ماضي</button>
+      <button class="tense-btn" id="btnMudari" onclick="selectTense('مضارع')">مضارع</button>
+    </div>
+  </div>
+
+  <div class="feedback-box" id="feedbackBox">
+    <span class="answer-label">الإجابة الصحيحة:</span>
+    <span class="correct-answer" id="feedbackAnswer"></span>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" id="btnCheck" onclick="checkAnswer()">تحقق</button>
+    <button class="btn btn-secondary" id="btnNext" onclick="nextQuestion()" disabled>التالي ←</button>
+  </div>
+</div>
+
+<div class="card results-card" id="resultsCard">
+  <div class="results-score" id="finalScore">٠٪</div>
+  <div class="results-label">نتيجتك النهائية</div>
+  <div class="results-breakdown">
+    <div class="rb-item rb-correct">
+      <span class="rb-num" id="finalCorrect">٠</span>
+      <span class="rb-label">إجابات صحيحة</span>
+    </div>
+    <div class="rb-item rb-wrong">
+      <span class="rb-num" id="finalWrong">٠</span>
+      <span class="rb-label">إجابات خاطئة</span>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="restartQuiz()">إعادة الاختبار</button>
+  </div>
+</div>
+
+<script>
+// Full 100-question dataset
+const questions = [
+  { verb: "يُكَرِّمُ", answers: [{ number: "واحد", gender: "مذكر", person: "غائب", tense: "مضارع" }] },
+  { verb: "كَسَّرْتُنَّ", answers: [{ number: "جمع", gender: "مؤنث", person: "حاضر", tense: "ماضي" }] },
+  { verb: "يُعَلِّمَانِ", answers: [{ number: "تثنية", gender: "مذكر", person: "غائب", tense: "مضارع" }] },
+  { verb: "دَرَّسْتُ", answers: [{ number: "واحد", gender: "مذكر", person: "متكلم", tense: "ماضي" }, { number: "واحد", gender: "مؤنث", person: "متكلم", tense: "ماضي" }] },
+  { verb: "يُقَدِّمُونَ", answers: [{ number: "جمع", gender: "مذكر", person: "غائب", tense: "مضارع" }] },
+  { verb: "رَتَّبْتُمَا", answers: [{ number: "تثنية", gender: "مذكر", person: "حاضر", tense: "ماضي" }, { number: "تثنية", gender: "مؤنث", person: "حاضر", tense: "ماضي" }] },
+  { verb: "تُنَظِّمُ", answers: [{ number: "واحد", gender: "مؤنث", person: "غائب", tense: "مضارع" }, { number: "واحد", gender: "مذكر", person: "حاضر", tense: "مضارع" }] },
+  { verb: "رَبَّيْنَا", answers: [{ number: "جمع", gender: "مذكر", person: "متكلم", tense: "ماضي" }, { number: "واحد", gender: "مذكر", person: "متكلم", tense: "ماضي" }, { number: "واحد", gender: "مؤنث", person: "متكلم", tense: "ماضي" }] },
+  { verb: "تُقَرِّرَانِ", answers: [{ number: "تثنية", gender: "مذكر", person: "حاضر", tense: "مضارع" }, { number: "تثنية", gender: "مؤنث", person: "غائب", tense: "مضارع" }] },
+  { verb: "قَدَّمْتِ", answers: [{ number: "واحد", gender: "مؤنث", person: "حاضر", tense: "ماضي" }] },
+  { verb: "تُكَرِّمُونَ", answers: [{ number: "جمع", gender: "مذكر", person: "حاضر", tense: "مضارع" }] },
+  { verb: "عَلَّمَتَا", answers: [{ number: "تثنية", gender: "مؤنث", person: "غائب", tense: "ماضي" }] },
+  { verb: "تُدَرِّسُ", answers: [{ number: "واحد", gender: "مؤنث", person: "غائب", tense: "مضارع" }, { number: "واحد", gender: "مذكر", person: "حاضر", tense: "مضارع" }] },
+  { verb: "رَتَّبْنَ", answers: [{ number: "جمع", gender: "مؤنث", person: "غائب", tense: "ماضي" }, { number: "جمع", gender: "مؤنث", person: "حاضر", tense: "ماضي" }] },
+  { verb: "كَرَّمَا", answers: [{ number: "تثنية", gender: "مذكر", person: "غائب", tense: "ماضي" }] },
+  { verb: "أُنَظِّمُ", answers: [{ number: "واحد", gender: "مذكر", person: "متكلم", tense: "مضارع" }, { number: "واحد", gender: "مؤنث", person: "متكلم", tense: "مضارع" }] },
+  { verb: "قَرَّرُوا", answers: [{ number: "جمع", gender: "مذكر", person: "غائب", tense: "ماضي" }] },
+  { verb: "تُعَلِّمَانِ", answers: [{ number: "تثنية", gender: "مؤنث", person: "حاضر", tense: "مضارع" }, { number: "تثنية", gender: "مذكر", person: "حاضر", tense: "مضارع" }] },
+  { verb: "تُرَبِّينَ", answers: [{ number: "واحد", gender: "مؤنث", person: "حاضر", tense: "مضارع" }] },
+  { verb: "نُقَدِّمُ", answers: [{ number: "جمع", gender: "مذكر", person: "متكلم", tense: "مضارع" }, { number: "واحد", gender: "مذكر", person: "متكلم", tense: "مضارع" }, { number: "واحد", gender: "مؤنث", person: "متكلم", tense: "مضارع" }] },
+  { verb: "دَرَّسْتُمَا", answers: [{ number: "تثنية", gender: "مذكر", person: "حاضر", tense: "ماضي" }, { number: "تثنية", gender: "مؤنث", person: "حاضر", tense: "ماضي" }] },
+  { verb: "كَسَّرَ", answers: [{ number: "واحد", gender: "مذكر", person: "غائب", tense: "ماضي" }] },
+  { verb: "تُرَتِّبْنَ", answers: [{ number: "جمع", gender: "مؤنث", person: "حاضر", tense: "مضارع" }] },
+  { verb: "تُقَدِّمَانِ", answers: [{ number: "تثنية", gender: "مؤنث", person: "غائب", tense: "مضارع" }, { number: "تثنية", gender: "مذكر", person: "حاضر", tense: "مضارع" }] },
+  { verb: "عَلَّمْتُ", answers: [{ number: "واحد", gender: "مذكر", person: "متكلم", tense: "ماضي" }, { number: "واحد", gender: "مؤنث", person: "متكلم", tense: "ماضي" }] },
+  { verb: "رَبَّيْتُمْ", answers: [{ number: "جمع", gender: "مذكر", person: "حاضر", tense: "ماضي" }] },
+  { verb: "يُكَسِّرَانِ", answers: [{ number: "تثنية", gender: "مذكر", person: "غائب", tense: "مضارع" }] },
+  { verb: "نَظَّمَتْ", answers: [{ number: "واحد", gender: "مؤنث", person: "غائب", tense: "ماضي" }] },
+  { verb: "يُقَرِّرْنَ", answers: [{ number: "جمع", gender: "مؤنث", person: "غائب", tense: "مضارع" }] },
+  { verb: "كَرَّمْتُمَا", answers: [{ number: "تثنية", gender: "مذكر", person: "حاضر", tense: "ماضي" }, { number: "تثنية", gender: "مؤنث", person: "حاضر", tense: "ماضي" }] },
+  { verb: "رَتَّبْتَ", answers: [{ number: "واحد", gender: "مذكر", person: "حاضر", tense: "ماضي" }] },
+  { verb: "دَرَّسْنَا", answers: [{ number: "جمع", gender: "مذكر", person: "متكلم", tense: "ماضي" }, { number: "واحد", gender: "مذكر", person: "متكلم", tense: "ماضي" }, { number: "واحد", gender: "مؤنث", person: "متكلم", tense: "ماضي" }] },
+  { verb: "تُنَظِّمَانِ", answers: [{ number: "تثنية", gender: "مذكر", person: "حاضر", tense: "مضارع" }, { number: "تثنية", gender: "مؤنث", person: "غائب", tense: "مضارع" }] },
+  { verb: "عَلَّمْتِ", answers: [{ number: "واحد", gender: "مؤنث", person: "حاضر", tense: "ماضي" }] },
+  { verb: "يُرَبُّونَ", answers: [{ number: "جمع", gender: "مذكر", person: "غائب", tense: "مضارع" }] },
+  { verb: "قَدَّمَتَا", answers: [{ number: "تثنية", gender: "مؤنث", person: "غائب", tense: "ماضي" }] },
+  { verb: "أُكَرِّمُ", answers: [{ number: "واحد", gender: "مذكر", person: "متكلم", tense: "مضارع" }, { number: "واحد", gender: "مؤنث", person: "متكلم", tense: "مضارع" }] },
+  { verb: "نَظَّمْتُنَّ", answers: [{ number: "جمع", gender: "مؤنث", person: "حاضر", tense: "ماضي" }] },
+  { verb: "رَتَّبَا", answers: [{ number: "تثنية", gender: "مذكر", person: "غائب", tense: "ماضي" }] },
+  { verb: "يُعَلِّمُ", answers: [{ number: "واحد", gender: "مذكر", person: "غائب", tense: "مضارع" }] },
+  { verb: "تُقَرِّرُونَ", answers: [{ number: "جمع", gender: "مذكر", person: "حاضر", tense: "مضارع" }] },
+  { verb: "تُكَرِّمَانِ", answers: [{ number: "تثنية", gender: "مؤنث", person: "حاضر", tense: "مضارع" }, { number: "تثنية", gender: "مذكر", person: "حاضر", tense: "مضارع" }] },
+  { verb: "كَسَّرَتْ", answers: [{ number: "واحد", gender: "مؤنث", person: "غائب", tense: "ماضي" }] },
+  { verb: "عَلَّمْنَ", answers: [{ number: "جمع", gender: "مؤنث", person: "غائب", tense: "ماضي" }, { number: "جمع", gender: "مؤنث", person: "حاضر", tense: "ماضي" }] },
+  { verb: "قَرَّرْتُمَا", answers: [{ number: "تثنية", gender: "مذكر", person: "حاضر", tense: "ماضي" }, { number: "تثنية", gender: "مؤنث", person: "حاضر", tense: "ماضي" }] },
+  { verb: "تُقَدِّمُ", answers: [{ number: "واحد", gender: "مذكر", person: "حاضر", tense: "مضارع" }, { number: "واحد", gender: "مؤنث", person: "غائب", tense: "مضارع" }] },
+  { verb: "نُرَتِّبُ", answers: [{ number: "جمع", gender: "مذكر", person: "متكلم", tense: "مضارع" }, { number: "واحد", gender: "مذكر", person: "متكلم", tense: "مضارع" }, { number: "واحد", gender: "مؤنث", person: "متكلم", tense: "مضارع" }] },
+  { verb: "تُدَرِّسَانِ", answers: [{ number: "تثنية", gender: "مؤنث", person: "غائب", tense: "مضارع" }, { number: "تثنية", gender: "مذكر", person: "حاضر", tense: "مضارع" }] },
+  { verb: "تُنَظِّمِينَ", answers: [{ number: "واحد", gender: "مؤنث", person: "حاضر", tense: "مضارع" }] },
+  { verb: "كَرَّمُوا", answers: [{ number: "جمع", gender: "مذكر", person: "غائب", tense: "ماضي" }] },
+  { verb: "عَلَّمَا", answers: [{ number: "تثنية", gender: "مذكر", person: "غائب", tense: "ماضي" }] },
+  { verb: "رَبَّيْتُ", answers: [{ number: "واحد", gender: "مذكر", person: "متكلم", tense: "ماضي" }, { number: "واحد", gender: "مؤنث", person: "متكلم", tense: "ماضي" }] },
+  { verb: "تُكَسِّرْنَ", answers: [{ number: "جمع", gender: "مؤنث", person: "حاضر", tense: "مضارع" }] },
+  { verb: "نَظَّمَ", answers: [{ number: "واحد", gender: "مذكر", person: "غائب", tense: "ماضي" }] },
+  { verb: "قَدَّمْتُمْ", answers: [{ number: "جمع", gender: "مذكر", person: "حاضر", tense: "ماضي" }] },
+  { verb: "تُرَبِّيَانِ", answers: [{ number: "تثنية", gender: "مذكر", person: "حاضر", tense: "مضارع" }, { number: "تثنية", gender: "مؤنث", person: "غائب", tense: "مضارع" }] },
+  { verb: "تُكَرِّمُ", answers: [{ number: "واحد", gender: "مؤنث", person: "غائب", tense: "مضارع" }, { number: "واحد", gender: "مذكر", person: "حاضر", tense: "مضارع" }] },
+  { verb: "يُنَظِّمْنَ", answers: [{ number: "جمع", gender: "مؤنث", person: "غائب", tense: "مضارع" }] },
+  { verb: "رَتَّبَتَا", answers: [{ number: "تثنية", gender: "مؤنث", person: "غائب", tense: "ماضي" }] },
+  { verb: "كَسَّرْتَ", answers: [{ number: "واحد", gender: "مذكر", person: "حاضر", tense: "ماضي" }] },
+  { verb: "قَرَّرْنَا", answers: [{ number: "جمع", gender: "مذكر", person: "متكلم", tense: "ماضي" }, { number: "واحد", gender: "مذكر", person: "متكلم", tense: "ماضي" }, { number: "واحد", gender: "مؤنث", person: "متكلم", tense: "ماضي" }] },
+  { verb: "يُقَدِّمَانِ", answers: [{ number: "تثنية", gender: "مذكر", person: "غائب", tense: "مضارع" }] },
+  { verb: "رَبَّيْتِ", answers: [{ number: "واحد", gender: "مؤنث", person: "حاضر", tense: "ماضي" }] },
+  { verb: "يُعَلِّمُونَ", answers: [{ number: "جمع", gender: "مذكر", person: "غائب", tense: "مضارع" }] },
+  { verb: "تُقَرِّرَانِ", answers: [{ number: "تثنية", gender: "مؤنث", person: "حاضر", tense: "مضارع" }, { number: "تثنية", gender: "مذكر", person: "حاضر", tense: "مضارع" }] },
+  { verb: "أُدَرِّسُ", answers: [{ number: "واحد", gender: "مذكر", person: "متكلم", tense: "مضارع" }, { number: "واحد", gender: "مؤنث", person: "متكلم", tense: "مضارع" }] },
+  { verb: "رَتَّبْتُنَّ", answers: [{ number: "جمع", gender: "مؤنث", person: "حاضر", tense: "ماضي" }] },
+  { verb: "كَرَّمْتُمَا", answers: [{ number: "تثنية", gender: "مذكر", person: "حاضر", tense: "ماضي" }, { number: "تثنية", gender: "مؤنث", person: "حاضر", tense: "ماضي" }] },
+  { verb: "يُقَرِّرُ", answers: [{ number: "واحد", gender: "مذكر", person: "غائب", tense: "مضارع" }] },
+  { verb: "تُنَظِّمُونَ", answers: [{ number: "جمع", gender: "مذكر", person: "حاضر", tense: "مضارع" }] },
+  { verb: "تُعَلِّمَانِ", answers: [{ number: "تثنية", gender: "مؤنث", person: "حاضر", tense: "مضارع" }, { number: "تثنية", gender: "مذكر", person: "حاضر", tense: "مضارع" }] },
+  { verb: "قَرَّرَتْ", answers: [{ number: "واحد", gender: "مؤنث", person: "غائب", tense: "ماضي" }] },
+  { verb: "كَسَّرْنَ", answers: [{ number: "جمع", gender: "مؤنث", person: "غائب", tense: "ماضي" }, { number: "جمع", gender: "مؤنث", person: "حاضر", tense: "ماضي" }] },
+  { verb: "نَظَّمَا", answers: [{ number: "تثنية", gender: "مذكر", person: "غائب", tense: "ماضي" }] },
+  { verb: "تُرَبِّي", answers: [{ number: "واحد", gender: "مذكر", person: "حاضر", tense: "مضارع" }, { number: "واحد", gender: "مؤنث", person: "غائب", tense: "مضارع" }] },
+  { verb: "نُكَرِّمُ", answers: [{ number: "جمع", gender: "مذكر", person: "متكلم", tense: "مضارع" }, { number: "واحد", gender: "مذكر", person: "متكلم", tense: "مضارع" }, { number: "واحد", gender: "مؤنث", person: "متكلم", tense: "مضارع" }] },
+  { verb: "عَلَّمْتُمَا", answers: [{ number: "تثنية", gender: "مذكر", person: "حاضر", tense: "ماضي" }, { number: "تثنية", gender: "مؤنث", person: "حاضر", tense: "ماضي" }] },
+  { verb: "تُقَدِّمِينَ", answers: [{ number: "واحد", gender: "مؤنث", person: "حاضر", tense: "مضارع" }] },
+  { verb: "دَرَّسُوا", answers: [{ number: "جمع", gender: "مذكر", person: "غائب", tense: "ماضي" }] },
+  { verb: "تُكَرِّمَانِ", answers: [{ number: "تثنية", gender: "مؤنث", person: "حاضر", tense: "مضارع" }, { number: "تثنية", gender: "مذكر", person: "حاضر", tense: "مضارع" }] },
+  { verb: "قَرَّرْتُ", answers: [{ number: "واحد", gender: "مذكر", person: "متكلم", tense: "ماضي" }, { number: "واحد", gender: "مؤنث", person: "متكلم", tense: "ماضي" }] },
+  { verb: "تُعَلِّمْنَ", answers: [{ number: "جمع", gender: "مؤنث", person: "حاضر", tense: "مضارع" }] },
+  { verb: "كَسَّرَتَا", answers: [{ number: "تثنية", gender: "مؤنث", person: "غائب", tense: "ماضي" }] },
+  { verb: "رَبَّى", answers: [{ number: "واحد", gender: "مذكر", person: "غائب", tense: "ماضي" }] },
+  { verb: "كَرَّمْتُمْ", answers: [{ number: "جمع", gender: "مذكر", person: "حاضر", tense: "ماضي" }] },
+  { verb: "يُرَتِّبَانِ", answers: [{ number: "تثنية", gender: "مذكر", person: "غائب", tense: "مضارع" }] },
+  { verb: "تُدَرِّسُ", answers: [{ number: "واحد", gender: "مؤنث", person: "غائب", tense: "مضارع" }, { number: "واحد", gender: "مذكر", person: "حاضر", tense: "مضارع" }] },
+  { verb: "يُرَبِّينَ", answers: [{ number: "جمع", gender: "مؤنث", person: "غائب", tense: "مضارع" }] },
+  { verb: "تُنَظِّمَانِ", answers: [{ number: "تثنية", gender: "مذكر", person: "حاضر", tense: "مضارع" }, { number: "تثنية", gender: "مؤنث", person: "غائب", tense: "مضارع" }] },
+  { verb: "دَرَّسْتَ", answers: [{ number: "واحد", gender: "مذكر", person: "حاضر", tense: "ماضي" }] },
+  { verb: "كَسَّرْنَا", answers: [{ number: "جمع", gender: "مذكر", person: "متكلم", tense: "ماضي" }, { number: "واحد", gender: "مذكر", person: "متكلم", tense: "ماضي" }, { number: "واحد", gender: "مؤنث", person: "متكلم", tense: "ماضي" }] },
+  { verb: "نَظَّمْتُمَا", answers: [{ number: "تثنية", gender: "مذكر", person: "حاضر", tense: "ماضي" }, { number: "تثنية", gender: "مؤنث", person: "حاضر", tense: "ماضي" }] },
+  { verb: "قَرَّرْتِ", answers: [{ number: "واحد", gender: "مؤنث", person: "حاضر", tense: "ماضي" }] },
+  { verb: "يُكَسِّرُونَ", answers: [{ number: "جمع", gender: "مذكر", person: "غائب", tense: "مضارع" }] },
+  { verb: "تُرَتِّبَانِ", answers: [{ number: "تثنية", gender: "مؤنث", person: "غائب", tense: "مضارع" }, { number: "تثنية", gender: "مذكر", person: "حاضر", tense: "مضارع" }] },
+  { verb: "أُعَلِّمُ", answers: [{ number: "واحد", gender: "مذكر", person: "متكلم", tense: "مضارع" }, { number: "واحد", gender: "مؤنث", person: "متكلم", tense: "مضارع" }] },
+  { verb: "قَدَّمْنَ", answers: [{ number: "جمع", gender: "مؤنث", person: "غائب", tense: "ماضي" }, { number: "جمع", gender: "مؤنث", person: "حاضر", tense: "ماضي" }] },
+  { verb: "دَرَّسَا", answers: [{ number: "تثنية", gender: "مذكر", person: "غائب", tense: "ماضي" }] },
+  { verb: "تُرَتِّبُ", answers: [{ number: "واحد", gender: "مذكر", person: "حاضر", tense: "مضارع" }, { number: "واحد", gender: "مؤنث", person: "غائب", tense: "مضارع" }] }
+];
+
+// State
+let currentQ = 0;
+let score = { correct: 0, wrong: 0 };
+let selectedTense = null;
+let answered = false;
+
+function toArabicNumerals(n) {
+  return n.toString().replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+}
+
+function selectTense(t) {
+  if (answered) return;
+  selectedTense = t;
+  document.getElementById('btnMadi').classList.toggle('selected', t === 'ماضي');
+  document.getElementById('btnMudari').classList.toggle('selected', t === 'مضارع');
+}
+
+function loadQuestion() {
+  answered = false;
+  selectedTense = null;
+  const q = questions[currentQ];
+
+  document.getElementById('qNumber').textContent = `السؤال ${toArabicNumerals(currentQ + 1)}`;
+  document.getElementById('verbDisplay').textContent = q.verb;
+
+  // Reset dropdowns
+  ['selNumber', 'selGender', 'selPerson'].forEach(id => {
+    const el = document.getElementById(id);
+    el.value = '';
+    el.className = '';
+    el.disabled = false;
+  });
+
+  // Reset tense buttons
+  document.getElementById('btnMadi').className = 'tense-btn';
+  document.getElementById('btnMudari').className = 'tense-btn';
+  document.getElementById('btnMadi').disabled = false;
+  document.getElementById('btnMudari').disabled = false;
+
+  // Reset feedback
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.style.display = 'none';
+
+  document.getElementById('btnCheck').disabled = false;
+  document.getElementById('btnNext').disabled = true;
+
+  updateProgress();
+}
+
+function updateProgress() {
+  const pct = Math.round((currentQ / questions.length) * 100);
+  document.getElementById('progressText').textContent = `السؤال ${toArabicNumerals(currentQ + 1)} من ${toArabicNumerals(questions.length)}`;
+  document.getElementById('progressPct').textContent = `${toArabicNumerals(pct)}٪`;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('scoreCorrect').textContent = toArabicNumerals(score.correct);
+  document.getElementById('scoreWrong').textContent = toArabicNumerals(score.wrong);
+  document.getElementById('scoreTotal').textContent = `${toArabicNumerals(score.correct + score.wrong)}/${toArabicNumerals(questions.length)}`;
+}
+
+function checkAnswer() {
+  if (answered) return;
+
+  const number = document.getElementById('selNumber').value;
+  const gender = document.getElementById('selGender').value;
+  const person = document.getElementById('selPerson').value;
+  const tense = selectedTense;
+
+  if (!number || !gender || !person || !tense) {
+    alert('يرجى اختيار جميع الخيارات أولاً');
+    return;
+  }
+
+  answered = true;
+  document.getElementById('btnCheck').disabled = true;
+  document.getElementById('btnNext').disabled = false;
+  document.getElementById('btnMadi').disabled = true;
+  document.getElementById('btnMudari').disabled = true;
+  ['selNumber', 'selGender', 'selPerson'].forEach(id => {
+    document.getElementById(id).disabled = true;
+  });
+
+  const q = questions[currentQ];
+
+  // Check if the selected answer matches ANY valid answer
+  // For متكلم, gender field doesn't apply
+  let isCorrect = false;
+  for (const ans of q.answers) {
+    const personMatch = person === ans.person;
+    const tenseMatch = tense === ans.tense;
+    const numberMatch = number === ans.number;
+    let genderMatch = false;
+
+    if (ans.person === 'متكلم') {
+      // For متكلم, gender is irrelevant — accept مذكر, مؤنث, or —
+      genderMatch = true;
+    } else {
+      genderMatch = gender === ans.gender;
+    }
+
+    if (personMatch && tenseMatch && numberMatch && genderMatch) {
+      isCorrect = true;
+      break;
+    }
+  }
+
+  const fb = document.getElementById('feedbackBox');
+  fb.style.display = 'block';
+
+  if (isCorrect) {
+    score.correct++;
+    fb.className = 'feedback-box show correct-fb';
+    fb.innerHTML = '✓ أحسنت! إجابة صحيحة';
+    ['selNumber', 'selGender', 'selPerson'].forEach(id => {
+      document.getElementById(id).classList.add('correct');
+    });
+    document.getElementById(tense === 'ماضي' ? 'btnMadi' : 'btnMudari').classList.add('correct');
+  } else {
+    score.wrong++;
+    fb.className = 'feedback-box show wrong-fb';
+
+    // Build correct answer display
+    const allAnswers = q.answers.map(a => {
+      if (a.person === 'متكلم') return `${a.number} ${a.person} - ${a.tense}`;
+      return `${a.number} ${a.gender} ${a.person} - ${a.tense}`;
+    });
+
+    const unique = [...new Set(allAnswers)];
+    fb.innerHTML = `<span class="answer-label">الإجابة الصحيحة:</span><span class="correct-answer">${unique.join(' / ')}</span>`;
+
+    ['selNumber', 'selGender', 'selPerson'].forEach(id => {
+      document.getElementById(id).classList.add('wrong');
+    });
+    document.getElementById(tense === 'ماضي' ? 'btnMadi' : 'btnMudari').classList.add('wrong');
+  }
+
+  updateProgress();
+}
+
+function nextQuestion() {
+  currentQ++;
+  if (currentQ >= questions.length) {
+    showResults();
+  } else {
+    loadQuestion();
+  }
+}
+
+function showResults() {
+  document.getElementById('quizCard').style.display = 'none';
+  document.getElementById('progressBar');
+  const pct = Math.round((score.correct / questions.length) * 100);
+  document.getElementById('finalScore').textContent = toArabicNumerals(pct) + '٪';
+  document.getElementById('finalCorrect').textContent = toArabicNumerals(score.correct);
+  document.getElementById('finalWrong').textContent = toArabicNumerals(score.wrong);
+  document.getElementById('resultsCard').classList.add('show');
+  document.getElementById('progressFill').style.width = '100%';
+  document.getElementById('progressText').textContent = 'اكتمل الاختبار';
+  document.getElementById('progressPct').textContent = '١٠٠٪';
+}
+
+function restartQuiz() {
+  currentQ = 0;
+  score = { correct: 0, wrong: 0 };
+  selectedTense = null;
+  answered = false;
+  document.getElementById('resultsCard').classList.remove('show');
+  document.getElementById('quizCard').style.display = 'block';
+  loadQuestion();
+}
+
+// Init
+loadQuestion();
+</script>
+</body>
+</html>

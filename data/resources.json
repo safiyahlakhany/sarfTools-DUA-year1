@@ -112,8 +112,21 @@
           "path": "resources/week-007/study-tool-6aaaf8b0-0c90-4837-9d1f-a3cc8c610447.html",
           "publishedAt": "2026-10-07T16:43:07.829Z"
         }
+      ],
+      "accessibleHomeworks": []
+    },
+    {
+      "week": 13,
+      "title": "Week 13 resources",
+      "studyTools": [
+        {
+          "id": "10212243-c376-4a13-8726-a296fc8a45fc",
+          "title": "Week 13 Study Tool (Form II)",
+          "path": "resources/week-013/study-tool-10212243-c376-4a13-8726-a296fc8a45fc.html",
+          "publishedAt": "2026-11-18T16:40:08.147Z"
+        }
       ]
     }
   ],
-  "updatedAt": "2026-10-07T16:43:07.829Z"
+  "updatedAt": "2026-11-18T16:40:08.147Z"
 }
