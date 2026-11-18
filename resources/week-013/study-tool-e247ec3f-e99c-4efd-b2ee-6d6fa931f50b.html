@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sarf Quiz 4 Prep</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4efe4;--card:#fffdf8;--ink:#1f2a37;--muted:#5d6672;--line:#ddd3c1;--accent:#1f6f5c;--accent2:#c8962e;--good:#2e7d4f;--goodbg:#e4f2e8;--bad:#b5423b;--badbg:#f9e3e0;--warn:#fff3d6;--chip:#f0e9da}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,sans-serif}
+.ar{font-family:Amiri,"Traditional Arabic","Times New Roman",serif;direction:rtl;unicode-bidi:isolate;font-size:1.3em;line-height:1.6}
+small .ar,.lt small .ar{font-size:1.1em}
+main{max-width:1180px;margin:0 auto;padding:16px}
+.hud{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:14px;padding:8px 16px;background:#fffaf0ee;border-bottom:1px solid var(--line);backdrop-filter:blur(6px)}
+.brand{font-weight:700;white-space:nowrap}.brand .ar{color:var(--accent);font-size:1.5em}
+.proj{flex:1;display:flex;align-items:center;gap:8px;max-width:340px;font-weight:700;font-size:14px}
+.pbar,.gb{position:relative;flex:1;height:10px;border-radius:6px;background:var(--chip);overflow:visible}
+.pbar i,.gb i{position:absolute;left:0;top:0;bottom:0;border-radius:6px;background:var(--accent)}
+.t90{position:absolute;left:90%;top:-4px;bottom:-4px;width:2px;background:var(--accent2)}
+.stats{display:flex;gap:12px;margin-left:auto;font-weight:600;font-size:14px;white-space:nowrap}.lvl .ar{color:var(--accent2)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px;margin:0 0 16px;box-shadow:0 1px 2px #0000000d}
+h1{font-size:24px;margin:0 0 8px}h2{font-size:19px;margin:2px 0 10px}h3{font-size:15px;margin:16px 0 6px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.kick{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.big{font-size:44px;font-weight:700;line-height:1.1}
+.ph{display:flex;gap:24px;align-items:flex-end;flex-wrap:wrap}.gauge{flex:1;min-width:240px}.gb{height:16px}.gl{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:4px}.gl span:nth-child(2){margin-left:auto;margin-right:6%}
+.status{margin:12px 0}.okc{color:var(--good)}
+.pt{display:grid;grid-template-columns:230px 1fr 50px;gap:4px 12px;align-items:center;margin:6px 0}.pt .pn{grid-column:1/-1;font-size:12px;color:var(--muted);margin-top:-4px}
+.mbar{height:8px;border-radius:5px;background:var(--chip);position:relative;overflow:hidden}.mbar i{position:absolute;inset:0 auto 0 0;background:var(--accent);border-radius:5px}
+.mbar i.g{background:var(--good)}.mbar i.y{background:var(--accent2)}.mbar i.r{background:var(--bad)}
+.sk{display:grid;grid-template-columns:minmax(200px,1.3fr) 1fr 150px auto;gap:12px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.sk .lv{font-size:13px;font-weight:600}.sk.strong .mbar i{background:var(--good)}.sk.developing .mbar i{background:var(--accent2)}.sk.weak .mbar i{background:var(--bad)}.sk.weak .lv{color:var(--bad)}.sk.strong .lv{color:var(--good)}.sk.new .lv{color:var(--muted)}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}.btns.end{justify-content:flex-end}
+.btn{font:600 14px Inter,sans-serif;padding:10px 16px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
+.btn:hover{border-color:var(--accent)}.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}.btn.ghost{background:transparent}.btn.sm{padding:6px 10px;font-size:13px}
+.btn:focus-visible,select:focus-visible,.chip:focus-visible,.mco:focus-visible{outline:3px solid var(--accent2);outline-offset:2px}
+.tools{display:flex;gap:8px;margin-bottom:10px;align-items:center}.tools span{flex:1}
+.inst{color:var(--muted);margin:0 0 12px}
+/* exam-style chart rows */
+.vchart,.nchart{border:1.5px solid #8a8f98;border-radius:6px;overflow:hidden}
+.vh,.vr{display:grid;grid-template-columns:1.5fr 1.25fr repeat(7,1fr)}
+.nchart .vh,.nchart .vr{grid-template-columns:1.6fr 1.3fr 1fr 1fr 1.5fr}
+.vh span{background:#dce6f2;font-size:12px;font-weight:700;text-align:center;padding:8px 4px;border-right:1px solid #9aa3ae}
+.vr>div{padding:8px 6px;border-right:1px solid #c4c9d0;border-top:1px solid #9aa3ae;display:flex;flex-direction:column;justify-content:center;gap:4px}
+.vw{align-items:center}.vw .ar{font-size:30px;font-weight:700}
+select{width:100%;font-family:Amiri,serif;font-size:17px;padding:6px 4px;border:1.5px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+select[dir=ltr]{font-family:Amiri,Inter,serif}
+select.ok{border-color:var(--good);background:var(--goodbg)}select.no{border-color:var(--bad);background:var(--badbg)}
+.fix{font-size:13px;color:var(--bad);text-align:center}.fix .ar{font-size:16px}
+.chips{display:flex;flex-wrap:wrap;gap:4px;justify-content:center}
+.chip{border:1.5px solid var(--line);background:#fff;border-radius:8px;padding:2px 8px;cursor:pointer}.chip .ar{font-size:17px}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}.chip.right{background:var(--goodbg);border-color:var(--good);color:var(--good)}.chip.wrong{background:var(--badbg);border-color:var(--bad);color:var(--bad)}.chip.x{opacity:.5}
+.eng{font-size:26px;font-weight:600;text-align:center;margin:14px 0 4px}.useverb{text-align:center;margin:0 0 16px;color:var(--muted)}.useverb .ar{font-size:26px;color:var(--ink);font-weight:700}
+.mc{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.mco{border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:10px;cursor:pointer;min-height:70px}.mco .ar{font-size:28px}
+.mco.sel{border-color:var(--accent);box-shadow:inset 0 0 0 2px var(--accent)}.mco.right{background:var(--goodbg);border-color:var(--good)}.mco.wrong{background:var(--badbg);border-color:var(--bad)}.mco.x{opacity:.55}
+.fb{display:none;margin-top:14px;border-radius:12px;padding:12px 14px}.fb.show{display:block}.fb.ok{background:var(--goodbg);border:1px solid #a9d3b6}.fb.no{background:var(--badbg);border:1px solid #e7b6b0}.fb.warn{background:var(--warn);border:1px solid #e9cf8e}
+.fb .h{font-weight:700;margin-bottom:6px}.fb ul.ex{margin:6px 0 0 18px;padding:0}.fb li{margin:3px 0}.fb .ex .ar{font-size:1.2em}
+/* tables */
+.tw{overflow-x:auto}.lt{border-collapse:collapse;width:100%;margin:8px 0}.lt th,.lt td{border:1px solid var(--line);padding:5px 8px;text-align:center;vertical-align:middle}
+.lt th{background:#efe7d6;font-size:13px}.lt.small td{font-size:13px}.lt td small{color:var(--muted)}
+.lt.bank td:first-child{text-align:left;white-space:nowrap}.lt.bank td{text-align:left}
+.lt.rev td:nth-child(2){font-weight:600}.lt.rev td.res{text-align:left}.lt.rev td.res div{margin:2px 0}.lt.rev tr.okr td{background:#f1f8f3}.lt.rev tr.nor td{background:#fdf1ef}
+.lesson ul{margin:8px 0 8px 20px;padding:0}.lesson li{margin:5px 0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.badges{display:flex;flex-wrap:wrap;gap:6px}.badge{font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;background:#efe4c9;color:#7a5a14}.badge.off{background:var(--chip);color:#a39c8f}
+.modal{position:fixed;inset:0;background:#0007;z-index:20;display:flex;align-items:flex-start;justify-content:center;padding:30px 12px;overflow:auto}
+.mbox{background:var(--card);border-radius:14px;max-width:820px;width:100%;padding:16px 18px}.mhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;z-index:30;font-weight:600}
+.cf{position:fixed;top:-10px;width:8px;height:12px;z-index:25;animation:fall 1.8s ease-in forwards}@keyframes fall{to{transform:translateY(105vh) rotate(540deg)}}
+.typed{display:block;width:100%;max-width:560px;margin:0 auto 12px;font-size:34px;padding:8px 14px;border:2px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);text-align:center}
+.typed:focus{outline:none;border-color:var(--accent)}.typed.ok{border-color:var(--good);background:var(--goodbg)}.typed.no{border-color:var(--bad);background:var(--badbg)}
+.kb{max-width:620px;margin:0 auto;display:flex;flex-direction:column;gap:6px;user-select:none}.kr{display:flex;gap:5px;justify-content:center}
+.key{flex:1;max-width:56px;min-height:46px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--ink);font-size:24px;cursor:pointer;padding:0;line-height:1}
+.key:active{background:var(--chip)}.key.mk{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;max-width:66px}.key.mk .ar{font-size:26px;line-height:1.1}.key.mk small{font:600 9px Inter,sans-serif;color:var(--muted)}
+.marks .key{background:#f7f2e6}.ctl .key{font:600 13px Inter,sans-serif;max-width:90px}.ctl .key.wide{max-width:260px;flex:3}
+.els{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}.el{font-size:13px;font-weight:600;padding:3px 9px;border-radius:14px}.el.y{background:#d3ecdb;color:var(--good)}.el.n{background:#f6d4cf;color:var(--bad)}
+.diff{background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin:8px 0}.diff>div{margin:3px 0}.diff .dw{font-size:28px;margin-left:8px}
+.dv{background:#ffe7a8;border-radius:3px}.dx{background:#f6b8b0;border-radius:3px}.mini{font-size:12px;color:var(--muted)}
+.key{overflow:hidden;position:relative}.kr.marks{flex-wrap:wrap}
+@media (max-width:420px){.key{min-height:42px;font-size:21px}.kr{gap:3px}.typed{font-size:28px}.kr.marks .key{flex:0 0 calc(25% - 3px);max-width:none}}
+@media (prefers-reduced-motion:reduce){.cf{display:none}}
+@media (max-width:900px){
+  .vh{display:none}.vchart,.nchart{border:0}
+  .vr,.nchart .vr{grid-template-columns:1fr 1fr;gap:8px}
+  .vr>div{border:1px solid var(--line);border-radius:10px}
+  .vr>div::before{content:attr(data-l);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+  .vw{grid-column:1/-1}.vw .ar{font-size:34px}
+  .sk{grid-template-columns:1fr auto;}.sk .mbar{grid-column:1/-1;order:3}.sk .lv{order:2}
+  .pt{grid-template-columns:1fr 46px}.pt .mbar{grid-column:1/-1;order:3}
+  .proj{max-width:none}.stats .lvl{display:none}.brand b{display:none}
+  .mc{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}.eng{font-size:21px}
+}
+@media (max-width:420px){.stats{gap:8px;font-size:13px}main{padding:12px}.card{padding:14px}}
+
+.qrow{margin:6px 0 4px}.eng{margin:10px 0 6px}
+.lab{display:block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px;text-align:center}
+.sgrow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;direction:rtl;max-width:760px;margin:0 auto}
+.keyans{background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin:6px 0}.keyans>div{margin:2px 0}.keyans .ar{font-size:1.45em}
+.lt.ch td .ar{font-size:1.5em}.lt.ch th .ar{font-size:1.2em}
+@media (max-width:640px){.sgrow{grid-template-columns:1fr 1fr}}
+</style></head><body><div id="app"></div>
+<script>
+(function(){
+/* ===== Engine: sound (ṣaḥīḥ) verbs, Forms I–X; اسم الفاعل / اسم المفعول ===== */
+const FA='َ',DA='ُ',KA='ِ',SU='ْ',SH='ّ',FT='ً',DT='ٌ',KT='ٍ';
+const SEEG={1:['gh','m','w'],2:['gh','m','t'],3:['gh','m','j'],4:['gh','f','w'],5:['gh','f','t'],6:['gh','f','j'],
+  7:['ha','m','w'],8:['ha','m','t'],9:['ha','m','j'],10:['ha','f','w'],11:['ha','f','t'],12:['ha','f','j'],13:['mu','mf','w'],14:['mu','mf','tj']};
+const PREFIX={1:'ي',2:'ي',3:'ي',4:'ت',5:'ت',6:'ي',7:'ت',8:'ت',9:'ت',10:'ت',11:'ت',12:'ت',13:'أ',14:'ن'};
+const PAST_END={1:FA,2:FA+'ا',3:DA+'وْا',4:FA+'تْ',5:FA+'تَا',6:SU+'نَ',7:SU+'تَ',8:SU+'تُمَا',9:SU+'تُمْ',10:SU+'تِ',11:SU+'تُمَا',12:SU+'تُنَّ',13:SU+'تُ',14:SU+'نَا'};
+const VOWEL_PAST=new Set([1,2,3,4,5]),NO_SUFFIX=new Set([1,4,7,13,14]);
+const PRES_END={
+  r:{1:DA,2:FA+'انِ',3:DA+'وْنَ',4:DA,5:FA+'انِ',6:SU+'نَ',7:DA,8:FA+'انِ',9:DA+'وْنَ',10:KA+'يْنَ',11:FA+'انِ',12:SU+'نَ',13:DA,14:DA},
+  n:{1:FA,2:FA+'ا',3:DA+'وْا',4:FA,5:FA+'ا',6:SU+'نَ',7:FA,8:FA+'ا',9:DA+'وْا',10:KA+'يْ',11:FA+'ا',12:SU+'نَ',13:FA,14:FA},
+  j:{1:SU,2:FA+'ا',3:DA+'وْا',4:SU,5:FA+'ا',6:SU+'نَ',7:SU,8:FA+'ا',9:DA+'وْا',10:KA+'يْ',11:FA+'ا',12:SU+'نَ',13:SU,14:SU}};
+const VW={u:DA,i:KA,a:FA};
+function past(v,s,voice){
+  const [a,b,c]=[...v.root],f=v.form;
+  if(voice==='mj'&&!v.tr)return [];
+  if(f==='IX'){if(voice==='mj')return [];const st='اِ'+a+SU+b+FA;return [VOWEL_PAST.has(s)?st+c+SH+PAST_END[s]:st+c+FA+c+PAST_END[s]];}
+  let st;
+  if(voice==='mm')st={I:()=>a+FA+b+VW[v.pv]+c,II:()=>a+FA+b+SH+FA+c,III:()=>a+FA+'ا'+b+FA+c,IV:()=>'أَ'+a+SU+b+FA+c,V:()=>'تَ'+a+FA+b+SH+FA+c,
+    VI:()=>'تَ'+a+FA+'ا'+b+FA+c,VII:()=>'اِنْ'+a+FA+b+FA+c,VIII:()=>'اِ'+a+SU+'تَ'+b+FA+c,X:()=>'اِسْتَ'+a+SU+b+FA+c}[f]();
+  else st={I:()=>a+DA+b+KA+c,II:()=>a+DA+b+SH+KA+c,III:()=>a+DA+'وْ'+b+KA+c,IV:()=>'أُ'+a+SU+b+KA+c,V:()=>'تُ'+a+DA+b+SH+KA+c,
+    VI:()=>'تُ'+a+DA+'وْ'+b+KA+c,VIII:()=>'اُ'+a+SU+'تُ'+b+KA+c,X:()=>'اُسْتُ'+a+SU+b+KA+c}[f]();
+  return [st+PAST_END[s]];
+}
+function presStem(v,voice){
+  const [a,b,c]=[...v.root],f=v.form,mj=voice==='mj',k=mj?FA:KA;
+  return {I:()=>a+SU+b+(mj?FA:VW[v.rv])+c,II:()=>a+FA+b+SH+k+c,III:()=>a+FA+'ا'+b+k+c,IV:()=>a+SU+b+k+c,V:()=>'تَ'+a+FA+b+SH+FA+c,
+    VI:()=>'تَ'+a+FA+'ا'+b+FA+c,VII:()=>'نْ'+a+FA+b+k+c,VIII:()=>a+SU+'تَ'+b+k+c,X:()=>'سْتَ'+a+SU+b+k+c}[f]();
+}
+const presPrefix=(v,s,voice)=>PREFIX[s]+((voice==='mj'||['II','III','IV'].includes(v.form))?DA:FA);
+function ixTail(c,st,s){
+  if(s===6||s===12)return [c+KA+c+SU+'نَ'];
+  if(NO_SUFFIX.has(s))return {r:[c+SH+DA],n:[c+SH+FA],j:[c+SH+FA,c+SH+KA,c+KA+c+SU]}[st];
+  return [c+SH+PRES_END[st][s]];
+}
+function present(v,s,voice,st){
+  if(voice==='mj'&&!v.tr)return [];
+  if(v.form==='IX'){if(voice==='mj')return [];const [a,b,c]=[...v.root];return ixTail(c,st,s).map(t=>PREFIX[s]+FA+a+SU+b+FA+t);}
+  return [presPrefix(v,s,voice)+presStem(v,voice)+PRES_END[st][s]];
+}
+function amr2(v,s){
+  const [a,b,c]=[...v.root],f=v.form;
+  if(f==='IX')return ixTail(c,'j',s).map(t=>'اِ'+a+SU+b+FA+t);
+  const stem=presStem(v,'mm')+PRES_END.j[s];
+  if(f==='I')return [(v.rv==='u'?'اُ':'اِ')+stem];
+  if(f==='IV')return ['أَ'+stem];
+  if(['VII','VIII','X'].includes(f))return ['اِ'+stem];
+  return [stem];
+}
+const NEND={wm:{r:DT,n:FT+'ا',j:KT},wf:{r:FA+'ةٌ',n:FA+'ةً',j:FA+'ةٍ'},tm:{r:FA+'انِ',n:FA+'يْنِ',j:FA+'يْنِ'},tf:{r:FA+'تَانِ',n:FA+'تَيْنِ',j:FA+'تَيْنِ'},
+  jm:{r:DA+'وْنَ',n:KA+'يْنَ',j:KA+'يْنَ'},jf:{r:FA+'اتٌ',n:FA+'اتٍ',j:FA+'اتٍ'}};
+function nounStem(v,nt){
+  const [a,b,c]=[...v.root],f=v.form;
+  if(nt==='mf'&&(!v.tr||f==='VII'||f==='IX'))return null;
+  if(f==='I'&&nt==='fa'&&v.pv==='u')return null;
+  if(f==='IX')return 'مُ'+a+SU+b+FA+c+SH;
+  const k=nt==='fa'?KA:FA;
+  if(f==='I')return nt==='fa'?a+FA+'ا'+b+KA+c:'مَ'+a+SU+b+DA+'وْ'+c;
+  return {II:'مُ'+a+FA+b+SH+k+c,III:'مُ'+a+FA+'ا'+b+k+c,IV:'مُ'+a+SU+b+k+c,V:'مُتَ'+a+FA+b+SH+k+c,VI:'مُتَ'+a+FA+'ا'+b+k+c,
+    VII:'مُنْ'+a+FA+b+k+c,VIII:'مُ'+a+SU+'تَ'+b+k+c,X:'مُسْتَ'+a+SU+b+k+c}[f]||null;
+}
+function noun(v,nt,num,gen,st){const s=nounStem(v,nt);return s===null?null:s+NEND[num+gen][st];}
+function norm(w){return w.normalize('NFC').replace(/ـ/g,'').replace(/([ً-ِْ])ّ/g,'ّ$1').replace(/\s+/g,' ').trim();}
+/* constructions: every verb phrase the exam uses. cons keys match the exam builder. */
+const CONS=['past','ma_past','pres','la_pres','ma_pres','an','lan','lam','in','nahy','lamr','amr'];
+function build(v,cons,voice,s){
+  switch(cons){
+    case 'past':return past(v,s,voice);
+    case 'ma_past':return past(v,s,voice).map(t=>'مَا '+t);
+    case 'pres':return present(v,s,voice,'r');
+    case 'la_pres':return present(v,s,voice,'r').map(t=>'لَا '+t);
+    case 'ma_pres':return present(v,s,voice,'r').map(t=>'مَا '+t);
+    case 'an':return present(v,s,voice,'n').map(t=>'أَنْ '+t);
+    case 'lan':return present(v,s,voice,'n').map(t=>'لَنْ '+t);
+    case 'lam':return present(v,s,voice,'j').map(t=>'لَمْ '+t);
+    case 'in':return present(v,s,voice,'j').map(t=>'إِنْ '+t);
+    case 'nahy':return present(v,s,voice,'j').map(t=>'لَا '+t);
+    case 'lamr':return (voice==='mm'&&s>=7&&s<=12)?[]:present(v,s,voice,'j').map(t=>'لِ'+t);
+    case 'amr':return (voice==='mm'&&s>=7&&s<=12)?amr2(v,s):[];
+  }
+}
+const CONS_AN={past:['madi',false,'none'],ma_past:['madi',true,'none'],pres:['mud',false,'r'],la_pres:['mud',true,'r'],ma_pres:['mud',true,'r'],
+  an:['mud',false,'n'],lan:['mud',true,'n'],lam:['mud',true,'j'],in:['mud',false,'j'],nahy:['nahy',true,'j'],lamr:['amr',false,'j'],amr:['amr',false,'j']};
+function babOf(v){return v.form;}
+let VIDX=null,NIDX=null;
+function buildIndex(bank){
+  VIDX=new Map();NIDX=new Map();
+  for(const v of bank){
+    for(const voice of ['mm','mj'])for(let s=1;s<=14;s++)for(const c of CONS)for(const w of build(v,c,voice,s)){
+      const k=norm(w),[tense,neg,state]=CONS_AN[c];
+      if(!VIDX.has(k))VIDX.set(k,[]);
+      VIDX.get(k).push({verb:v.id,bab:babOf(v),form:v.form,cons:c,tense,voice,s,per:SEEG[s][0],gen:SEEG[s][1],num:SEEG[s][2],neg,state});
+    }
+    for(const nt of ['fa','mf'])for(const num of 'wtj')for(const gen of 'mf')for(const st of 'rnj'){
+      const w=noun(v,nt,num,gen,st);if(!w)continue;const k=norm(w);
+      if(!NIDX.has(k))NIDX.set(k,[]);NIDX.get(k).push({verb:v.id,form:v.form,nt,num,gen,st});
+    }
+  }
+}
+function verbReadings(w){
+  const L=VIDX.get(norm(w))||[];const seen=new Set(),out=[];
+  for(const r of L){const k=[r.verb,r.tense,r.voice,r.s,r.neg,r.state].join('|');if(!seen.has(k)){seen.add(k);out.push(r);}}
+  return out;
+}
+/* noun readings grouped: one entry per (type, number, gender) with the full set of states */
+function nounReadings(w){
+  const L=NIDX.get(norm(w))||[];const g=new Map();
+  for(const r of L){const k=r.nt+r.num+r.gen;if(!g.has(k))g.set(k,{...r,states:new Set()});g.get(k).states.add(r.st);}
+  return [...g.values()].map(r=>({...r,states:[...r.states].sort()}));
+}
+
+/* ===== Typed answers (Part 2): canonical comparison, diff, on-screen keyboard ===== */
+function canonT(w,keepSpace){
+  w=(w||'').normalize('NFC').replace(/ی/g,'ي').replace(/ک/g,'ك').replace(/[ہە]/g,'ه').replace(/[ـ​-‏؜]/g,'');
+  w=norm(w);if(!keepSpace)w=w.replace(/\s+/g,'');
+  // sukūn on a long vowel letter is optional
+  w=w.replace(/ُوْ/g,'ُو').replace(/ِيْ/g,'ِي').replace(/اْ/g,'ا');
+  return w;
+}
+const isMark=ch=>/[ً-ْٰ]/.test(ch);
+function clustersOf(w){const out=[];for(const ch of w){if(isMark(ch)&&out.length)out[out.length-1].m+=ch;else out.push({b:ch,m:''});}
+  out.forEach(c=>c.m=[...c.m].sort().join(''));return out;}
+function lcsAlign(A,B){ // align clusters on base letters
+  const n=A.length,m=B.length,D=[...Array(n+1)].map(()=>Array(m+1).fill(0));
+  for(let i=n-1;i>=0;i--)for(let j=m-1;j>=0;j--)D[i][j]=A[i].b===B[j].b?1+D[i+1][j+1]:Math.max(D[i+1][j],D[i][j+1]);
+  const pa=Array(n).fill(-1),pb=Array(m).fill(-1);let i=0,j=0;
+  while(i<n&&j<m){if(A[i].b===B[j].b){pa[i]=j;pb[j]=i;i++;j++;}else if(D[i+1][j]>=D[i][j+1])i++;else j++;}
+  return [pa,pb];
+}
+function lev(a,b){const A=[...a],B=[...b];let p=[...Array(B.length+1).keys()];for(let i=1;i<=A.length;i++){const c=[i];for(let j=1;j<=B.length;j++)c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(A[i-1]===B[j-1]?0:1));p=c;}return p[B.length];}
+function gradeTyped(it,typed){
+  const t=canonT(typed),C=it.answers.map(a=>({a,c:canonT(a)}));
+  const hit=C.find(x=>x.c===t);if(hit)return {ok:true,typed,target:hit.a};
+  const best=C.slice().sort((x,y)=>lev(t,x.c)-lev(t,y.c))[0];
+  const A=clustersOf(canonT(typed,true)),B=clustersOf(canonT(best.a,true));const [pa,pb]=lcsAlign(A,B);
+  const nb=X=>X.filter(c=>c.b!==' '),A0=nb(A),B0=nb(B);const sameLetters=A0.length===B0.length&&A0.every((c,i)=>c.b===B0[i].b);
+  const sClass=A.map((c,i)=>pa[i]<0?'dx':(c.m===B[pa[i]].m?'':'dv'));
+  const aClass=B.map((c,j)=>pb[j]<0?'dx':(c.m===A[pb[j]].m?'':'dv'));
+  const hamzaOnly=!sameLetters&&A0.length===B0.length&&A0.every((c,i)=>c.b===B0[i].b||('اأإ'.includes(c.b)&&'اأإ'.includes(B0[i].b)));
+  // is the typed word a real form of this verb?
+  const real=t?verbReadings(typed.replace(/\s+/g,' ').trim()).filter(r=>r.verb===it.v):[];
+  return {ok:false,typed,target:best.a,A,B,sClass,aClass,sameLetters,hamzaOnly,real:real[0]||null};
+}
+const paint=(cl,cls)=>'<span class="ar dw">'+cl.map((c,i)=>{const t=c.b+c.m;return cls[i]?'<span class="'+cls[i]+'">'+t+'</span>':t;}).join('')+'</span>';
+function diffHTML(g){
+  if(!g.typed.trim())return '';
+  let msg=g.sameLetters?'All the letters are right. The ḥarakāt differ on the highlighted letters.':g.hamzaOnly?'Check the hamza: hamzat al-waṣl is written '+AR('ا')+' (with its vowel), not '+AR('أ / إ')+'; Form IV and '+AR('أَنَا')+' take '+AR('أَ / أُ')+'.':'The letters differ. Missing or extra letters are highlighted.';
+  return '<div class="diff"><div><b>You</b> '+paint(g.A,g.sClass)+'</div><div><b>Answer</b> '+paint(g.B,g.aClass)+'</div><div class="mini">'+msg+' <span class="dv">ḥarakāt</span> <span class="dx">letters</span></div></div>';
+}
+const KB=[['ا','ب','ت','ث','ج','ح','خ','د','ذ','ر'],['ز','س','ش','ص','ض','ط','ظ','ع','غ','ف'],['ق','ك','ل','م','ن','ه','و','ي','ة','ى'],['ء','أ','إ','ؤ','ئ']];
+const MARKS=[['َ','fatḥa'],['ُ','ḍamma'],['ِ','kasra'],['ْ','sukūn'],['ّ','shadda'],['ً','ً'],['ٌ','ٌ'],['ٍ','ٍ']];
+function keyboardHTML(){
+  return '<div class="kb" dir="rtl" aria-label="Arabic keyboard">'+KB.map(r=>'<div class="kr">'+r.map(k=>'<button type="button" class="key ar" data-k="'+k+'">'+k+'</button>').join('')+'</div>').join('')+
+   '<div class="kr marks">'+MARKS.map(([m,n])=>'<button type="button" class="key mk" data-k="'+m+'" title="'+n+'"><span class="ar">◌'+m+'</span><small>'+(n.length>2?n:'tanwīn')+'</small></button>').join('')+'</div>'+
+   '<div class="kr ctl"><button type="button" class="key wide" data-k=" ">space</button><button type="button" class="key" data-act="bs" title="Delete">⌫</button><button type="button" class="key" data-act="clr">clear</button></div></div>';
+}
+function bindKeyboard(){
+  const inp=$('#typed');if(!inp)return;
+  if(window.matchMedia&&matchMedia('(pointer:coarse)').matches)inp.setAttribute('inputmode','none');
+  document.querySelectorAll('.kb .key').forEach(b=>b.addEventListener('pointerdown',e=>e.preventDefault()));
+  document.querySelectorAll('.kb .key').forEach(b=>b.onclick=()=>{
+    if(CUR.done)return;const s=inp.selectionStart??inp.value.length,e=inp.selectionEnd??s;
+    if(b.dataset.act==='bs'){if(s!==e)inp.setRangeText('',s,e,'end');else if(s>0)inp.setRangeText('',s-1,s,'end');}
+    else if(b.dataset.act==='clr')inp.value='';
+    else inp.setRangeText(b.dataset.k,s,e,'end');
+    inp.focus();});
+}
+/* ===== Part 2 partial credit: four 1-point elements, as in the exam rubric ===== */
+const STEMT=c=>['past','ma_past'].includes(c)?'past':c==='amr'?'amr':'pres';
+const EL_NAMES={A:'Verb and form',B:'Ṣīgha',C:'Tense and voice',D:'Particle and ending'};
+function p2Elements(it,typed){
+  const t=canonT(typed);if(!t)return {A:0,B:0,C:0,D:0};
+  if(it.answers.some(a=>canonT(a)===t))return {A:1,B:1,C:1,D:1};
+  const acc=P2T[it.tid][1],accStem=new Set(acc.map(STEMT));
+  const rs=verbReadings(typed.replace(/\s+/g,' ').trim());
+  let best=null;
+  for(const r of rs){
+    const v=BV[r.verb];const same=build(v,r.cons,r.voice,it.s).some(w=>canonT(w)===t);
+    const e={A:r.verb===it.v?1:0,B:(same||SEEG[r.s].join()===SEEG[it.s].join())?1:0,C:(r.voice===it.voice&&accStem.has(STEMT(r.cons)))?1:0,D:acc.includes(r.cons)?1:0};
+    const n=e.A+e.B+e.C+e.D;if(!best||n>best.n)best={...e,n,r};
+  }
+  if(best)return best;
+  // not a real form: compare with the closest accepted answer
+  const tgt=it.answers.map(a=>canonT(a)).sort((x,y)=>lev(t,x)-lev(t,y))[0];
+  const A=clustersOf(t),B=clustersOf(tgt);const [,pb]=lcsAlign(A,B);
+  const v=BV[it.v],root=[...v.root];
+  const letters=A.map(c=>c.b).join('');let k=0;for(const ch of letters)if(ch===root[k])k++;
+  const sameLetters=A.length===B.length&&A.every((c,i)=>c.b===B[i].b);
+  const partLen=(()=>{const w=it.answers.find(a=>canonT(a)===tgt)||'';const sp=w.indexOf(' ');return sp>0?clustersOf(canonT(w.slice(0,sp))).length:(w.startsWith('لِ')?1:0);})();
+  const e={A:0,B:0,C:0,D:0};
+  if(sameLetters){e.A=1;e.B=1;let cBad=false,dBad=false;
+    B.forEach((c,j)=>{if(A[j].m!==c.m){if(j<partLen||j===B.length-1)dBad=true;else cBad=true;}});
+    e.C=cBad?0:1;e.D=dBad?0:1;}
+  else{e.A=k===3?1:0;const pt=B.slice(0,partLen).map(c=>c.b+c.m).join('');e.D=partLen>0&&A.slice(0,partLen).map(c=>c.b+c.m).join('')===pt?1:0;}
+  return e;
+}
+
+/* ===== Quiz 4 prep: derived nouns on ف ع ل ===== */
+const KEY='sarf-quiz4-prep-v1';
+const $=s=>document.querySelector(s),app=()=>$('#app');
+const AR=t=>'<span class="ar">'+t+'</span>';
+let rnd=Math.random;const pick=a=>a[Math.floor(rnd()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+
+/* ---------- forms: copied from the class charts ---------- */
+const three=(sg,dr,dn,pl)=>({wr:sg+'ٌ',wn:sg+'ًا',wj:sg+'ٍ',tr:dr,tn:dn,tj:dn,bpr:pl+'ُ',bpn:pl+'َ',bpj:pl+'َ'});
+const FORMS={
+  taf_m:{wr:'أَفْعَلُ',wn:'أَفْعَلَ',wj:'أَفْعَلَ',tr:'أَفْعَلَانِ',tn:'أَفْعَلَيْنِ',tj:'أَفْعَلَيْنِ',spr:'أَفْعَلُوْنَ',spn:'أَفْعَلِيْنَ',spj:'أَفْعَلِيْنَ',bpr:'أَفَاعِلُ',bpn:'أَفَاعِلَ',bpj:'أَفَاعِلَ'},
+  taf_f:{wr:'فُعْلَى',wn:'فُعْلَى',wj:'فُعْلَى',tr:'فُعْلَيَانِ',tn:'فُعْلَيَيْنِ',tj:'فُعْلَيَيْنِ',spr:'فُعْلَيَاتٌ',spn:'فُعْلَيَاتٍ',spj:'فُعْلَيَاتٍ',bpr:'فُعَلٌ',bpn:'فُعَلًا',bpj:'فُعَلٍ'},
+  zarf1:three('مَفْعَل','مَفْعَلَانِ','مَفْعَلَيْنِ','مَفَاعِل'),zarf2:three('مَفْعِل','مَفْعِلَانِ','مَفْعِلَيْنِ','مَفَاعِل'),
+  alaA:three('مِفْعَل','مِفْعَلَانِ','مِفْعَلَيْنِ','مَفَاعِل'),
+  alaB:{wr:'مِفْعَلَةٌ',wn:'مِفْعَلَةً',wj:'مِفْعَلَةٍ',tr:'مِفْعَلَتَانِ',tn:'مِفْعَلَتَيْنِ',tj:'مِفْعَلَتَيْنِ',bpr:'مَفَاعِلُ',bpn:'مَفَاعِلَ',bpj:'مَفَاعِلَ'},
+  alaC:three('مِفْعَال','مِفْعَالَانِ','مِفْعَالَيْنِ','مَفَاعِيْل'),
+};
+const FM=(stem)=>{const E={mw:{r:'ٌ',n:'ًا',j:'ٍ'},fw:{r:'َةٌ',n:'َةً',j:'َةٍ'},mt:{r:'َانِ',n:'َيْنِ',j:'َيْنِ'},ft:{r:'َتَانِ',n:'َتَيْنِ',j:'َتَيْنِ'},msp:{r:'ُوْنَ',n:'ِيْنَ',j:'ِيْنَ'},fsp:{r:'َاتٌ',n:'َاتٍ',j:'َاتٍ'}};
+  const o={};for(const k in E)for(const s in E[k])o[k+s]=stem+E[k][s];return o;};
+FORMS.fail=FM('فَاعِل');FORMS.maf=FM('مَفْعُوْل');
+
+const TYPE={taf:'اِسْمُ التَّفْضِيْل',zarf:'اِسْمُ الظَّرْف',ala:'اِسْمُ الآلَة',fail:'اِسْمُ الفَاعِل',maf:'اِسْمُ المَفْعُوْل'};
+const GEN={m:'مُذَكَّر',f:'مُؤَنَّث'},NUM={w:'وَاحِد',t:'تَثْنِيَة',sp:'جَمْعُ السَّالِم',bp:'جَمْعُ المُكَسَّر'},ST={r:'حَالُ الرَّفْع',n:'حَالُ النَّصْب',j:'حَالُ الجَرّ'};
+const STAG={r:'(H-R)',n:'(H-N)',j:'(H-J)'};
+const WHO={mw:'A male',fw:'A female',mt:'Two males',ft:'Two females',msp:'Three males',fsp:'Three females',mbp:'Three males',fbp:'Three females'};
+/* every question the quiz format allows */
+const ITEMS=[];
+function addItem(o){o.id=ITEMS.length;ITEMS.push(o);}
+for(const g of 'mf')for(const n of ['w','t','sp','bp'])for(const s of 'rnj'){
+  const ar=FORMS['taf_'+g][n+s];addItem({kind:'taf_'+g,type:'taf',g,n,s,ar,en:deg=>`${WHO[g+n]} who ${n==='w'?'does':'do'} ${deg}`+(n==='sp'?' (S-P)':n==='bp'?' (B-P)':'')+' '+STAG[s]});}
+for(const g of 'mf')for(const n of ['w','t','sp'])for(const s of 'rnj'){
+  addItem({kind:'fail',type:'fail',g,n,s,ar:FORMS.fail[g+n+s],en:()=>`${WHO[g+n]} who ${n==='w'?'does':'do'} ${STAG[s]}`});
+  addItem({kind:'maf',type:'maf',g,n,s,ar:FORMS.maf[g+n+s],en:()=>`${WHO[g+n]} who ${n==='w'?'is':'are'} done to ${STAG[s]}`});}
+const ZL={w:'A time or place of doing',t:'Two times or places of doing',bp:'Three times or places of doing'},TL={w:'A tool of doing',t:'Two tools of doing',bp:'Three tools of doing'};
+for(const v of ['1','2'])for(const n of ['w','t','bp'])for(const s of 'rnj')
+  addItem({kind:'zarf',type:'zarf',v,g:'m',n,s,ar:FORMS['zarf'+v][n+s],en:()=>`${ZL[n]} (${v==='1'?'مَفْعَل':'مَفْعِل'} pattern) ${STAG[s]}`});
+for(const v of 'ABC')for(const n of ['w','t','bp'])for(const s of 'rnj')
+  addItem({kind:'ala',type:'ala',v,g:'m',n,s,ar:FORMS['ala'+v][n+s],en:()=>`${TL[n]} (Pattern ${v}) ${STAG[s]}`});
+const genOK=(it,g)=>it.kind==='ala'&&it.v==='B'?(g==='m'||g==='f'):g===it.g;   // the chart labels Pattern B masculine; ة would make it feminine
+const seegha=it=>[TYPE[it.type],GEN[it.g],NUM[it.n],ST[it.s]].join(' – ');
+
+/* ---------- skills ---------- */
+const SKILLS=[
+  {k:'taf_m',name:'اسم التفضيل · masculine',ar:'أَفْعَلُ'},{k:'taf_f',name:'اسم التفضيل · feminine',ar:'فُعْلَى'},
+  {k:'zarf',name:'اسم الظرف',ar:'مَفْعَلٌ / مَفْعِلٌ'},{k:'ala',name:'اسم الآلة',ar:'مِفْعَلٌ / مِفْعَلَةٌ / مِفْعَالٌ'},
+  {k:'fail',name:'اسم الفاعل',ar:'فَاعِلٌ'},{k:'maf',name:'اسم المفعول',ar:'مَفْعُوْلٌ'},
+  {k:'endings',name:'Dual and plural endings',ar:'تَثْنِيَة · جَمْع'},{k:'states',name:'States (رفع · نصب · جر)',ar:'الحَالَة'},
+  {k:'seegha',name:'Writing the seegha',ar:'الصِّيْغَة'},
+];
+const SK=Object.fromEntries(SKILLS.map(s=>[s.k,s]));
+const DECAY=.85;
+function newStats(){return {skills:Object.fromEntries(SKILLS.map(s=>[s.k,{a:0,b:0,n:0,last:[]}])),hist:[],items:0};}
+function upd(k,x){const s=S.stats.skills[k];s.a=s.a*DECAY+x;s.b=s.b*DECAY+(1-x);s.n++;s.last.push(x);if(s.last.length>8)s.last.shift();}
+const mastery=s=>(s.a+.5)/(s.a+s.b+1);
+const level=s=>s.n<3?'new':mastery(s)>=.85?'strong':mastery(s)>=.7?'developing':'weak';
+/* projection: for each noun type, only its last 10 answers count (older ones are ignored);
+   types are weighted as on the quiz (4/4/6/6/6/4 of 30). Each answer: noun ½ + seegha ½. */
+const WIN=10,MINT=3;
+function projection(){
+  const per={};let tot=0,wsum=0,minN=99;const all=S.stats.hist;
+  for(const [k,w] of Object.entries(QUIZ_MIX)){const L=all.filter(h=>h.k===k).slice(-WIN).map(h=>h.p);per[k]={n:L.length,p:L.length?L.reduce((a,b)=>a+b,0)/L.length:0};
+    minN=Math.min(minN,L.length);tot+=w*per[k].p;wsum+=w;}
+  const p=tot/wsum,reliable=minN>=MINT;return {p,per,n:all.length,minN,reliable,ready:reliable&&p>=.9};
+}
+
+/* ---------- state ---------- */
+let S,CUR=null,VIEW='home',MOCK=null,LESSON=null;
+const fresh=()=>({v:1,stats:newStats(),xp:0,streak:0,best:0,badges:[],recent:[],lessonAt:{},lastLesson:-99,lessons:0,pending:null,focus:null,mocks:[],readySeen:false,since:0});
+function load(){try{const r=localStorage.getItem(KEY);if(r){const o=JSON.parse(r);if(o&&o.v===1)return o;}}catch(e){}return fresh();}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+const BADGES={first:['First answer','Answered a first question'],s10:['Streak 10','10 right in a row'],l3:['Student','Finished 3 lessons'],ready:['Projected 90%','Projected 27/30 or better'],mock:['Quiz ready','27/30 or better on a full mock quiz'],all:['All strong','Every skill rated strong']};
+function award(id){if(!S.badges.includes(id)){S.badges.push(id);toast('Badge: '+BADGES[id][0]);}}
+
+/* ---------- choosing a question ---------- */
+const QUIZ_MIX={taf_m:4,taf_f:4,fail:6,maf:6,ala:6,zarf:4};
+function weakest(){const c=SKILLS.filter(s=>QUIZ_MIX[s.k]).map(s=>({k:s.k,m:S.stats.skills[s.k].n<2?.6:mastery(S.stats.skills[s.k])}));c.sort((a,b)=>a.m-b.m||rnd()-.5);return c[0].k;}
+function choose(focus){
+  let pool=ITEMS;
+  if(focus&&QUIZ_MIX[focus])pool=ITEMS.filter(i=>i.kind===focus);
+  else if(focus==='endings')pool=ITEMS.filter(i=>i.n!=='w');
+  else if(focus==='states')pool=ITEMS.filter(i=>i.s!=='r');
+  else{const k=Object.entries(QUIZ_MIX);let t=k.reduce((a,[,w])=>a+w,0),x=rnd()*t,kind=k[0][0];for(const [kk,w] of k){if((x-=w)<=0){kind=kk;break;}}pool=ITEMS.filter(i=>i.kind===kind);}
+  const fresh=pool.filter(i=>!S.recent.includes(i.id));const it=pick(fresh.length?fresh:pool);
+  return {...it,prompt:it.en(pick(['more','the most']))};
+}
+function nextItem(){
+  if(S.pending){const k=S.pending;S.pending=null;save();return showLesson(k,true);}
+  let focus=null;if(S.focus&&S.focus.left>0){focus=S.focus.k;S.focus.left--;}else if(S.stats.items>=8&&rnd()<.55)focus=weakest();
+  CUR=choose(focus);CUR.mode='prac';CUR.focus=focus;CUR.done=false;VIEW='item';render();
+}
+
+/* ---------- grading ---------- */
+function grade(it,typed,sel){
+  const nounOK=canonT(typed)===canonT(it.ar);
+  const ok={type:sel.type===it.type,gen:genOK(it,sel.gen),num:sel.num===it.n,st:sel.st===it.s};
+  const sg=['type','gen','num','st'].filter(k=>ok[k]).length;
+  const pts=(nounOK?.5:0)+sg*.125;
+  let diff=null;
+  if(!nounOK&&canonT(typed)){const A=clustersOf(canonT(typed,true)),B=clustersOf(canonT(it.ar,true));const [pa,pb]=lcsAlign(A,B);
+    const nb=X=>X.filter(c=>c.b!==' ');const A0=nb(A),B0=nb(B);
+    diff={A,B,s:A.map((c,i)=>pa[i]<0?'dx':(c.m===B[pa[i]].m?'':'dv')),a:B.map((c,j)=>pb[j]<0?'dx':(c.m===A[pb[j]].m?'':'dv')),
+      same:A0.length===B0.length&&A0.every((c,i)=>c.b===B0[i].b)};}
+  // what the typed noun actually is, if it is another cell of the charts
+  const real=nounOK?null:ITEMS.find(i=>canonT(i.ar)===canonT(typed))||null;
+  return {nounOK,ok,pts,all:nounOK&&sg===4,diff,real};
+}
+function record(it,g){
+  upd(it.kind,g.nounOK?1:0);
+  if(it.n!=='w')upd('endings',g.nounOK&&g.ok.num?1:0);
+  if(it.s!=='r'||it.n!=='w')upd('states',g.ok.st&&g.nounOK?1:0);
+  upd('seegha',(['type','gen','num','st'].filter(k=>g.ok[k]).length)/4);
+  S.stats.hist.push({k:it.kind,p:g.pts});if(S.stats.hist.length>400)S.stats.hist.shift();
+  S.stats.items++;S.recent.push(it.id);if(S.recent.length>25)S.recent.shift();
+  award('first');
+  if(g.all){S.streak++;S.best=Math.max(S.best,S.streak);S.xp+=Math.round(10*(S.streak>=10?2:S.streak>=5?1.5:1));if(S.streak===10)award('s10');}
+  else{S.streak=0;S.xp+=Math.round(g.pts*8);}
+  if(it.mode==='prac'){
+    const touched=[it.kind,...(it.n!=='w'?['endings']:[]),'states','seegha'];
+    const c=touched.filter(k=>{const s=S.stats.skills[k],l=s.last;return ((s.n>=3&&mastery(s)<.7)||(l.length>=2&&l[l.length-1]<.5&&l[l.length-2]<.5))&&(S.stats.items-(S.lessonAt[k]??-99))>=10;});
+    if(c.length&&S.stats.items-S.lastLesson>=4){c.sort((a,b)=>mastery(S.stats.skills[a])-mastery(S.stats.skills[b]));S.pending=c[0];}
+  }
+  const P=projection();if(P.ready&&!S.readySeen){S.readySeen=true;award('ready');S.showReady=true;}
+  if(SKILLS.every(s=>level(S.stats.skills[s.k])==='strong'))award('all');
+  S.since++;save();
+}
+
+/* ---------- views ---------- */
+const sel=(id,opts)=>'<select id="'+id+'" dir="rtl"><option value="">—</option>'+Object.entries(opts).map(([k,t])=>'<option value="'+k+'">'+t+'</option>').join('')+'</select>';
+const FR={1:'⅛',2:'¼',3:'⅜',4:'½',5:'⅝',6:'¾',7:'⅞'};const fmt=x=>{const e=Math.round(x*8),w=Math.floor(e/8),f=e%8;return f?(w?String(w):'')+FR[f]:String(w);};
+function hud(){const P=projection();return '<header class="hud"><div class="brand"><span class="ar">الصَّرْف</span> <b>Quiz 4 prep</b></div>'+
+  '<div class="proj" title="Projected quiz score (gold line = 27/30)"><div class="pbar"><i style="width:'+(P.n?Math.round(P.p*100):0)+'%;opacity:'+(P.reliable?1:.45)+'"></i><span class="t90"></span></div><span>'+(P.reliable?fmt(P.p*30)+'/30':'—')+'</span></div>'+
+  '<div class="stats"><span>🔥 '+S.streak+'</span><span>'+S.xp+' XP</span></div></header>';}
+function render(){const a=app();a.innerHTML=hud()+({home:homeHTML,item:itemHTML,lesson:lessonHTML,summary:summaryHTML,mockEnd:mockEndHTML})[VIEW]();bind();scrollTo(0,0);}
+function homeHTML(){
+  const P=projection();
+  const need=Object.entries(P.per).filter(([,e])=>e.n<MINT).map(([k,e])=>(MINT-e.n)+' × '+SK[k].name);
+  const status=!P.reliable?'<b>Not enough answers yet.</b> Still needed: '+need.join(', ')+'.':P.ready?'<b class="okc">Projected 27/30 or better.</b> Confirm it with a full 30-question mock quiz.':'<b>Projected below 27/30.</b> Keep practising: questions now focus on your weakest areas.';
+  const sk=SKILLS.map(s=>{const st=S.stats.skills[s.k],lv=level(st),m=Math.round(mastery(st)*100);
+    return '<div class="sk '+lv+'"><div><b>'+s.name+'</b><br>'+AR(s.ar)+'</div><div class="mbar"><i style="width:'+(st.n?m:0)+'%"></i></div><div class="lv">'+({new:'Not enough data',strong:'Strong',developing:'Developing',weak:'Weak'})[lv]+(st.n?' · '+m+'%':'')+'</div><button class="btn sm" data-lesson="'+s.k+'">Lesson</button></div>';}).join('');
+  const mocks=S.mocks.slice(-5).reverse().map(m=>'<tr><td>'+m.date+'</td><td><b>'+fmt(m.pts)+'/30</b></td><td>'+m.min+' min</td></tr>').join('');
+  return '<main><section class="card"><div class="kick">Sarf Quiz 4 · derived nouns on '+AR('ف ع ل')+'</div><div class="ph"><div><div class="kick">Projected quiz score</div><div class="big">'+(P.reliable?fmt(P.p*30)+'/30':'—')+'</div></div>'+
+    '<div class="gauge"><div class="gb"><i style="width:'+Math.round(P.p*100)+'%;opacity:'+(P.reliable?1:.45)+'"></i><span class="t90"></span></div><div class="gl"><span>0</span><span>27/30 target</span><span>30</span></div></div></div>'+
+    '<p class="status">'+status+'</p><p class="mini">For each noun type only its last 10 answers count, weighted as on the quiz. Each question is worth 1 point: ½ for the noun and ½ for the seegha (⅛ for each of its four parts).</p>'+
+    '<div class="tw"><table class="lt"><tr>'+Object.keys(QUIZ_MIX).map(k=>'<th>'+SK[k].name+'<br><small>'+QUIZ_MIX[k]+' on the quiz</small></th>').join('')+'</tr><tr>'+Object.keys(QUIZ_MIX).map(k=>'<td>'+(P.per[k].n?Math.round(P.per[k].p*100)+'%':'—')+'<br><small>'+P.per[k].n+' answered</small></td>').join('')+'</tr></table></div>'+
+    '<div class="btns"><button class="btn primary" data-go="practice">'+(S.stats.items?'Continue practice':'Start practice')+'</button><button class="btn'+(P.ready?' primary':'')+'" data-go="mock">Mock quiz (30)</button><button class="btn" data-go="charts">Charts</button></div></section>'+
+    '<section class="card"><h2>Strong and weak areas</h2>'+sk+'</section>'+
+    '<section class="card"><h2>Progress</h2><p>'+S.xp+' XP · best streak '+S.best+' · '+S.stats.items+' questions · '+S.lessons+' lessons</p><div class="badges">'+Object.entries(BADGES).map(([k,[n,d]])=>'<span class="badge'+(S.badges.includes(k)?'':' off')+'" title="'+d+'">'+(S.badges.includes(k)?'★ ':'')+n+'</span>').join('')+'</div>'+
+    (mocks?'<h3>Mock quizzes</h3><div class="tw"><table class="lt"><tr><th>Date</th><th>Score</th><th>Time</th></tr>'+mocks+'</table></div>':'')+
+    '<div class="btns"><button class="btn ghost" data-go="reset">Reset progress</button></div></section></main>';
+}
+function itemHTML(){
+  const it=CUR,mock=it.mode==='mock';
+  const tag=mock?'Mock quiz · question '+(MOCK.i+1)+' of 30':it.focus?'Practice · focus: '+SK[it.focus].name:'Practice';
+  return '<main><div class="tools"><button class="btn sm ghost" data-go="home">← Dashboard</button><span></span><button class="btn sm" data-go="charts">Charts</button></div>'+
+   '<section class="card item"><div class="kick">'+tag+'</div><div class="qrow"><div class="eng">'+it.prompt+'</div></div>'+
+   '<p class="inst">Write the noun with full ḥarakāt (root '+AR('ف ع ل')+'), then fill in the seegha. (H-R) = رفع, (H-N) = نصب, (H-J) = جر; (S-P) sound plural, (B-P) broken plural.</p>'+
+   '<label class="lab">Noun</label><input id="typed" class="typed ar" dir="rtl" lang="ar" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="Noun in Arabic">'+keyboardHTML()+
+   '<label class="lab">Seegha</label><div class="sgrow">'+sel('c_type',TYPE)+sel('c_gen',GEN)+sel('c_num',NUM)+sel('c_st',ST)+'</div>'+
+   '<div class="fb" id="fb" aria-live="polite"></div><div class="btns end">'+(mock?'':'<button class="btn ghost" id="idk">I don’t know</button>')+'<button class="btn primary" id="check">'+(mock?'Submit':'Check')+'</button></div></section></main>';
+}
+function check(giveUp){
+  const it=CUR;if(it.done)return advance();
+  const typed=$('#typed').value,sl={type:$('#c_type').value,gen:$('#c_gen').value,num:$('#c_num').value,st:$('#c_st').value};
+  if(!giveUp&&(!canonT(typed)||!sl.type||!sl.gen||!sl.num||!sl.st)){const fb=$('#fb');fb.className='fb show warn';fb.textContent='Write the noun and fill in all four parts of the seegha.';return;}
+  const g=grade(it,typed,sl);it.done=true;it.typed=typed;it.sel=sl;it.res=g;record(it,g);
+  if(it.mode==='mock'){MOCK.ans.push(it);return advance();}
+  feedback(it,g);
+}
+function explain(it){
+  const c=[];const ch={taf_m:'masculine اسم التفضيل: أَفْعَلُ',taf_f:'feminine اسم التفضيل: فُعْلَى',zarf:'اسم الظرف on '+(it.v==='1'?'مَفْعَلٌ':'مَفْعِلٌ'),ala:'اسم الآلة, Pattern '+it.v+' ('+{A:'مِفْعَلٌ',B:'مِفْعَلَةٌ',C:'مِفْعَالٌ'}[it.v]+')',fail:'اسم الفاعل: فَاعِلٌ',maf:'اسم المفعول: مَفْعُوْلٌ'}[it.kind];
+  c.push('<b>Pattern:</b> '+ch+'.');
+  if(it.kind==='taf_f'&&it.n==='w')c.push('<b>Note:</b> '+AR('فُعْلَى')+' does not change: it is the same in رفع, نصب and جر.');
+  if((it.kind==='taf_m'&&(it.n==='w'||it.n==='bp'))||(['zarf','ala'].includes(it.kind)&&it.n==='bp'))c.push('<b>Note:</b> this form takes no tanwīn, and in حَالُ الجَرّ it ends in fatḥa, not kasra (as on the chart).');
+  if(it.n==='t'||it.n==='sp'&&it.g==='m')c.push('<b>Ending:</b> نصب and جر share one form ('+AR(FORMS[it.kind==='taf_m'||it.kind==='taf_f'?it.kind:it.kind==='zarf'?'zarf'+it.v:it.kind==='ala'?'ala'+it.v:it.kind][(['fail','maf'].includes(it.kind)?it.g:'')+it.n+'n'])+').');
+  if(it.n==='sp'&&it.g==='f')c.push('<b>Ending:</b> '+AR('ـَاتٌ')+' in رفع, '+AR('ـَاتٍ')+' in نصب and جر.');
+  if(it.kind==='ala'&&it.v==='B')c.push('<b>Gender:</b> the chart labels Pattern B '+AR('مُذَكَّر')+'; '+AR('مُؤَنَّث')+' is also accepted here because of the ة.');
+  return '<ul class="ex">'+c.map(x=>'<li>'+x+'</li>').join('')+'</ul>';
+}
+function feedback(it,g){
+  const inp=$('#typed');inp.readOnly=true;inp.classList.add(g.nounOK?'ok':'no');const kb=document.querySelector('.kb');if(kb)kb.remove();
+  for(const [k,id] of [['type','c_type'],['gen','c_gen'],['num','c_num'],['st','c_st']]){const s=$('#'+id);s.disabled=true;s.classList.add(g.ok[k]?'ok':'no');}
+  let h='<div class="h">'+(g.all?'✓ Correct · 1/1':'✗ '+fmt(g.pts)+' / 1 point')+'</div>';
+  h+='<div class="keyans"><div><b>Noun</b> '+AR(it.ar)+(g.nounOK?' ✓':'')+'</div><div><b>Seegha</b> '+AR(seegha(it))+'</div></div>';
+  if(g.diff&&!g.nounOK){const paint2=(cl,cls)=>'<span class="ar dw">'+cl.map((c,i)=>{const t=c.b+c.m;return cls[i]?'<span class="'+cls[i]+'">'+t+'</span>':t;}).join('')+'</span>';
+    h+='<div class="diff"><div><b>You</b> '+paint2(g.diff.A,g.diff.s)+'</div><div><b>Answer</b> '+paint2(g.diff.B,g.diff.a)+'</div><div class="mini">'+(g.diff.same?'All the letters are right; the ḥarakāt differ on the highlighted letters.':'The letters differ: missing or extra letters are highlighted.')+' <span class="dv">ḥarakāt</span> <span class="dx">letters</span></div></div>';}
+  if(g.real)h+='<p class="mini">What you wrote is a real form from the charts: '+AR(seegha(g.real))+'.</p>';
+  h+=explain(it);
+  const fb=$('#fb');fb.className='fb show '+(g.all?'ok':'no');fb.innerHTML=h;
+  const b=$('#check');b.textContent='Next →';const i=$('#idk');if(i)i.remove();b.focus();
+}
+function advance(){
+  if(VIEW==='item'&&CUR.mode==='mock'){MOCK.i++;if(MOCK.i>=MOCK.items.length)return endMock();CUR=MOCK.items[MOCK.i];return render();}
+  if(S.showReady){S.showReady=false;save();VIEW='summary';return render();}
+  if(S.since>=12&&!S.pending){S.since=0;save();VIEW='summary';return render();}
+  nextItem();
+}
+function summaryHTML(){
+  const P=projection();const r=SKILLS.map(s=>({s,st:S.stats.skills[s.k]})).filter(x=>x.st.n>=2).sort((a,b)=>mastery(a.st)-mastery(b.st));
+  const li=x=>'<li><b>'+x.s.name+'</b> · '+Math.round(mastery(x.st)*100)+'%</li>';
+  return '<main><section class="card"><div class="kick">'+(P.ready?'Projected 27/30 or better':'Progress check')+'</div><div class="big">'+(P.reliable?fmt(P.p*30)+'/30':'—')+'</div>'+
+   '<p class="status">'+(P.ready?'Take the full mock quiz to confirm, or keep practising.':'Keep going. The next questions focus on the areas below.')+'</p>'+
+   '<div class="two"><div><h3>Needs work</h3><ul>'+r.slice(0,3).map(li).join('')+'</ul></div><div><h3>Strongest</h3><ul>'+r.slice(-3).reverse().map(li).join('')+'</ul></div></div>'+
+   '<div class="btns end"><button class="btn" data-go="home">Dashboard</button>'+(P.ready?'<button class="btn primary" data-go="mock">Mock quiz</button>':'')+'<button class="btn'+(P.ready?'':' primary')+'" data-go="practice">Continue practice</button></div></section></main>';
+}
+/* ---------- lessons ---------- */
+const CH_COLS=(kind)=>['taf_m','taf_f'].includes(kind)?['w','t','sp','bp']:['fail','maf'].includes(kind)?['w','t','sp']:['w','t','bp'];
+function chartTable(key,cols,prefix){
+  return '<div class="tw"><table class="lt ch"><tr><th></th>'+cols.map(n=>'<th>'+({w:'Singular',t:'Dual',sp:'Sound plural',bp:'Broken plural'})[n]+'</th>').join('')+'</tr>'+
+   ['r','n','j'].map(s=>'<tr><th>'+AR(({r:'رَفْع',n:'نَصْب',j:'جَرّ'})[s])+'</th>'+cols.map(n=>'<td>'+AR(FORMS[key][(prefix||'')+n+s])+'</td>').join('')+'</tr>').join('')+'</table></div>';
+}
+const LESSONS={
+  taf_m:()=>'<p>Meaning: "a male who does more (or the most)". Scale '+AR('أَفْعَلُ')+'.</p>'+chartTable('taf_m',['w','t','sp','bp'])+'<ul><li>Singular and broken plural have <b>no tanwīn</b>, and their جر ends in <b>fatḥa</b>: '+AR('أَفْعَلَ، أَفَاعِلَ')+'.</li><li>(S-P) → '+AR('أَفْعَلُوْنَ / أَفْعَلِيْنَ')+'; (B-P) → '+AR('أَفَاعِلُ')+'.</li></ul>',
+  taf_f:()=>'<p>Meaning: "a female who does more (or the most)". Scale '+AR('فُعْلَى')+'.</p>'+chartTable('taf_f',['w','t','sp','bp'])+'<ul><li>'+AR('فُعْلَى')+' is the same in all three states.</li><li>The ى becomes ي before the dual and sound plural endings: '+AR('فُعْلَيَانِ، فُعْلَيَاتٌ')+'.</li><li>(B-P) '+AR('فُعَلٌ')+' takes normal tanwīn: '+AR('فُعَلٌ / فُعَلًا / فُعَلٍ')+'.</li></ul>',
+  zarf:()=>'<p>Meaning: "a time or place of doing". Two patterns; the question names the one to use.</p><h3>'+AR('مَفْعَلٌ')+'</h3>'+chartTable('zarf1',['w','t','bp'])+'<h3>'+AR('مَفْعِلٌ')+'</h3>'+chartTable('zarf2',['w','t','bp'])+'<ul><li>Both patterns share the broken plural '+AR('مَفَاعِلُ')+', which has no tanwīn and ends in fatḥa in جر.</li></ul>',
+  ala:()=>'<p>Meaning: "a tool of doing". Three patterns.</p><h3>Pattern A (short) '+AR('مِفْعَلٌ')+'</h3>'+chartTable('alaA',['w','t','bp'])+'<h3>Pattern B (medium) '+AR('مِفْعَلَةٌ')+'</h3>'+chartTable('alaB',['w','t','bp'])+'<h3>Pattern C (long) '+AR('مِفْعَالٌ')+'</h3>'+chartTable('alaC',['w','t','bp'])+
+    '<ul><li>All start with '+AR('مِـ')+' (kasra); '+AR('مَـ')+' (fatḥa) is اسم الظرف.</li><li>Plurals: A and B → '+AR('مَفَاعِلُ')+', C → '+AR('مَفَاعِيْلُ')+'.</li></ul>',
+  fail:()=>'<p>Meaning: "one who does". Scale '+AR('فَاعِلٌ')+'.</p><h3>Masculine</h3>'+chartTable('fail',['w','t','sp'],'m')+'<h3>Feminine</h3>'+chartTable('fail',['w','t','sp'],'f')+'<ul><li>Plural is sound: '+AR('فَاعِلُوْنَ')+' / '+AR('فَاعِلَاتٌ')+'.</li></ul>',
+  maf:()=>'<p>Meaning: "one who is done to". Scale '+AR('مَفْعُوْلٌ')+'.</p><h3>Masculine</h3>'+chartTable('maf',['w','t','sp'],'m')+'<h3>Feminine</h3>'+chartTable('maf',['w','t','sp'],'f')+'<ul><li>Do not confuse with '+AR('مَفْعَلٌ')+' (اسم الظرف): the مفعول has a long '+AR('ـُوْ')+'.</li></ul>',
+  endings:()=>'<ul><li><b>Dual:</b> '+AR('ـَانِ')+' in رفع, '+AR('ـَيْنِ')+' in نصب and جر (feminine '+AR('ـَتَانِ / ـَتَيْنِ')+').</li><li><b>Sound masculine plural:</b> '+AR('ـُوْنَ')+' in رفع, '+AR('ـِيْنَ')+' in نصب and جر.</li><li><b>Sound feminine plural:</b> '+AR('ـَاتٌ')+' in رفع, '+AR('ـَاتٍ')+' in نصب and جر.</li><li><b>Broken plurals</b> change the inside of the word: '+AR('أَفَاعِلُ، فُعَلٌ، مَفَاعِلُ، مَفَاعِيْلُ')+'.</li><li>(S-P) means sound plural; (B-P) means broken plural. For اسم الفاعل and اسم المفعول only the sound plural is used.</li></ul>',
+  states:()=>'<ul><li>(H-R) '+AR('حَالُ الرَّفْع')+' · (H-N) '+AR('حَالُ النَّصْب')+' · (H-J) '+AR('حَالُ الجَرّ')+'.</li><li>Singular with tanwīn: '+AR('ـٌ / ـًا / ـٍ')+' ('+AR('فَاعِلٌ، فَاعِلًا، فَاعِلٍ')+').</li><li>No tanwīn ('+AR('أَفْعَلُ، أَفَاعِلُ، مَفَاعِلُ، مَفَاعِيْلُ')+'): '+AR('ـُ / ـَ / ـَ')+'. جر uses fatḥa.</li><li>'+AR('فُعْلَى')+' never changes.</li><li>Dual and sound plural: نصب = جر.</li></ul>',
+  seegha:()=>'<p>The seegha has four parts, in this order:</p><ol><li>Type: '+Object.values(TYPE).map(AR).join(' · ')+'</li><li>Gender: '+AR('مُذَكَّر')+' or '+AR('مُؤَنَّث')+' (اسم الظرف and اسم الآلة are listed '+AR('مُذَكَّر')+' on the charts)</li><li>Number: '+Object.values(NUM).map(AR).join(' · ')+'</li><li>State: '+Object.values(ST).map(AR).join(' · ')+'</li></ol><p>Example: Two males who do the most (H-N) → '+AR('أَفْعَلَيْنِ')+' · '+AR('اِسْمُ التَّفْضِيْل – مُذَكَّر – تَثْنِيَة – حَالُ النَّصْب')+'</p>',
+};
+function showLesson(k,auto){LESSON={k,auto};VIEW='lesson';render();}
+function lessonHTML(){const s=SK[LESSON.k];return '<main><div class="tools"><button class="btn sm ghost" data-go="home">← Dashboard</button></div><section class="card lesson"><div class="kick">'+(LESSON.auto?'Lesson · this needs work':'Lesson')+'</div><h2>'+s.name+' '+AR(s.ar)+'</h2>'+LESSONS[LESSON.k]()+
+  '<div class="btns end"><button class="btn" data-go="home">Dashboard</button><button class="btn primary" id="lessonGo">Practise this now (3 questions)</button></div></section></main>';}
+function chartsHTML(){return ['taf_m','taf_f','zarf','ala','fail','maf'].map(k=>'<h3>'+SK[k].name+'</h3>'+LESSONS[k]()).join('');}
+/* ---------- mock ---------- */
+function startMock(){
+  const items=[];for(const [k,n] of Object.entries(QUIZ_MIX)){const pool=shuffle(ITEMS.filter(i=>i.kind===k));for(let i=0;i<n;i++)items.push({...pool[i],prompt:pool[i].en(pick(['more','the most'])),mode:'mock',done:false});}
+  MOCK={items:shuffle(items),ans:[],i:0,t0:Date.now()};CUR=MOCK.items[0];VIEW='item';render();
+}
+function endMock(){const pts=MOCK.ans.reduce((s,it)=>s+it.res.pts,0);S.mocks.push({date:new Date().toISOString().slice(0,10),pts,min:Math.round((Date.now()-MOCK.t0)/60000)});S.xp+=40;if(pts>=27)award('mock');save();VIEW='mockEnd';render();}
+function mockEndHTML(){const m=S.mocks[S.mocks.length-1];
+  const rows=MOCK.ans.map((it,i)=>'<tr class="'+(it.res.all?'okr':'nor')+'"><td>'+(i+1)+'<br><small>'+fmt(it.res.pts)+'/1</small></td><td>'+it.prompt+'</td><td>'+(it.res.all?'✓':(it.res.nounOK?'':'<div>'+(it.typed.trim()?AR(it.typed):'—')+' → '+AR(it.ar)+'</div>')+(['type','gen','num','st'].every(k=>it.res.ok[k])?'':'<div>'+AR(seegha(it))+'</div>'))+'</td></tr>').join('');
+  return '<main><section class="card"><div class="kick">Mock quiz result</div><div class="big">'+fmt(m.pts)+'/30</div><p class="status">'+(m.pts>=27?'<b class="okc">27/30 or better: ready for the quiz.</b>':'Below 27/30. Your weak areas have been updated.')+' '+m.min+' min.</p>'+
+   '<div class="btns"><button class="btn primary" data-go="practice">Continue practice</button><button class="btn" data-go="home">Dashboard</button></div><h3>Review</h3><div class="tw"><table class="lt rev"><tr><th>#</th><th>Question</th><th>Correction</th></tr>'+rows+'</table></div></section></main>';}
+/* ---------- events ---------- */
+function modal(t,h){const m=document.createElement('div');m.className='modal';m.innerHTML='<div class="mbox"><div class="mhead"><b>'+t+'</b><button class="btn sm" id="mclose">Close</button></div>'+h+'</div>';document.body.appendChild(m);m.onclick=e=>{if(e.target===m||e.target.id==='mclose')m.remove();};}
+function bind(){
+  document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
+  document.querySelectorAll('[data-lesson]').forEach(b=>b.onclick=()=>showLesson(b.dataset.lesson,false));
+  const c=$('#check');if(c)c.onclick=()=>check(false);const i=$('#idk');if(i)i.onclick=()=>check(true);
+  const lg=$('#lessonGo');if(lg)lg.onclick=()=>{S.lessons++;S.lessonAt[LESSON.k]=S.stats.items;S.lastLesson=S.stats.items;S.focus={k:LESSON.k,left:3};S.xp+=5;if(S.lessons>=3)award('l3');save();nextItem();};
+  if(VIEW==='item'){bindKeyboard();const t=$('#typed');if(t&&!(window.matchMedia&&matchMedia('(pointer:coarse)').matches))t.focus();}
+}
+function go(w){
+  if(w==='charts')return modal('Charts',chartsHTML());
+  if(w==='reset'){if(confirm('Reset all progress?')){S=fresh();save();VIEW='home';render();}return;}
+  if(w==='home'){if(VIEW==='item'&&CUR.mode==='mock'&&!confirm('Leave the mock quiz? It will not be scored.'))return;VIEW='home';return render();}
+  if(w==='mock')return startMock();
+  if(w==='practice'){if(VIEW==='item'&&CUR&&!CUR.done&&CUR.mode!=='mock')return;return nextItem();}
+}
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&VIEW==='item'&&!e.target.closest('select')&&!document.querySelector('.modal')){e.preventDefault();check(false);}});
+function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2400);}
+function init(){S=load();render();}
+
+init();
+window.__q={get S(){return S;},get CUR(){return CUR;},get VIEW(){return VIEW;},get LESSON(){return LESSON;},get MOCK(){return MOCK;},ITEMS,FORMS,grade,projection,LESSONS,SKILLS,canonT,seegha,setRnd:f=>{rnd=f;},mastery};
+})();
+</script></body></html>
