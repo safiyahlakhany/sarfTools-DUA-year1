@@ -133,7 +133,19 @@
         }
       ],
       "accessibleHomeworks": []
+    },
+    {
+      "week": 14,
+      "title": "Week 14 resources",
+      "studyTools": [
+        {
+          "id": "7e9dd3cb-a1fc-4a28-8f22-554e9743e218",
+          "title": "Week 14 Study Tool",
+          "path": "resources/week-014/study-tool-7e9dd3cb-a1fc-4a28-8f22-554e9743e218.html",
+          "publishedAt": "2026-11-25T17:28:50.167Z"
+        }
+      ]
     }
   ],
-  "updatedAt": "2026-11-18T16:40:36.009Z"
+  "updatedAt": "2026-11-25T17:28:50.167Z"
 }
